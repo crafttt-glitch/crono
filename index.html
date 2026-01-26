@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        :root {
+            --primary-blue: #003366; --header-green: #1b7340; --border-color: #d1d8dd;
+            --color-giesc: #e8f5e9; --text-giesc: #2e7d32;
+            --color-hp8: #e3f2fd; --text-hp8: #1565c0;
+            --color-tutorial: #f3e5f5; --text-tutorial: #7b1fa2;
+            --color-morfo: #e1d5f2; --text-morfo: #311b92;
+            
+            --bg-hms: #fff3e0; --text-hms: #e65100;
+            --bg-uepa: #e0f2f1; --text-uepa: #00695c;
+            --bg-hrba: #e8eaf6; --text-hrba: #283593;
+            --bg-ures: #fce4ec; --text-ures: #c2185b;
+            --bg-ubs: #f1f8e9; --text-ubs: #33691e;
+
+            --w-seg: 115px; --w-ter: 115px; --w-qua: 115px; --w-qui: 155px; --w-sex: 115px; --w-sab: 100px;
+        }
+
+        body { font-family: 'Segoe UI', sans-serif; background-color: #f0f2f5; display: flex; flex-direction: column; align-items: center; padding: 10px; color: #333; }
+        .controls-panel { width: 100%; max-width: 1250px; background: white; padding: 10px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); margin-bottom: 12px; }
+        .control-row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; justify-content: space-between; }
+        .btn-group { display: flex; gap: 5px; flex-wrap: wrap; }
+        
+        select, .filter-btn { padding: 4px 8px; border: 1px solid #ccc; border-radius: 4px; cursor: pointer; background: #f8f8f8; font-weight: bold; font-size: 0.72rem; transition: 0.2s; }
+        .filter-btn.active { background: var(--primary-blue); color: white; border-color: var(--primary-blue); }
+        .filter-btn.special { background: #fff3e0; border-color: #ffe0b2; color: #e65100; }
+        .filter-btn.special.active { background: #e65100; color: white; }
+
+        .today-label { font-size: 0.75rem; font-weight: bold; color: var(--primary-blue); background: #e3f2fd; padding: 4px 10px; border-radius: 4px; border: 1px solid #bbdefb; }
+        .members-info { font-size: 0.72rem; background: #fffde7; padding: 6px 10px; border-radius: 4px; border: 1px solid #ffe082; margin-top: 8px; line-height: 1.3; width: 100%; box-sizing: border-box; }
+
+        .slider-group { display: flex; flex-wrap: wrap; gap: 8px; border-top: 1px solid #eee; padding-top: 8px; margin-top: 8px; width: 100%; }
+        .slider-item { display: flex; flex-direction: column; font-size: 0.62rem; font-weight: bold; color: #666; width: 80px; }
+        input[type=range] { width: 100%; cursor: pointer; }
+
+        .schedule-container { width: fit-content; max-width: 100%; background: white; border: 1px solid var(--border-color); box-shadow: 0 4px 12px rgba(0,0,0,0.1); overflow-x: auto; }
+        .main-header { background-color: var(--primary-blue); color: white; text-align: center; padding: 6px; }
+        .main-header h1 { margin: 0; font-size: 0.95rem; text-transform: uppercase; }
+
+        table { width: max-content; border-collapse: collapse; table-layout: fixed; }
+        th { background-color: var(--header-green); color: white; text-transform: uppercase; font-size: 0.68rem; padding: 5px; border: 1px solid rgba(255,255,255,0.2); }
+        td { border: 1px solid var(--border-color); vertical-align: top; padding: 4px; font-size: 0.72rem; }
+        
+        .col-seg { width: var(--w-seg); } .col-ter { width: var(--w-ter); } .col-qua { width: var(--w-qua); } .col-qui { width: var(--w-qui); } .col-sex { width: var(--w-sex); } .col-sab { width: var(--w-sab); }
+        .time-col { background-color: var(--primary-blue); color: white; width: 40px; text-align: center; font-weight: bold; vertical-align: middle; }
+
+        @keyframes blockEnter { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+        .subject-block { padding: 4px 6px; border-radius: 4px; margin-bottom: 4px; border-left: 3px solid transparent; animation: blockEnter 0.3s ease-out forwards; }
+        
+        .giesc { background-color: var(--color-giesc) !important; border-left-color: var(--text-giesc); }
+        .hp8 { background-color: var(--color-hp8) !important; border-left-color: var(--text-hp8); }
+        .tutorial { background-color: var(--color-tutorial) !important; border-left-color: var(--text-tutorial); }
+        .morfo { background-color: var(--color-morfo) !important; border-left-color: var(--text-morfo); }
+
+        .materia { font-weight: bold; color: var(--primary-blue); font-size: 0.75rem; }
+        .prof-text { color: var(--text-hp8); font-weight: 600; }
+        .local-tag { display: inline-block; padding: 1px 4px; border-radius: 3px; font-weight: bold; font-size: 0.62rem; text-transform: uppercase; margin: 0 1px; }
+        .loc-hms { background: var(--bg-hms); color: var(--text-hms); } .loc-uepa { background: var(--bg-uepa); color: var(--text-uepa); } .loc-hrba { background: var(--bg-hrba); color: var(--text-hrba); } .loc-ures { background: var(--bg-ures); color: var(--text-ures); } .loc-ubs { background: var(--bg-ubs); color: var(--text-ubs); }
+        
+        .badge-container { display: block; width: 100%; margin-top: 3px; }
+        .badge { display: inline-block; background: rgba(255,255,255,0.95); padding: 0px 4px; border-radius: 3px; margin: 1px 1px 1px 0; font-size: 0.62rem; border: 1px solid rgba(0,0,0,0.15); color: #333; font-weight: 500; }
+        .badge-weekly { background: #eee; color: #666; text-transform: uppercase; font-weight: bold; font-size: 0.58rem; }
+    </style>
+</head>
+<body>
+
+<div class="controls-panel">
+    <div class="control-row">
+        <div class="btn-group">
+            <select id="groupSelect" onchange="updateView()">
+                <option value="A">Grupo A</option><option value="B">Grupo B</option><option value="C">Grupo C</option><option value="D">Grupo D</option>
+            </select>
+            <span id="todayDisplay" class="today-label"></span>
+        </div>
+        <div class="btn-group">
+            <button class="filter-btn active" onclick="setFilter('all', this)">Semestre</button>
+            <button class="filter-btn special" onclick="setFilter('currWeek', this)">Semana Atual</button>
+            <button class="filter-btn special" onclick="setFilter('nextWeek', this)">Próxima Semana</button>
+        </div>
+        <div id="monthButtons" class="btn-group"></div>
+    </div>
+    <div id="membersDisplay" class="members-info"></div>
+    <div class="slider-group">
+        <div class="slider-item">Seg <input type="range" min="40" max="400" value="115" oninput="document.documentElement.style.setProperty('--w-seg', this.value+'px')"></div>
+        <div class="slider-item">Ter <input type="range" min="40" max="400" value="115" oninput="document.documentElement.style.setProperty('--w-ter', this.value+'px')"></div>
+        <div class="slider-item">Qua <input type="range" min="40" max="400" value="115" oninput="document.documentElement.style.setProperty('--w-qua', this.value+'px')"></div>
+        <div class="slider-item">Qui <input type="range" min="40" max="600" value="155" oninput="document.documentElement.style.setProperty('--w-qui', this.value+'px')"></div>
+        <div class="slider-item">Sex <input type="range" min="40" max="400" value="115" oninput="document.documentElement.style.setProperty('--w-sex', this.value+'px')"></div>
+        <div class="slider-item">Sáb <input type="range" min="40" max="300" value="100" oninput="document.documentElement.style.setProperty('--w-sab', this.value+'px')"></div>
+    </div>
+</div>
+
+<div class="schedule-container">
+    <div class="main-header"><h1 id="tableTitle">MED8 | 2026.1</h1></div>
+    <table>
+        <thead>
+            <tr><th style="width: 40px;">-</th><th class="col-seg">Segunda</th><th class="col-ter">Terça</th><th class="col-qua">Quarta</th><th class="col-qui">Quinta</th><th class="col-sex">Sexta</th><th class="col-sab">Sábado</th></tr>
+        </thead>
+        <tbody id="scheduleBody"></tbody>
+    </table>
+</div>
+
+<script>
+// 🧩 LEGO DATABASE INTEGRADA
+const DATA_LEGO = [
+    { d: "Segunda", t: "Manhã", act: "GIESC-8", p: "-", l: "UBS", g: "Todos", dates: "Semanal" },
+    { d: "Segunda", t: "Manhã", act: "HP-8", p: "Paulo Pires", l: "URES", g: "A", dates: "23/02, 23/03, 20/04, 18/05, 15/06" },
+    { d: "Segunda", t: "Manhã", act: "HP-8", p: "Paulo Pires", l: "URES", g: "B", dates: "02/03, 30/03, 27/04, 25/05, 22/06" },
+    { d: "Segunda", t: "Manhã", act: "HP-8", p: "Paulo Pires", l: "URES", g: "C", dates: "09/03, 06/04, 04/05, 01/06" },
+    { d: "Segunda", t: "Manhã", act: "HP-8", p: "Paulo Pires", l: "URES", g: "D", dates: "16/03, 13/04, 11/05, 08/06" },
+    { d: "Segunda", t: "Tarde", act: "HP-8", p: "Kalysta Borges", l: "HRBA", g: "A", dates: "16/03, 13/04, 11/05, 08/06" },
+    { d: "Segunda", t: "Tarde", act: "HP-8", p: "Kalysta Borges", l: "HRBA", g: "B", dates: "23/02, 23/03, 20/04, 18/05, 15/06" },
+    { d: "Segunda", t: "Tarde", act: "HP-8", p: "Kalysta Borges", l: "HRBA", g: "C", dates: "02/03, 30/03, 27/04, 25/05, 22/06" },
+    { d: "Segunda", t: "Tarde", act: "HP-8", p: "Kalysta Borges", l: "HRBA", g: "D", dates: "09/03, 06/04, 04/05, 01/06" },
+    { d: "Terça", t: "Manhã", act: "HP-8", p: "Kalysta Borges", l: "HRBA", g: "A", dates: "03/03, 31/03, 28/04, 26/05, 23/06" },
+    { d: "Terça", t: "Manhã", act: "HP-8", p: "Kalysta Borges", l: "HRBA", g: "B", dates: "10/03, 07/04, 05/05, 02/06" },
+    { d: "Terça", t: "Manhã", act: "HP-8", p: "Kalysta Borges", l: "HRBA", g: "C", dates: "17/03, 14/04, 12/05, 09/06" },
+    { d: "Terça", t: "Manhã", act: "HP-8", p: "Kalysta Borges", l: "HRBA", g: "D", dates: "24/02, 24/03, 19/05, 16/06" },
+    { d: "Terça", t: "Tarde", act: "HP-8", p: "Wesley Muniz", l: "UEPA", g: "Todos", dates: "24/02, 10/03, 24/03, 07/04, 28/04, 05/05, 19/05, 09/06, 23/06" },
+    { d: "Terça", t: "Noite", act: "TUTORIAL-8", p: "Wesley Muniz / Marcos Honorato", l: "UEPA", g: "Todos", dates: "Semanal" },
+    { d: "Quarta", t: "Tarde", act: "HP-8", p: "Kalysta Borges", l: "HRBA", g: "A", dates: "11/03, 08/04, 06/05, 03/06" },
+    { d: "Quarta", t: "Tarde", act: "HP-8", p: "Kalysta Borges", l: "HRBA", g: "B", dates: "18/03, 15/04, 13/05, 10/06" },
+    { d: "Quarta", t: "Tarde", act: "HP-8", p: "Kalysta Borges", l: "HRBA", g: "C", dates: "25/02, 25/03, 22/04, 20/05, 17/06" },
+    { d: "Quarta", t: "Tarde", act: "HP-8", p: "Kalysta Borges", l: "HRBA", g: "D", dates: "04/03, 01/04, 29/04, 27/05, 24/06" },
+    { d: "Quarta", t: "Tarde", act: "HP-8", p: "Alexandre Neto", l: "UEPA", g: "Todos", dates: "Semanal" },
+    { d: "Quarta", t: "Noite", act: "HP-8", p: "Adriana Pires / Paulo Pires", l: "UEPA", g: "Todos", dates: "Semanal" },
+    { d: "Quinta", t: "Manhã", act: "HP-8", p: "Wesley Muniz", l: "HMS", g: "A", dates: "26/02, 26/03, 23/04, 21/05, 18/06" },
+    { d: "Quinta", t: "Manhã", act: "HP-8", p: "Wesley Muniz", l: "HMS", g: "B", dates: "05/03, 02/04, 30/04, 28/05, 25/06" },
+    { d: "Quinta", t: "Manhã", act: "HP-8", p: "Wesley Muniz", l: "HMS", g: "C", dates: "19/03, 16/04, 14/05, 11/06" },
+    { d: "Quinta", t: "Manhã", act: "HP-8", p: "Wesley Muniz", l: "HMS", g: "D", dates: "12/03, 09/04, 07/05" },
+    { d: "Quinta", t: "Manhã", act: "HP-8", p: "Marcos Honorato", l: "UEPA/Amb", g: "B, C", dates: "26/02, 12/03, 26/03, 09/04, 23/04, 07/05, 21/05, 18/06" },
+    { d: "Quinta", t: "Manhã", act: "HP-8", p: "Marcos Honorato", l: "UEPA/Amb", g: "A, D", dates: "05/03, 19/03, 02/04, 16/04, 30/04, 14/05, 28/05, 11/06, 25/06" },
+    { d: "Quinta", t: "Manhã", act: "HP-8", p: "Adriana Pires / Paulo Pires", l: "HMS/URES", g: "D", dates: "26/02, 26/03, 23/04, 21/05, 18/06" },
+    { d: "Quinta", t: "Manhã", act: "HP-8", p: "Adriana Pires / Paulo Pires", l: "HMS/URES", g: "A", dates: "12/03, 09/04, 07/05" },
+    { d: "Quinta", t: "Manhã", act: "HP-8", p: "Adriana Pires / Paulo Pires", l: "HMS/URES", g: "B", dates: "19/03, 16/04, 14/05, 11/06" },
+    { d: "Quinta", t: "Manhã", act: "HP-8", p: "Adriana Pires / Paulo Pires", l: "HMS/URES", g: "C", dates: "05/03, 02/04, 30/04, 28/05, 25/06" },
+    { d: "Quinta", t: "Tarde", act: "HP-8", p: "Wesley Muniz", l: "HMS", g: "A", dates: "19/03, 16/04, 14/05, 11/06" },
+    { d: "Quinta", t: "Tarde", act: "HP-8", p: "Wesley Muniz", l: "HMS", g: "B", dates: "26/02, 26/03, 23/04, 21/05, 18/06" },
+    { d: "Quinta", t: "Tarde", act: "HP-8", p: "Wesley Muniz", l: "HMS", g: "C", dates: "05/03, 02/04, 30/04, 28/05, 25/06" },
+    { d: "Quinta", t: "Tarde", act: "HP-8", p: "Wesley Muniz", l: "HMS", g: "D", dates: "12/03, 09/04, 07/05" },
+    { d: "Quinta", t: "Tarde", act: "HP-8", p: "Marcos Honorato", l: "HMS", g: "A", dates: "26/02, 26/03, 23/04, 21/05, 18/06" },
+    { d: "Quinta", t: "Tarde", act: "HP-8", p: "Marcos Honorato", l: "HMS", g: "B", dates: "12/03, 09/04, 07/05" },
+    { d: "Quinta", t: "Tarde", act: "HP-8", p: "Marcos Honorato", l: "HMS", g: "C", dates: "19/03, 16/04, 14/05, 11/06" },
+    { d: "Quinta", t: "Tarde", act: "HP-8", p: "Marcos Honorato", l: "HMS", g: "D", dates: "05/03, 02/04, 30/04, 28/05, 25/06" },
+    { d: "Quinta", t: "Noite", act: "HP-8/CONF", p: "Marcos Honorato", l: "UEPA", g: "Todos", dates: "Semanal" },
+    { d: "Sexta", t: "Manhã", act: "MORFO-8", p: "Giovana Gilbert / Carlena Silva / Christian Lima", l: "UEPA", g: "Todos", dates: "Semanal" },
+    { d: "Sexta", t: "Noite", act: "TUTORIAL-8", p: "Wesley Muniz / Marcos Honorato", l: "UEPA", g: "Todos", dates: "Semanal" },
+    { d: "Sábado", t: "Manhã", act: "HP-8 (Uro)", p: "Wesley Muniz", l: "UEPA UROLOGIA", g: "A", dates: "07/03, 09/05, 20/06" },
+    { d: "Sábado", t: "Manhã", act: "HP-8 (Uro)", p: "Wesley Muniz", l: "UEPA UROLOGIA", g: "B", dates: "21/03, 16/05" },
+    { d: "Sábado", t: "Manhã", act: "HP-8 (Uro)", p: "Wesley Muniz", l: "UEPA UROLOGIA", g: "C", dates: "11/04, 29/05" },
+    { d: "Sábado", t: "Manhã", act: "HP-8 (Uro)", p: "Wesley Muniz", l: "UEPA UROLOGIA", g: "D", dates: "18/04, 13/06" }
+];
+
+const GROUP_MEMBERS = {
+    A: ["Vanessa S Cruz", "Laura V S Linhares", "Letícia S Rodrigues", "Lena K R Lameira", "Claudemir G Pedroso Jr"],
+    B: ["Fernanda L Duarte", "Eduardo F Pallaro", "Letícia T A Costa", "Gustavo S Azevedo", "Andrey B Almeida"],
+    C: ["Diego M Rocha", "Jeremias J Souza", "William A Abreu", "Dayvison T Trindade", "Vinícius S Remédios"],
+    D: ["Brenda S Lima", "Bruno A Silva", "Frank J Nascimento", "Tiago M Brasil", "Roberta F Menezes", "Maysa C Bastos"]
+};
+
+let activeFilter = 'all';
+
+function abrev(name) {
+    if (name === "-" || !name) return "";
+    return name.split('/').map(part => {
+        const words = part.trim().split(' ');
+        if (words.length < 2) return words[0];
+        return `${words[0]} ${words[1].charAt(0)}`;
+    }).join(' / ');
+}
+
+function getLocClass(l) {
+    const loc = l.toUpperCase();
+    if (loc.includes("HMS")) return "loc-hms";
+    if (loc.includes("UEPA")) return "loc-uepa";
+    if (loc.includes("HRBA")) return "loc-hrba";
+    if (loc.includes("URES")) return "loc-ures";
+    if (loc.includes("UBS")) return "loc-ubs";
+    return "";
+}
+
+function checkWeek(dateStr, offset) {
+    const now = new Date(); 
+    const day = now.getDay();
+    const diff = now.getDate() - day + (day === 0 ? -6 : 1) + (offset * 7);
+    const start = new Date(now.setDate(diff)); start.setHours(0,0,0,0);
+    const end = new Date(start); end.setDate(start.getDate() + 6); end.setHours(23,59,59);
+    
+    return dateStr.split(',').some(d => {
+        const parts = d.trim().split('/');
+        if (parts.length < 2) return false;
+        const [dayPart, monthPart] = parts.map(Number);
+        const classDate = new Date(2026, monthPart - 1, dayPart);
+        return classDate >= start && classDate <= end;
+    });
+}
+
+function updateView() {
+    const group = document.getElementById('groupSelect').value;
+    const days = ["Segunda", "Terça", "Quarta", "Quinta", "Sexta", "Sábado"];
+    const turns = ["Manhã", "Tarde", "Noite"];
+    
+    const sortedMembers = [...GROUP_MEMBERS[group]].sort();
+    document.getElementById('membersDisplay').innerHTML = `📍 <b>Integrantes:</b> ${sortedMembers.map(m => abrev(m)).join(', ')}`;
+    document.getElementById('tableTitle').innerText = `MED8 | GRUPO ${group} | 2026.1`;
+    
+    let html = "";
+    turns.forEach(turn => {
+        html += `<tr><td class="time-col">${turn[0]}</td>`;
+        days.forEach(day => {
+            const matches = DATA_LEGO.filter(item => {
+                const groupMatch = item.g === "Todos" || item.g.includes(group);
+                return item.d === day && item.t === turn && groupMatch;
+            });
+            
+            let cellContent = "";
+            matches.forEach(m => {
+                let show = (activeFilter === 'all' || m.dates === "Semanal");
+                let filteredDates = m.dates;
+
+                if (!show) {
+                    if (activeFilter.includes('/')) {
+                        const dateArr = m.dates.split(',').filter(d => d.includes(activeFilter));
+                        if (dateArr.length > 0) { show = true; filteredDates = dateArr.join(', '); }
+                    } else if (activeFilter === 'currWeek') {
+                        show = checkWeek(m.dates, 0);
+                    } else if (activeFilter === 'nextWeek') {
+                        show = checkWeek(m.dates, 1);
+                    }
+                }
+
+                if (show) {
+                    const actL = m.act.toLowerCase();
+                    const colorClass = actL.includes("giesc") ? "giesc" : actL.includes("hp-8") ? "hp8" : actL.includes("tutorial") ? "tutorial" : "morfo";
+                    const locBadges = m.l.split('/').map(loc => `<span class="local-tag ${getLocClass(loc)}">${loc.trim()}</span>`).join(' / ');
+                    
+                    cellContent += `<div class="subject-block ${colorClass}">
+                        <div class="compact-info"><span class="materia">${m.act}</span> - <span class="prof-text">${abrev(m.p)}</span> - ${locBadges}</div>
+                        <div class="badge-container">${m.dates === "Semanal" ? '<span class="badge badge-weekly">Semanal</span>' : filteredDates.split(',').map(d => `<span class="badge">${d.trim()}</span>`).join('')}</div>
+                    </div>`;
+                }
+            });
+            html += `<td>${cellContent || "—"}</td>`;
+        });
+        html += "</tr>";
+    });
+    document.getElementById('scheduleBody').innerHTML = html;
+}
+
+function setFilter(val, btn) {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active'); activeFilter = val; updateView();
+}
+
+(function init() {
+    const today = new Date();
+    document.getElementById('todayDisplay').innerText = `Hoje: ${today.toLocaleDateString('pt-BR')}`;
+    const months = [{n:'Fev',v:'/02'},{n:'Mar',v:'/03'},{n:'Abr',v:'/04'},{n:'Mai',v:'/05'},{n:'Jun',v:'/06'}];
+    document.getElementById('monthButtons').innerHTML = months.map(m => `<button class="filter-btn" onclick="setFilter('${m.v}', this)">${m.n}</button>`).join('');
+    updateView();
+})();
+</script>
+</body>
+</html>
