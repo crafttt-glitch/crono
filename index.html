@@ -6,29 +6,26 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
         :root {
-            /* Matérias Conhecidas */
+            /* Matérias */
             --bg-giesc: #e8f5e9; --text-giesc: #2e7d32;
             --bg-hp8: #e3f2fd; --text-hp8: #1565c0;
             --bg-tutorial: #f3e5f5; --text-tutorial: #7b1fa2;
             --bg-morfo: #e1d5f2; --text-morfo: #311b92;
-            
-            /* Matéria Desconhecida (Cinza Elegante) */
             --bg-neutral: #eceff1; --text-neutral: #455a64;
             
             --primary-blue: #003366; --header-green: #1b7340; --border-color: #d1d8dd;
 
-            /* Locais Conhecidos */
-            --loc-hms-bg: #fff3e0; --loc-hms-txt: #e65100;
-            --loc-uepa-bg: #e0f2f1; --loc-uepa-txt: #00695c;
-            --loc-hrba-bg: #3f51b5; --loc-hrba-txt: #ffffff; /* DESTAQUE: Índigo e Branco */
-            --loc-ures-bg: #fce4ec; --loc-ures-txt: #c2185b;
-            --loc-ubs-bg: #f1f8e9; --loc-ubs-txt: #33691e;
-            
-            /* Local Desconhecido */
+            /* Locais (Badges Coloridos) */
+            --loc-hms-bg: #fff3e0; --loc-hms-txt: #e65100;      /* Laranja */
+            --loc-uepa-bg: #e0f2f1; --loc-uepa-txt: #00695c;     /* Verde Água */
+            --loc-hrba-bg: #283593; --loc-hrba-txt: #ffffff;    /* Azul Índigo Profundo */
+            --loc-ures-bg: #fce4ec; --loc-ures-txt: #c2185b;    /* Rosa */
+            --loc-ubs-bg: #f1f8e9; --loc-ubs-txt: #33691e;      /* Oliva */
+            --loc-amb-bg: #e0f7fa; --loc-amb-txt: #00838f;      /* Turquesa Vibrante (NOVO) */
             --loc-neutral-bg: #e0e0e0; --loc-neutral-txt: #616161;
 
-            /* Larguras iniciais Nível 2 */
-            --w-seg: 115px; --w-ter: 115px; --w-qua: 115px; --w-qui: 155px; --w-sex: 115px; --w-sab: 100px;
+            --w-seg: 115px; --w-ter: 115px; --w-qua: 115px; 
+            --w-qui: 155px; --w-sex: 115px; --w-sab: 100px;
         }
 
         body { font-family: 'Segoe UI', sans-serif; background-color: #f0f2f5; display: flex; flex-direction: column; align-items: center; padding: 10px; color: #333; }
@@ -39,7 +36,7 @@
         .control-row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; justify-content: space-between; }
         .btn-group { display: flex; gap: 5px; flex-wrap: wrap; }
         
-        select, .filter-btn { padding: 4px 8px; border: 1px solid #ccc; border-radius: 4px; cursor: pointer; background: #f8f8f8; font-weight: bold; font-size: 0.72rem; }
+        select, .filter-btn { padding: 4px 8px; border: 1px solid #ccc; border-radius: 4px; cursor: pointer; background: #f8f8f8; font-weight: bold; font-size: 0.72rem; transition: 0.2s; }
         .filter-btn.active { background: var(--primary-blue); color: white; border-color: var(--primary-blue); }
         .filter-btn.special { background: #fff3e0; border-color: #ffe0b2; color: #e65100; }
         .filter-btn.special.active { background: #e65100; color: white; }
@@ -66,7 +63,6 @@
         @keyframes blockEnter { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
         .subject-block { padding: 4px 6px; border-radius: 4px; margin-bottom: 4px; border-left: 4px solid transparent; animation: blockEnter 0.3s ease-out forwards; }
         
-        /* Cores Ativas */
         .giesc { background-color: var(--bg-giesc) !important; border-left-color: var(--text-giesc); }
         .hp8 { background-color: var(--bg-hp8) !important; border-left-color: var(--text-hp8); }
         .tutorial { background-color: var(--bg-tutorial) !important; border-left-color: var(--text-tutorial); }
@@ -82,6 +78,7 @@
         .loc-hrba { background: var(--loc-hrba-bg); color: var(--loc-hrba-txt); }
         .loc-ures { background: var(--loc-ures-bg); color: var(--loc-ures-txt); }
         .loc-ubs { background: var(--loc-ubs-bg); color: var(--loc-ubs-txt); }
+        .loc-amb { background: var(--loc-amb-bg); color: var(--loc-amb-txt); }
         .loc-neutral { background: var(--loc-neutral-bg); color: var(--loc-neutral-txt); }
         
         .badge-container { display: block; width: 100%; margin-top: 3px; }
@@ -129,6 +126,7 @@
 </div>
 
 <script>
+// 🧩 LEGO DATABASE (Nova Base revisada conforme seu texto)
 const DATA_LEGO = [
     { d: "Segunda", t: "Manhã", act: "GIESC-8", p: "-", l: "UBS", g: "Todos", dates: "Semanal" },
     { d: "Segunda", t: "Manhã", act: "HP-8", p: "Paulo Pires", l: "URES", g: "A", dates: "23/02, 23/03, 20/04, 18/05, 15/06" },
@@ -203,6 +201,7 @@ function getLocClass(l) {
     if (loc.includes("HRBA")) return "loc-hrba";
     if (loc.includes("URES")) return "loc-ures";
     if (loc.includes("UBS")) return "loc-ubs";
+    if (loc.includes("AMB")) return "loc-amb";
     return "loc-neutral";
 }
 
@@ -264,7 +263,12 @@ function updateView() {
                 }
                 if (show) {
                     const actL = m.act.toLowerCase();
-                    const colorClass = actL.includes("giesc") ? "giesc" : actL.includes("hp-8") ? "hp8" : actL.includes("tutorial") ? "tutorial" : actL.includes("morfo") ? "morfo" : "neutral-subject";
+                    let colorClass = "neutral-subject";
+                    if(actL.includes("giesc")) colorClass = "giesc";
+                    else if(actL.includes("hp-8")) colorClass = "hp8";
+                    else if(actL.includes("tutorial")) colorClass = "tutorial";
+                    else if(actL.includes("morfo")) colorClass = "morfo";
+
                     const locBadges = m.l.split('/').map(loc => `<span class="local-tag ${getLocClass(loc)}">${loc.trim()}</span>`).join(' / ');
                     cellContent += `<div class="subject-block ${colorClass}">
                         <div class="compact-info"><span class="materia">${m.act}</span> - <span class="prof-text">${abrev(m.p)}</span> - ${locBadges}</div>
