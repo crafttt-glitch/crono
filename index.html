@@ -5,18 +5,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
-        /* --- ESTÉTICA CONGELADA (Base v3.5) --- */
         :root {
+            /* Cores das Matérias */
             --bg-giesc: #e8f5e9; --text-giesc: #2e7d32;
             --bg-hp8: #e3f2fd; --text-hp8: #1565c0;
             --bg-tutorial: #f3e5f5; --text-tutorial: #7b1fa2;
             --bg-morfo: #e1d5f2; --text-morfo: #311b92;
             --bg-neutral: #eceff1; --text-neutral: #455a64;
-            --primary-blue: #003366; --header-green: #1b7340; --border-color: #d1d8dd;
             
-            /* Variáveis de Tema */
+            --primary-blue: #003366; --header-green: #1b7340; --border-color: #d1d8dd;
             --body-bg: #f0f2f5; --card-bg: #ffffff; --text-main: #333333;
 
+            /* Locais */
             --loc-hms-bg: #fff3e0; --loc-hms-txt: #e65100;
             --loc-uepa-bg: #e0f2f1; --loc-uepa-txt: #00695c;
             --loc-hrba-bg: #283593; --loc-hrba-txt: #ffffff;
@@ -24,22 +24,28 @@
             --loc-ubs-bg: #f1f8e9; --loc-ubs-txt: #33691e;
             --loc-amb-bg: #e0f7fa; --loc-amb-txt: #00838f;
 
+            /* Sliders */
             --w-seg: 115px; --w-ter: 115px; --w-qua: 115px; --w-qui: 155px; --w-sex: 115px; --w-sab: 100px;
+
+            /* Neon */
+            --neon-color: #00e5ff;
         }
 
-        /* --- CAMADA DARK MODE --- */
+        /* --- MODO ESCURO --- */
         body.dark-theme {
             --body-bg: #121212; --card-bg: #1e1e1e; --text-main: #e0e0e0;
             --border-color: #333333; --primary-blue: #90caf9;
-            /* Cores de matérias mais profundas para o dark mode */
             --bg-giesc: #1b3320; --bg-hp8: #0d2744; --bg-tutorial: #2d1a36; --bg-morfo: #1a1633;
+            --neon-color: #00f2ff; /* Neon um pouco mais forte no escuro */
         }
         body.dark-theme .badge { background: #333; color: #eee; border-color: #444; }
         body.dark-theme .members-info { background: #2d2d1a; color: #fffde7; border-color: #4d4d2a; }
+        body.dark-theme .prof-text { color: #64b5f6; } /* Azul mais claro para profs no modo escuro */
 
         body { font-family: 'Segoe UI', sans-serif; background-color: var(--body-bg); color: var(--text-main); display: flex; flex-direction: column; align-items: center; padding: 10px; transition: background 0.3s; }
-        body.capturing * { animation: none !important; transition: none !important; opacity: 1 !important; transform: none !important; }
-        .controls-panel { width: 100%; max-width: 1250px; background: var(--card-bg); padding: 10px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); margin-bottom: 12px; }
+        body.capturing * { animation: none !important; transition: none !important; opacity: 1 !important; transform: none !important; box-shadow: none !important; }
+        
+        .controls-panel { width: 100%; max-width: 1250px; background: var(--card-bg); padding: 12px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); margin-bottom: 12px; }
         .control-row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; justify-content: space-between; }
         .btn-group { display: flex; gap: 5px; flex-wrap: wrap; }
         
@@ -47,36 +53,35 @@
         .filter-btn.active { background: #003366; color: white; border-color: #003366; }
         .filter-btn.special { background: #fff3e0; border-color: #ffe0b2; color: #e65100; }
         .filter-btn.special.active { background: #e65100; color: white; }
-        
+
         .today-label { font-size: 0.75rem; font-weight: bold; color: #003366; background: #e3f2fd; padding: 4px 10px; border-radius: 4px; }
         .members-info { font-size: 0.72rem; background: #fffde7; padding: 6px 10px; border-radius: 4px; border: 1px solid #ffe082; margin-top: 8px; line-height: 1.3; width: 100%; box-sizing: border-box; }
-        
+
         .slider-group { display: flex; flex-wrap: wrap; gap: 8px; border-top: 1px solid #eee; padding-top: 8px; margin-top: 8px; width: 100%; }
         .slider-item { display: flex; flex-direction: column; font-size: 0.6rem; font-weight: bold; color: #666; width: 75px; }
         input[type=range] { width: 100%; cursor: pointer; }
 
+        /* Estética da Tabela */
         .schedule-container { width: fit-content; max-width: 100%; background: var(--card-bg); border: 1px solid var(--border-color); box-shadow: 0 4px 12px rgba(0,0,0,0.1); overflow-x: auto; padding: 2px; }
         .main-header { background-color: #003366; color: white; text-align: center; padding: 5px; }
         .main-header h1 { margin: 0; font-size: 0.9rem; text-transform: uppercase; }
 
         table { width: max-content; border-collapse: collapse; table-layout: fixed; }
-        th { background-color: var(--header-green); color: white; text-transform: uppercase; font-size: 0.65rem; padding: 5px; border: 1px solid rgba(255,255,255,0.2); position: relative; }
+        th { background-color: var(--header-green); color: white; text-transform: uppercase; font-size: 0.65rem; padding: 5px; border: 1px solid rgba(255,255,255,0.2); }
         td { border: 1px solid var(--border-color); vertical-align: top; padding: 4px; font-size: 0.7rem; position: relative; }
         
-        /* --- REFINAMENTO DO NEON --- */
-        .today-column {
-            /* Remove a borda bruta e usa sombras internas e externas para um brilho suave */
-            box-shadow: inset 0 0 8px rgba(0, 242, 255, 0.5), 0 0 15px rgba(0, 242, 255, 0.6) !important;
-            border: 1px solid rgba(0, 242, 255, 0.8) !important; /* Uma linha fina e nítida para definição */
-            z-index: 5;
+        /* --- DESTAQUE NEON REFINADO --- */
+        /* Aplica um brilho interno e externo suave, sem borda sólida grossa */
+        .today-column { 
+            box-shadow: inset 0 0 8px var(--neon-color), 0 0 8px var(--neon-color) !important;
+            z-index: 10;
+            border-color: var(--neon-color) !important; /* Pinta a borda fina existente */
         }
 
         .col-seg { width: var(--w-seg); } .col-ter { width: var(--w-ter); } .col-qua { width: var(--w-qua); } .col-qui { width: var(--w-qui); } .col-sex { width: var(--w-sex); } .col-sab { width: var(--w-sab); }
         .time-col { background-color: #003366; color: white; width: 35px; text-align: center; font-weight: bold; vertical-align: middle; }
 
-        @keyframes blockEnter { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
-        .subject-block { padding: 4px 6px; border-radius: 4px; margin-bottom: 4px; border-left: 4px solid transparent; animation: blockEnter 0.3s ease-out forwards; }
-        
+        .subject-block { padding: 4px 6px; border-radius: 4px; margin-bottom: 4px; border-left: 4px solid transparent; }
         .giesc { background-color: var(--bg-giesc) !important; border-left-color: var(--text-giesc); }
         .hp8 { background-color: var(--bg-hp8) !important; border-left-color: var(--text-hp8); }
         .tutorial { background-color: var(--bg-tutorial) !important; border-left-color: var(--text-tutorial); }
@@ -84,7 +89,8 @@
         .neutral-subject { background-color: var(--bg-neutral) !important; border-left-color: var(--text-neutral); }
 
         .materia { font-weight: bold; color: var(--primary-blue); font-size: 0.75rem; }
-        .prof-text { font-weight: 600; opacity: 0.9; }
+        /* CORRIGIDO: Cor azul vibrante para os professores */
+        .prof-text { color: var(--text-hp8); font-weight: 600; }
         
         .local-tag { display: inline-block; padding: 1px 4px; border-radius: 3px; font-weight: bold; font-size: 0.62rem; text-transform: uppercase; margin: 0 1px; }
         .loc-hms { background: var(--loc-hms-bg); color: var(--loc-hms-txt); }
@@ -93,11 +99,13 @@
         .loc-ures { background: var(--loc-ures-bg); color: var(--loc-ures-txt); }
         .loc-ubs { background: var(--loc-ubs-bg); color: var(--loc-ubs-txt); }
         .loc-amb { background: var(--loc-amb-bg); color: var(--loc-amb-txt); }
+        .loc-neutral { background: var(--loc-neutral-bg); color: var(--loc-neutral-txt); }
         
         .badge-container { display: block; width: 100%; margin-top: 3px; }
         .badge { display: inline-block; background: #ffffff; padding: 0px 4px; border-radius: 3px; margin: 1px 1px 1px 0; font-size: 0.62rem; border: 1px solid rgba(0,0,0,0.1); color: #333; font-weight: 500; }
         .badge-weekly { background: #eee; color: #666; text-transform: uppercase; font-weight: bold; font-size: 0.58rem; }
 
+        /* Botões Inferiores */
         .bottom-actions { width: 100%; max-width: 1250px; display: flex; justify-content: flex-end; gap: 10px; margin-top: 10px; }
         .btn-action { padding: 6px 12px; border-radius: 4px; border: 1px solid #ccc; cursor: pointer; font-weight: bold; font-size: 0.75rem; background: white; transition: 0.2s; }
         .btn-action:hover { opacity: 0.9; }
@@ -135,12 +143,12 @@
         <thead>
             <tr id="header-row">
                 <th style="width: 40px;">-</th>
-                <th class="col-seg">Segunda</th>
-                <th class="col-ter">Terça</th>
-                <th class="col-qua">Quarta</th>
-                <th class="col-qui">Quinta</th>
-                <th class="col-sex">Sexta</th>
-                <th class="col-sab">Sábado</th>
+                <th class="col-seg" data-day="1">Segunda</th>
+                <th class="col-ter" data-day="2">Terça</th>
+                <th class="col-qua" data-day="3">Quarta</th>
+                <th class="col-qui" data-day="4">Quinta</th>
+                <th class="col-sex" data-day="5">Sexta</th>
+                <th class="col-sab" data-day="6">Sábado</th>
             </tr>
         </thead>
         <tbody id="scheduleBody"></tbody>
@@ -153,7 +161,7 @@
 </div>
 
 <script>
-// 🧩 LEGO DATABASE
+// 🧩 LEGO DATABASE (Mantida intacta)
 const DATA_LEGO = [
     { d: "Segunda", t: "Manhã", act: "GIESC-8", p: "-", l: "UBS", g: "Todos", dates: "Semanal" },
     { d: "Segunda", t: "Manhã", act: "HP-8", p: "Paulo Pires", l: "URES", g: "A", dates: "23/02, 23/03, 20/04, 18/05, 15/06" },
@@ -210,7 +218,7 @@ const GROUP_MEMBERS = {
     D: ["Brenda S Lima", "Bruno A Silva", "Frank J Nascimento", "Tiago M Brasil", "Roberta F Menezes", "Maysa C Bastos"]
 };
 
-let activeFilter = 'currWeek';
+let activeFilter = 'currWeek'; // Inicia no modo semana atual
 
 function toggleDarkMode() {
     document.body.classList.toggle('dark-theme');
@@ -266,16 +274,17 @@ function checkWeek(dateStr, offset) {
 
 function updateView() {
     const group = document.getElementById('groupSelect').value;
-    localStorage.setItem('medGroup', group);
+    localStorage.setItem('medGroup', group); // Salva grupo
     const days = ["Segunda", "Terça", "Quarta", "Quinta", "Sexta", "Sábado"];
     const turns = ["Manhã", "Tarde", "Noite"];
-    const sortedMembers = [...GROUP_MEMBERS[group]].sort();
-    document.getElementById('membersDisplay').innerHTML = `📍 <b>Integrantes:</b> ${sortedMembers.map(m => abrev(m)).join(', ')}`;
+    
+    const sorted = [...GROUP_MEMBERS[group]].sort();
+    document.getElementById('membersDisplay').innerHTML = `📍 <b>Integrantes:</b> ${sorted.map(m => abrev(m)).join(', ')}`;
     document.getElementById('tableTitle').innerText = `MED8 | GRUPO ${group} | 2026.1`;
     
-    const todayIndex = new Date().getDay();
-    const isCurrWeekMode = activeFilter === 'currWeek';
-
+    const todayIndex = new Date().getDay(); // 0=Dom, 1=Seg...
+    const isCurrentWeekMode = activeFilter === 'currWeek';
+    
     let html = "";
     turns.forEach(turn => {
         html += `<tr><td class="time-col">${turn[0]}</td>`;
@@ -285,8 +294,8 @@ function updateView() {
                 return item.d === day && item.t === turn && groupMatch;
             });
             
-            const isToday = (index + 1) === todayIndex;
-            const highlightClass = (isToday && isCurrWeekMode) ? 'today-column' : '';
+            // Lógica do Neon Condicional
+            const highlightClass = (isCurrentWeekMode && (index + 1) === todayIndex) ? 'today-column' : '';
 
             let cellContent = "";
             matches.forEach(m => {
@@ -318,8 +327,9 @@ function updateView() {
     });
     document.getElementById('scheduleBody').innerHTML = html;
     
+    // Pinta o Header se for hoje e estiver na semana atual
     document.querySelectorAll('#header-row th').forEach((th, i) => {
-        if(i > 0) th.classList.toggle('today-column', (i === todayIndex && isCurrWeekMode));
+        if(i > 0) th.classList.toggle('today-column', (isCurrentWeekMode && i === todayIndex));
     });
 }
 
@@ -335,13 +345,20 @@ function changeGroup(val) {
 (function init() {
     const today = new Date();
     document.getElementById('todayDisplay').innerText = `Hoje: ${today.toLocaleDateString('pt-BR')}`;
+    
+    // Restaurar Grupo
     const sel = document.getElementById('groupSelect');
     Object.keys(DATA_LEGO.reduce((acc, curr) => { if(curr.g !== "Todos") curr.g.split(',').forEach(g => acc[g.trim()] = true); return acc; }, {})).sort().forEach(k => sel.add(new Option(`Grupo ${k}`, k)));
     const savedGroup = localStorage.getItem('medGroup') || 'A';
     sel.value = savedGroup;
+
+    // Restaurar Tema
     if(localStorage.getItem('theme') === 'dark') document.body.classList.add('dark-theme');
+
+    // Montar Meses
     const months = [{n:'Fev',v:'/02'},{n:'Mar',v:'/03'},{n:'Abr',v:'/04'},{n:'Mai',v:'/05'},{n:'Jun',v:'/06'}];
     document.getElementById('monthButtons').innerHTML = months.map(m => `<button class="filter-btn" onclick="setFilter('${m.v}', this)">${m.n}</button>`).join('');
+    
     document.getElementById('btn-currWeek').classList.add('active');
     updateView();
 })();
