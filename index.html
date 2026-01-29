@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cronograma MED8 - Final</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
         :root {
@@ -29,7 +30,7 @@
             --w-seg: 115px; --w-ter: 115px; --w-qua: 115px; --w-qui: 155px; --w-sex: 115px; --w-sab: 100px;
         }
 
-        /* --- MODO ESCURO (Pack de Cores Customizado) --- */
+        /* --- MODO ESCURO (Pack de Cores Customizado v4.4) --- */
         body.dark-theme {
             --body-bg: #121212; --card-bg: #1e1e1e; --text-main: #e0e0e0;
             --border-color: #333333; --primary-blue: #90caf9;
@@ -57,7 +58,9 @@
         @keyframes blockEnter { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
         .subject-block { padding: 4px 6px; border-radius: 4px; margin-bottom: 4px; border-left: 4px solid transparent; animation: blockEnter 0.6s ease-out forwards; }
 
+        /* [UPGRADE] Garante que o print saia limpo */
         body.capturing * { animation: none !important; transition: none !important; opacity: 1 !important; transform: none !important; box-shadow: none !important; }
+        body.capturing .today-column { box-shadow: none !important; border-color: var(--primary-blue) !important; }
 
         .controls-panel { width: 100%; max-width: 1250px; background: var(--card-bg); padding: 12px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); margin-bottom: 12px; }
         .control-row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; justify-content: space-between; }
@@ -174,6 +177,9 @@
 </div>
 
 <script>
+// [UPGRADE] CONFIGURAÇÃO DO ANO
+const ANO_LETIVO = 2026;
+
 // 🧩 LEGO DATABASE (INTEGRADA)
 const DATA_LEGO = [
     { d: "Segunda", t: "Manhã", act: "GIESC-8", p: "-", l: "UBS", g: "Todos", dates: "Semanal" },
@@ -262,10 +268,15 @@ function getLocClass(l) {
     return "loc-neutral";
 }
 
+// [UPGRADE] PRINT CORRIGIDO COM FUNDO
 function generateImage() {
     const element = document.getElementById("capture-area");
-    document.body.classList.add('capturing');
-    html2canvas(element, { backgroundColor: null, scale: 2 }).then(canvas => {
+    document.body.classList.add('capturing'); // Trava animações
+    
+    // Captura a cor real do fundo (Dark ou Light)
+    var bgCor = getComputedStyle(document.body).getPropertyValue('--card-bg');
+
+    html2canvas(element, { backgroundColor: bgCor, scale: 2 }).then(canvas => {
         document.body.classList.remove('capturing');
         const link = document.createElement('a');
         link.download = `Cronograma_MED8.png`;
@@ -273,17 +284,28 @@ function generateImage() {
     });
 }
 
+// [UPGRADE] FUNÇÃO BLINDADA (SEM BUG DE MUTAÇÃO + ANO DINÂMICO)
 function checkWeek(dateStr, offset) {
-    const now = new Date(); 
-    const day = now.getDay();
-    const diff = now.getDate() - day + (day === 0 ? -6 : 1) + (offset * 7);
-    const start = new Date(now.setDate(diff)); start.setHours(0,0,0,0);
-    const end = new Date(start); end.setDate(start.getDate() + 6); end.setHours(23,59,59);
+    const now = new Date();
+    
+    // Clonagem e ajuste seguro do dia
+    const currentDay = now.getDay();
+    const dayAdjusted = currentDay === 0 ? 7 : currentDay;
+    const diff = now.getDate() - (dayAdjusted - 1) + (offset * 7);
+    
+    // Intervalo da semana calculado sem mutar o original
+    const start = new Date(now); 
+    start.setDate(diff); start.setHours(0,0,0,0);
+    const end = new Date(start); 
+    end.setDate(start.getDate() + 6); end.setHours(23,59,59);
+
     return dateStr.split(',').some(d => {
         const parts = d.trim().split('/');
         if (parts.length < 2) return false;
         const [dayPart, monthPart] = parts.map(Number);
-        const classDate = new Date(2026, monthPart - 1, dayPart);
+        
+        // Uso da Variável Global de Ano
+        const classDate = new Date(ANO_LETIVO, monthPart - 1, dayPart);
         return classDate >= start && classDate <= end;
     });
 }
@@ -295,9 +317,12 @@ function updateView() {
     const turns = ["Manhã", "Tarde", "Noite"];
     const sorted = [...GROUP_MEMBERS[group]].sort();
     document.getElementById('membersDisplay').innerHTML = `📍 <b>Integrantes:</b> ${sorted.map(m => abrev(m)).join(', ')}`;
-    document.getElementById('tableTitle').innerText = `MED8 | GRUPO ${group} | 2026.1`;
+    document.getElementById('tableTitle').innerText = `MED8 | GRUPO ${group} | ${ANO_LETIVO}.1`;
     
-    const todayIndex = new Date().getDay();
+    // [UPGRADE] Ajuste do Domingo (0 -> 7) para o Neon não sumir no FDS
+    let todayIndex = new Date().getDay();
+    if (todayIndex === 0) todayIndex = 7;
+
     const isCurrentWeekMode = activeFilter === 'currWeek';
     
     let html = "";
