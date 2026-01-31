@@ -3,123 +3,209 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cronograma MED8 - Final</title>
+    <title>Cronograma MED8</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
         :root {
-            /* Cores das Matérias - Modo Claro */
-            --bg-giesc: #e8f5e9; --text-giesc: #2e7d32;
-            --bg-hp8: #e3f2fd; --text-hp8: #1565c0;
-            --bg-tutorial: #f3e5f5; --text-tutorial: #7b1fa2;
-            --bg-morfo: #e1d5f2; --text-morfo: #311b92;
-            --bg-neutral: #eceff1; --text-neutral: #455a64;
+            /* Cores Base */
+            --primary-blue: #003366; 
+            --header-green: #1b7340; 
+            --border-color: #b0bec5; 
+            --body-bg: #f4f6f8; 
+            --card-bg: #ffffff; 
             
-            --primary-blue: #003366; --header-green: #1b7340; --border-color: #d1d8dd;
-            --body-bg: #f0f2f5; --card-bg: #ffffff; --text-main: #333333;
+            /* Textos */
+            --text-main: #1a202c;
+            --text-secondary: #455a64; 
+            --text-header: #212121;
+            --bg-header-btn: #ffffff;
 
-            /* Locais - Modo Claro */
-            --loc-hms-bg: #fff3e0; --loc-hms-txt: #e65100;
-            --loc-uepa-bg: #e0f2f1; --loc-uepa-txt: #00695c;
-            --loc-hrba-bg: #283593; --loc-hrba-txt: #ffffff;
-            --loc-ures-bg: #fce4ec; --loc-ures-txt: #c2185b;
-            --loc-ubs-bg: #f1f8e9; --loc-ubs-txt: #33691e;
-            --loc-amb-bg: #e0f7fa; --loc-amb-txt: #00838f;
+            /* Matérias */
+            --bg-giesc: #f1f8e9; 
+            --bg-hp8: rgba(0, 86, 179, 0.05); 
+            --bg-tutorial: #fdf2ff; 
+            --bg-morfo: #f3e5f5; 
+            
+            /* Barras Laterais */
+            --bar-hp8: #1565c0;
+            --bar-giesc: #2e7d32;
+            --bar-tutorial: #7b1fa2;
+            --bar-morfo: #4a148c;
 
-            /* Neon e Larguras */
-            --neon-color: #00e5ff;
+            /* Pills (Light Mode) */
+            --c-hms: #ef6c00; --c-uepa: #00897b; --c-hrba: #283593; 
+            --c-ures: #d81b60; --c-ubs: #558b2f; --c-amb: #00acc1; --c-neutral: #757575;
+
+            /* Time Badge Light */
+            --bg-time: #ffebee; --text-time: #c62828; --border-time: #ffcdd2;
+
+            --neon-color: #00bcd4;
             --w-seg: 115px; --w-ter: 115px; --w-qua: 115px; --w-qui: 155px; --w-sex: 115px; --w-sab: 100px;
         }
 
-        /* --- MODO ESCURO (Pack de Cores Customizado v4.4) --- */
+        /* --- MODO ESCURO --- */
         body.dark-theme {
-            --body-bg: #121212; --card-bg: #1e1e1e; --text-main: #e0e0e0;
-            --border-color: #333333; --primary-blue: #90caf9;
+            --body-bg: #121212; --card-bg: #1e1e1e; 
+            --border-color: #546e7a; 
+            --primary-blue: #90caf9;
             
-            /* Matérias mais profundas */
-            --bg-giesc: #1b3320; --bg-hp8: #0d2744; --bg-tutorial: #2d1a36; --bg-morfo: #1a1633;
+            /* Textos */
+            --text-main: #eceff1;      
+            --text-secondary: #eeeeee; 
+            --text-header: #ffffff;
+            --bg-header-btn: #263238;
             
-            /* PACK DE CORES LOCAIS (Escuro) */
-            --loc-hms-bg: #4e342e; --loc-hms-txt: #ffb74d;
-            --loc-uepa-bg: #004d40; --loc-uepa-txt: #4db6ac;
-            --loc-hrba-bg: #1a237e; --loc-hrba-txt: #8c9eff;
-            --loc-ures-bg: #4a148c; --loc-ures-txt: #f06292;
-            --loc-ubs-bg: #1b5e20; --loc-ubs-txt: #a5d6a7;
-            --loc-amb-bg: #006064; --loc-amb-txt: #4dd0e1;
+            /* Matérias */
+            --bg-hp8: rgba(13, 39, 68, 0.6);
+            --bg-giesc: #1b3320; --bg-tutorial: #2a1b2e; --bg-morfo: #1f1a24;
+            
+            /* Barras Laterais */
+            --bar-hp8: #42a5f5; --bar-giesc: #66bb6a; --bar-tutorial: #ab47bc; --bar-morfo: #7e57c2;
 
+            /* Pills Dark (Outline Colors) */
+            --c-hms: #ffb74d; --c-uepa: #64ffda; --c-hrba: #448aff; 
+            --c-ures: #ff80ab; --c-ubs: #b2ff59; --c-amb: #84ffff;
+
+            /* Time Badge Dark */
+            --bg-time: #3e2723; --text-time: #ff8a80; --border-time: #5d4037;
+            
             --neon-color: #00f2ff;
         }
-        body.dark-theme .badge { background: #333 !important; color: #eee !important; border-color: #444 !important; }
-        body.dark-theme .members-info { background: #2d2d1a !important; color: #fffde7 !important; border-color: #4d4d2a !important; }
-        body.dark-theme .prof-text { color: #64b5f6 !important; }
 
-        body { font-family: 'Segoe UI', sans-serif; background-color: var(--body-bg); color: var(--text-main); display: flex; flex-direction: column; align-items: center; padding: 10px; transition: background 0.3s; }
+        /* TRANSIÇÃO SUAVE (MÁGICA VISUAL) */
+        body, .subject-block, .btn-action, .filter-btn, .pill, .main-header, th, td, .members-info, .badge-time {
+            transition: background-color 0.4s ease, color 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease;
+        }
+
+        body { font-family: 'Segoe UI', sans-serif; background-color: var(--body-bg); color: var(--text-main); display: flex; flex-direction: column; align-items: center; padding: 10px; }
         
-        /* Animação Suave */
-        @keyframes blockEnter { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
-        .subject-block { padding: 4px 6px; border-radius: 4px; margin-bottom: 4px; border-left: 4px solid transparent; animation: blockEnter 0.6s ease-out forwards; }
-
-        /* [UPGRADE] Garante que o print saia limpo */
-        body.capturing * { animation: none !important; transition: none !important; opacity: 1 !important; transform: none !important; box-shadow: none !important; }
+        /* Remove transição durante o print para não bugar */
+        body.capturing * { animation: none !important; transition: none !important; }
         body.capturing .today-column { box-shadow: none !important; border-color: var(--primary-blue) !important; }
 
-        .controls-panel { width: 100%; max-width: 1250px; background: var(--card-bg); padding: 12px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); margin-bottom: 12px; }
-        .control-row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; justify-content: space-between; }
-        .btn-group { display: flex; gap: 5px; flex-wrap: wrap; }
+        .controls-panel { width: 100%; max-width: 1250px; background: var(--card-bg); padding: 10px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); margin-bottom: 10px; }
+        .control-row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; justify-content: space-between; }
+        .btn-group { display: flex; gap: 6px; flex-wrap: wrap; }
         
-        select, .filter-btn { padding: 4px 8px; border: 1px solid #ccc; border-radius: 4px; cursor: pointer; background: #f8f8f8; font-weight: bold; font-size: 0.72rem; }
+        select, .filter-btn { 
+            padding: 4px 10px; border: 1px solid var(--border-color); border-radius: 6px; 
+            cursor: pointer; background: var(--bg-header-btn); font-weight: 700; font-size: 0.75rem; 
+            color: var(--text-header); 
+        }
+        .filter-btn:hover { opacity: 0.8; }
         .filter-btn.active { background: #003366; color: white; border-color: #003366; }
-        .filter-btn.special { background: #fff3e0; border-color: #ffe0b2; color: #e65100; }
-        .filter-btn.special.active { background: #e65100; color: white; }
+        body.dark-theme .filter-btn.active { background: #64b5f6; color: #000; border-color: #64b5f6; }
+        .filter-btn.special { background: #fff8e1; border-color: #ffb300; color: #ef6c00; }
+        body.dark-theme .filter-btn.special { background: #3e2723; border-color: #ff6f00; color: #ffca28; }
+        body.dark-theme .filter-btn.special.active { 
+            background: #ff6f00 !important; color: #fff !important; border-color: #ffca28 !important;
+            box-shadow: 0 0 10px rgba(255, 111, 0, 0.6);
+        }
 
-        .today-label { font-size: 0.75rem; font-weight: bold; color: #003366; background: #e3f2fd; padding: 4px 10px; border-radius: 4px; }
-        .members-info { font-size: 0.72rem; background: #fffde7; padding: 6px 10px; border-radius: 4px; border: 1px solid #ffe082; margin-top: 8px; line-height: 1.3; width: 100%; box-sizing: border-box; }
-
-        /* Estética da Tabela */
-        .schedule-container { width: fit-content; max-content; background: var(--card-bg); border: 1px solid var(--border-color); box-shadow: 0 4px 12px rgba(0,0,0,0.1); overflow-x: auto; padding: 2px; }
-        .main-header { background-color: #003366; color: white; text-align: center; padding: 5px; }
-        .main-header h1 { margin: 0; font-size: 0.9rem; text-transform: uppercase; }
-
-        table { width: max-content; border-collapse: collapse; table-layout: fixed; }
-        th { background-color: var(--header-green); color: white; text-transform: uppercase; font-size: 0.65rem; padding: 5px; border: 1px solid rgba(255,255,255,0.2); }
-        td { border: 1px solid var(--border-color); vertical-align: top; padding: 4px; font-size: 0.72rem; position: relative; }
+        .today-label { font-size: 0.75rem; font-weight: bold; color: #003366; background: #e3f2fd; padding: 4px 12px; border-radius: 6px; border: 1px solid #90caf9; }
+        body.dark-theme .today-label { background: #1a237e; color: #c5cae9; border: 1px solid #3949ab; }
         
-        /* Neon Refinado */
-        .today-column { box-shadow: inset 0 0 10px var(--neon-color), 0 0 5px var(--neon-color) !important; z-index: 10; border-color: var(--neon-color) !important; }
+        .members-info { 
+            font-size: 0.72rem; font-weight: 600; background: #fffde7; 
+            padding: 6px 10px; border-radius: 8px; border: 1px solid #fdd835; 
+            margin-top: 8px; line-height: 1.4; width: 100%; box-sizing: border-box; color: #37474f; 
+        }
+        body.dark-theme .members-info { background: #2a1c0a; color: #ffe0b2; border-color: #b78c00; }
+
+        .schedule-container { width: fit-content; max-content; background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); overflow-x: auto; padding: 2px; }
+        .main-header { background-color: #003366; color: white; text-align: center; padding: 6px; border-radius: 6px 6px 0 0; }
+        .main-header h1 { margin: 0; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px; }
+
+        table { width: max-content; border-collapse: separate; border-spacing: 0; table-layout: fixed; }
+        th { background-color: var(--header-green); color: white; text-transform: uppercase; font-size: 0.65rem; padding: 6px; border-right: 1px solid rgba(255,255,255,0.1); }
+        th:last-child { border-right: none; }
+        td { border-bottom: 1px solid var(--border-color); border-right: 1px solid var(--border-color); vertical-align: top; padding: 4px; font-size: 0.72rem; position: relative; }
+        tr:last-child td { border-bottom: none; }
+        
+        .today-column { box-shadow: inset 0 0 15px var(--neon-color), 0 0 5px var(--neon-color) !important; z-index: 10; border-color: var(--neon-color) !important; }
 
         .col-seg { width: var(--w-seg); } .col-ter { width: var(--w-ter); } .col-qua { width: var(--w-qua); } .col-qui { width: var(--w-qui); } .col-sex { width: var(--w-sex); } .col-sab { width: var(--w-sab); }
-        .time-col { background-color: #003366; color: white; width: 40px; text-align: center; font-weight: bold; vertical-align: middle; }
+        .time-col { background-color: #003366; color: white; width: 40px; text-align: center; font-weight: bold; vertical-align: middle; border-bottom: 1px solid rgba(255,255,255,0.1); }
 
-        /* Cores das Matérias Aplicadas */
-        .giesc { background-color: var(--bg-giesc) !important; border-left-color: var(--text-giesc); }
-        .hp8 { background-color: var(--bg-hp8) !important; border-left-color: var(--text-hp8); }
-        .tutorial { background-color: var(--bg-tutorial) !important; border-left-color: var(--text-tutorial); }
-        .morfo { background-color: var(--bg-morfo) !important; border-left-color: var(--text-morfo); }
-
-        .materia { font-weight: bold; color: var(--primary-blue); font-size: 0.75rem; }
-        .prof-text { color: var(--text-hp8); font-weight: 600; }
+        @keyframes blockEnter { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
         
-        /* Badges de Local */
-        .local-tag { display: inline-block; padding: 1px 4px; border-radius: 3px; font-weight: bold; font-size: 0.62rem; text-transform: uppercase; margin: 0 1px; transition: background 0.3s; }
-        .loc-hms { background: var(--loc-hms-bg); color: var(--loc-hms-txt); }
-        .loc-uepa { background: var(--loc-uepa-bg); color: var(--loc-uepa-txt); }
-        .loc-hrba { background: var(--loc-hrba-bg); color: var(--loc-hrba-txt); }
-        .loc-ures { background: var(--loc-ures-bg); color: var(--loc-ures-txt); }
-        .loc-ubs { background: var(--loc-ubs-bg); color: var(--loc-ubs-txt); }
-        .loc-amb { background: var(--loc-amb-bg); color: var(--loc-amb-txt); }
+        .subject-block { 
+            padding: 6px 8px 6px 12px; border-radius: 10px; margin-bottom: 4px; position: relative; 
+            overflow: hidden; animation: blockEnter 0.6s ease-out forwards;
+            background-color: var(--bg-hp8); box-shadow: 0 1px 3px rgba(0,0,0,0.05); border: 1px solid rgba(0,0,0,0.03);
+        }
         
-        .badge-container { display: block; width: 100%; margin-top: 3px; }
-        .badge { display: inline-block; background: #ffffff; padding: 0px 4px; border-radius: 3px; margin: 1px 1px 1px 0; font-size: 0.62rem; border: 1px solid rgba(0,0,0,0.1); color: #333; font-weight: 500; }
-        .badge-weekly { background: #eee; color: #666; text-transform: uppercase; font-weight: bold; font-size: 0.58rem; }
+        .subject-block::before {
+            content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 4px;
+            background: var(--bar-color);
+        }
 
-        /* Ações Inferiores */
-        .bottom-container { width: 100%; max-width: 1250px; margin-top: 15px; }
+        .giesc { background-color: var(--bg-giesc) !important; --bar-color: var(--bar-giesc); }
+        .hp8 { background-color: var(--bg-hp8) !important; --bar-color: var(--bar-hp8); }
+        .tutorial { background-color: var(--bg-tutorial) !important; --bar-color: var(--bar-tutorial); }
+        .morfo { background-color: var(--bg-morfo) !important; --bar-color: var(--bar-morfo); }
+
+        .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2px; gap: 5px; }
+        .card-title { font-weight: 700; color: var(--text-main); font-size: 0.78rem; line-height: 1.2; }
+        
+        /* PILL DESIGN */
+        .pill { 
+            font-size: 0.55rem; font-weight: 700; padding: 2px 7px; border-radius: 10px; 
+            text-transform: uppercase; letter-spacing: 0.5px; white-space: nowrap; flex-shrink: 0;
+            color: #ffffff; box-shadow: 0 2px 4px rgba(0,0,0,0.15); border: 1px solid transparent; 
+        }
+
+        body.dark-theme .pill { background-color: transparent !important; box-shadow: none; }
+
+        .pill-hms { background: var(--c-hms); }
+        body.dark-theme .pill-hms { color: var(--c-hms); border-color: var(--c-hms); }
+
+        .pill-uepa { background: var(--c-uepa); }
+        body.dark-theme .pill-uepa { color: var(--c-uepa); border-color: var(--c-uepa); }
+
+        .pill-hrba { background: var(--c-hrba); }
+        body.dark-theme .pill-hrba { 
+            color: var(--c-hrba); border-color: var(--c-hrba);
+            box-shadow: 0 0 6px rgba(68, 138, 255, 0.3) !important; 
+        }
+
+        .pill-ures { background: var(--c-ures); }
+        body.dark-theme .pill-ures { color: var(--c-ures); border-color: var(--c-ures); }
+
+        .pill-ubs { background: var(--c-ubs); }
+        body.dark-theme .pill-ubs { color: var(--c-ubs); border-color: var(--c-ubs); }
+
+        .pill-amb { background: var(--c-amb); }
+        body.dark-theme .pill-amb { color: var(--c-amb); border-color: var(--c-amb); }
+
+        .pill-neutral { background: var(--c-neutral); }
+        body.dark-theme .pill-neutral { color: var(--c-neutral); border-color: var(--c-neutral); }
+
+        .date-line { display: block; font-size: 0.65rem; color: var(--text-secondary); margin-top: 4px; line-height: 1.5; font-weight: 500; }
+        
+        /* TIME BADGE STYLE */
+        .badge-time {
+            display: inline-block;
+            padding: 1px 5px;
+            border-radius: 4px;
+            font-size: 0.58rem;
+            font-weight: 700;
+            margin-left: 4px;
+            vertical-align: middle;
+            background-color: var(--bg-time);
+            color: var(--text-time);
+            border: 1px solid var(--border-time);
+        }
+
+        .bottom-container { width: 100%; max-width: 1250px; margin-top: 10px; }
         .bottom-actions { display: flex; justify-content: flex-end; gap: 10px; }
-        .btn-action { padding: 8px 14px; border-radius: 4px; border: 1px solid #ccc; cursor: pointer; font-weight: bold; font-size: 0.75rem; background: var(--card-bg); color: var(--text-main); transition: 0.2s; }
+        .btn-action { padding: 6px 10px; border-radius: 8px; border: 1px solid var(--border-color); cursor: pointer; font-size: 1.1rem; background: var(--card-bg); color: var(--text-main); transition: 0.2s; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .btn-action:hover { transform: translateY(-2px); }
         
-        .slider-drawer { display: none; background: var(--card-bg); padding: 15px; border-radius: 8px; box-shadow: 0 -2px 10px rgba(0,0,0,0.1); margin-top: 10px; border: 1px solid var(--border-color); }
+        .slider-drawer { display: none; background: var(--card-bg); padding: 12px; border-radius: 12px; box-shadow: 0 -4px 20px rgba(0,0,0,0.05); margin-top: 10px; border: 1px solid var(--border-color); }
         .slider-drawer.active { display: block; }
-        .slider-group { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
-        .slider-item { display: flex; flex-direction: column; font-size: 0.65rem; font-weight: bold; color: #666; width: 90px; }
+        .slider-group { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; }
+        .slider-item { display: flex; flex-direction: column; font-size: 0.65rem; font-weight: bold; color: var(--text-secondary); width: 90px; }
     </style>
 </head>
 <body>
@@ -160,9 +246,10 @@
 
 <div class="bottom-container">
     <div class="bottom-actions">
-        <button class="btn-action" onclick="toggleDarkMode()">🌓 Tema</button>
-        <button class="btn-action" onclick="toggleSliders()">📏 Colunas</button>
-        <button class="btn-action" onclick="generateImage()" style="background: var(--header-green); color: white; border: none;">🖼️ Print</button>
+        <button class="btn-action" title="Tema" onclick="toggleDarkMode()">🌓</button>
+        <button class="btn-action" title="Horas" onclick="toggleHours()">⏰</button>
+        <button class="btn-action" title="Colunas" onclick="toggleSliders()">📏</button>
+        <button class="btn-action" title="Print" onclick="generateImage()" style="background: var(--header-green); color: white; border: none;">🖼️</button>
     </div>
     <div id="sliderDrawer" class="slider-drawer">
         <div class="slider-group">
@@ -177,12 +264,11 @@
 </div>
 
 <script>
-// [UPGRADE] CONFIGURAÇÃO DO ANO
 const ANO_LETIVO = 2026;
+let showHours = false;
 
-// 🧩 LEGO DATABASE (INTEGRADA)
+// 🧩 LEGO DATABASE
 const DATA_LEGO = [
-    { d: "Segunda", t: "Manhã", act: "GIESC-8", p: "-", l: "UBS", g: "Todos", dates: "Semanal" },
     { d: "Segunda", t: "Manhã", act: "HP-8", p: "Paulo Pires", l: "URES", g: "A", dates: "23/02, 23/03, 20/04, 18/05, 15/06" },
     { d: "Segunda", t: "Manhã", act: "HP-8", p: "Paulo Pires", l: "URES", g: "B", dates: "02/03, 30/03, 27/04, 25/05, 22/06" },
     { d: "Segunda", t: "Manhã", act: "HP-8", p: "Paulo Pires", l: "URES", g: "C", dates: "09/03, 06/04, 04/05, 01/06" },
@@ -191,18 +277,26 @@ const DATA_LEGO = [
     { d: "Segunda", t: "Tarde", act: "HP-8", p: "Kalysta Borges", l: "HRBA", g: "B", dates: "23/02, 23/03, 20/04, 18/05, 15/06" },
     { d: "Segunda", t: "Tarde", act: "HP-8", p: "Kalysta Borges", l: "HRBA", g: "C", dates: "02/03, 30/03, 27/04, 25/05, 22/06" },
     { d: "Segunda", t: "Tarde", act: "HP-8", p: "Kalysta Borges", l: "HRBA", g: "D", dates: "09/03, 06/04, 04/05, 01/06" },
-    { d: "Terça", t: "Manhã", act: "HP-8", p: "Kalysta Borges", l: "HRBA", g: "A", dates: "03/03, 31/03, 28/04, 26/05, 23/06" },
-    { d: "Terça", t: "Manhã", act: "HP-8", p: "Kalysta Borges", l: "HRBA", g: "B", dates: "10/03, 07/04, 05/05, 02/06" },
-    { d: "Terça", t: "Manhã", act: "HP-8", p: "Kalysta Borges", l: "HRBA", g: "C", dates: "17/03, 14/04, 12/05, 09/06" },
-    { d: "Terça", t: "Manhã", act: "HP-8", p: "Kalysta Borges", l: "HRBA", g: "D", dates: "24/02, 24/03, 19/05, 16/06" },
+
+    /* TERÇA - COM HORÁRIOS DEFINIDOS */
+    { d: "Terça", t: "Manhã", act: "HP-8", p: "Kalysta Borges", l: "Aud HRBA", g: "Todos", dates: "Semanal", h: "09:00 - 10:30" },
+    { d: "Terça", t: "Manhã", act: "HP-8", p: "Kalysta Borges", l: "HRBA", g: "A", dates: "03/03, 31/03, 28/04, 26/05, 23/06", h: "08:00 - 12:00" },
+    { d: "Terça", t: "Manhã", act: "HP-8", p: "Kalysta Borges", l: "HRBA", g: "B", dates: "10/03, 07/04, 05/05, 02/06", h: "08:00 - 12:00" },
+    { d: "Terça", t: "Manhã", act: "HP-8", p: "Kalysta Borges", l: "HRBA", g: "C", dates: "17/03, 14/04, 12/05, 09/06", h: "08:00 - 12:00" },
+    { d: "Terça", t: "Manhã", act: "HP-8", p: "Kalysta Borges", l: "HRBA", g: "D", dates: "24/02, 24/03, 19/05, 16/06", h: "08:00 - 12:00" },
+    
     { d: "Terça", t: "Tarde", act: "HP-8", p: "Wesley Muniz", l: "UEPA", g: "Todos", dates: "24/02, 10/03, 24/03, 07/04, 28/04, 05/05, 19/05, 09/06, 23/06" },
     { d: "Terça", t: "Noite", act: "TUTORIAL-8", p: "Wesley Muniz / Marcos Honorato", l: "UEPA", g: "Todos", dates: "Semanal" },
+
+    /* QUARTA */
     { d: "Quarta", t: "Tarde", act: "HP-8", p: "Kalysta Borges", l: "HRBA", g: "A", dates: "11/03, 08/04, 06/05, 03/06" },
     { d: "Quarta", t: "Tarde", act: "HP-8", p: "Kalysta Borges", l: "HRBA", g: "B", dates: "18/03, 15/04, 13/05, 10/06" },
     { d: "Quarta", t: "Tarde", act: "HP-8", p: "Kalysta Borges", l: "HRBA", g: "C", dates: "25/02, 25/03, 22/04, 20/05, 17/06" },
     { d: "Quarta", t: "Tarde", act: "HP-8", p: "Kalysta Borges", l: "HRBA", g: "D", dates: "04/03, 01/04, 29/04, 27/05, 24/06" },
     { d: "Quarta", t: "Tarde", act: "HP-8", p: "Alexandre Neto", l: "UEPA", g: "Todos", dates: "Semanal" },
     { d: "Quarta", t: "Noite", act: "HP-8", p: "Adriana Pires / Paulo Pires", l: "UEPA", g: "Todos", dates: "Semanal" },
+
+    /* QUINTA */
     { d: "Quinta", t: "Manhã", act: "HP-8", p: "Wesley Muniz", l: "HMS", g: "A", dates: "26/02, 26/03, 23/04, 21/05, 18/06" },
     { d: "Quinta", t: "Manhã", act: "HP-8", p: "Wesley Muniz", l: "HMS", g: "B", dates: "05/03, 02/04, 30/04, 28/05, 25/06" },
     { d: "Quinta", t: "Manhã", act: "HP-8", p: "Wesley Muniz", l: "HMS", g: "C", dates: "19/03, 16/04, 14/05, 11/06" },
@@ -213,6 +307,7 @@ const DATA_LEGO = [
     { d: "Quinta", t: "Manhã", act: "HP-8", p: "Adriana Pires / Paulo Pires", l: "HMS/URES", g: "A", dates: "12/03, 09/04, 07/05" },
     { d: "Quinta", t: "Manhã", act: "HP-8", p: "Adriana Pires / Paulo Pires", l: "HMS/URES", g: "B", dates: "19/03, 16/04, 14/05, 11/06" },
     { d: "Quinta", t: "Manhã", act: "HP-8", p: "Adriana Pires / Paulo Pires", l: "HMS/URES", g: "C", dates: "05/03, 02/04, 30/04, 28/05, 25/06" },
+    
     { d: "Quinta", t: "Tarde", act: "HP-8", p: "Wesley Muniz", l: "HMS", g: "A", dates: "19/03, 16/04, 14/05, 11/06" },
     { d: "Quinta", t: "Tarde", act: "HP-8", p: "Wesley Muniz", l: "HMS", g: "B", dates: "26/02, 26/03, 23/04, 21/05, 18/06" },
     { d: "Quinta", t: "Tarde", act: "HP-8", p: "Wesley Muniz", l: "HMS", g: "C", dates: "05/03, 02/04, 30/04, 28/05, 25/06" },
@@ -222,12 +317,16 @@ const DATA_LEGO = [
     { d: "Quinta", t: "Tarde", act: "HP-8", p: "Marcos Honorato", l: "HMS", g: "C", dates: "19/03, 16/04, 14/05, 11/06" },
     { d: "Quinta", t: "Tarde", act: "HP-8", p: "Marcos Honorato", l: "HMS", g: "D", dates: "05/03, 02/04, 30/04, 28/05, 25/06" },
     { d: "Quinta", t: "Noite", act: "HP-8/CONF", p: "Marcos Honorato", l: "UEPA", g: "Todos", dates: "Semanal" },
+
+    /* SEXTA */
     { d: "Sexta", t: "Manhã", act: "MORFO-8", p: "Giovana Gilbert / Carlena Silva / Christian Lima", l: "UEPA", g: "Todos", dates: "Semanal" },
     { d: "Sexta", t: "Noite", act: "TUTORIAL-8", p: "Wesley Muniz / Marcos Honorato", l: "UEPA", g: "Todos", dates: "Semanal" },
-    { d: "Sábado", t: "Manhã", act: "HP-8 (Uro)", p: "Wesley Muniz", l: "UEPA Urologia", g: "A", dates: "07/03, 09/05, 20/06" },
-    { d: "Sábado", t: "Manhã", act: "HP-8 (Uro)", p: "Wesley Muniz", l: "UEPA Urologia", g: "B", dates: "21/03, 16/05" },
-    { d: "Sábado", t: "Manhã", act: "HP-8 (Uro)", p: "Wesley Muniz", l: "UEPA Urologia", g: "C", dates: "11/04, 29/05" },
-    { d: "Sábado", t: "Manhã", act: "HP-8 (Uro)", p: "Wesley Muniz", l: "UEPA Urologia", g: "D", dates: "18/04, 13/06" }
+
+    /* SÁBADO */
+    { d: "Sábado", t: "Manhã", act: "HP-8 (Uro)", p: "Wesley Muniz", l: "UEPA UROLOGIA", g: "A", dates: "07/03, 09/05, 20/06" },
+    { d: "Sábado", t: "Manhã", act: "HP-8 (Uro)", p: "Wesley Muniz", l: "UEPA UROLOGIA", g: "B", dates: "21/03, 16/05" },
+    { d: "Sábado", t: "Manhã", act: "HP-8 (Uro)", p: "Wesley Muniz", l: "UEPA UROLOGIA", g: "C", dates: "11/04, 29/05" },
+    { d: "Sábado", t: "Manhã", act: "HP-8 (Uro)", p: "Wesley Muniz", l: "UEPA UROLOGIA", g: "D", dates: "18/04, 13/06" }
 ];
 
 const GROUP_MEMBERS = {
@@ -244,9 +343,9 @@ function toggleDarkMode() {
     localStorage.setItem('theme', document.body.classList.contains('dark-theme') ? 'dark' : 'light');
 }
 
-function toggleSliders() {
-    document.getElementById('sliderDrawer').classList.toggle('active');
-}
+function toggleHours() { showHours = !showHours; updateView(); }
+
+function toggleSliders() { document.getElementById('sliderDrawer').classList.toggle('active'); }
 
 function abrev(name) {
     if (name === "-" || !name) return "";
@@ -257,25 +356,32 @@ function abrev(name) {
     }).join(' / ');
 }
 
-function getLocClass(l) {
+function getLocColorVar(l) {
     const loc = l.toUpperCase();
-    if (loc.includes("HMS")) return "loc-hms";
-    if (loc.includes("UEPA")) return "loc-uepa";
-    if (loc.includes("HRBA")) return "loc-hrba";
-    if (loc.includes("URES")) return "loc-ures";
-    if (loc.includes("UBS")) return "loc-ubs";
-    if (loc.includes("AMB")) return "loc-amb";
-    return "loc-neutral";
+    if (loc.includes("HMS")) return "var(--c-hms)";
+    if (loc.includes("UEPA")) return "var(--c-uepa)";
+    if (loc.includes("HRBA")) return "var(--c-hrba)";
+    if (loc.includes("URES")) return "var(--c-ures)";
+    if (loc.includes("UBS")) return "var(--c-ubs)";
+    if (loc.includes("AMB")) return "var(--c-amb)";
+    return "var(--c-neutral)";
 }
 
-// [UPGRADE] PRINT CORRIGIDO COM FUNDO
+function getPillClass(l) {
+    const loc = l.toUpperCase();
+    if (loc.includes("HMS")) return "pill-hms";
+    if (loc.includes("UEPA")) return "pill-uepa";
+    if (loc.includes("HRBA")) return "pill-hrba";
+    if (loc.includes("URES")) return "pill-ures";
+    if (loc.includes("UBS")) return "pill-ubs";
+    if (loc.includes("AMB")) return "pill-amb";
+    return "pill-neutral";
+}
+
 function generateImage() {
     const element = document.getElementById("capture-area");
-    document.body.classList.add('capturing'); // Trava animações
-    
-    // Captura a cor real do fundo (Dark ou Light)
-    var bgCor = getComputedStyle(document.body).getPropertyValue('--card-bg');
-
+    document.body.classList.add('capturing');
+    var bgCor = getComputedStyle(document.body).getPropertyValue('--card-bg').trim();
     html2canvas(element, { backgroundColor: bgCor, scale: 2 }).then(canvas => {
         document.body.classList.remove('capturing');
         const link = document.createElement('a');
@@ -284,27 +390,17 @@ function generateImage() {
     });
 }
 
-// [UPGRADE] FUNÇÃO BLINDADA (SEM BUG DE MUTAÇÃO + ANO DINÂMICO)
 function checkWeek(dateStr, offset) {
-    const now = new Date();
-    
-    // Clonagem e ajuste seguro do dia
+    const now = new Date(); 
     const currentDay = now.getDay();
     const dayAdjusted = currentDay === 0 ? 7 : currentDay;
     const diff = now.getDate() - (dayAdjusted - 1) + (offset * 7);
-    
-    // Intervalo da semana calculado sem mutar o original
-    const start = new Date(now); 
-    start.setDate(diff); start.setHours(0,0,0,0);
-    const end = new Date(start); 
-    end.setDate(start.getDate() + 6); end.setHours(23,59,59);
-
+    const start = new Date(now.setDate(diff)); start.setHours(0,0,0,0);
+    const end = new Date(start); end.setDate(start.getDate() + 6); end.setHours(23,59,59);
     return dateStr.split(',').some(d => {
         const parts = d.trim().split('/');
         if (parts.length < 2) return false;
         const [dayPart, monthPart] = parts.map(Number);
-        
-        // Uso da Variável Global de Ano
         const classDate = new Date(ANO_LETIVO, monthPart - 1, dayPart);
         return classDate >= start && classDate <= end;
     });
@@ -319,10 +415,8 @@ function updateView() {
     document.getElementById('membersDisplay').innerHTML = `📍 <b>Integrantes:</b> ${sorted.map(m => abrev(m)).join(', ')}`;
     document.getElementById('tableTitle').innerText = `MED8 | GRUPO ${group} | ${ANO_LETIVO}.1`;
     
-    // [UPGRADE] Ajuste do Domingo (0 -> 7) para o Neon não sumir no FDS
     let todayIndex = new Date().getDay();
     if (todayIndex === 0) todayIndex = 7;
-
     const isCurrentWeekMode = activeFilter === 'currWeek';
     
     let html = "";
@@ -347,11 +441,30 @@ function updateView() {
                 }
                 if (show) {
                     const actL = m.act.toLowerCase();
-                    const colorClass = actL.includes("giesc") ? "giesc" : actL.includes("hp-8") ? "hp8" : actL.includes("tutorial") ? "tutorial" : "morfo";
-                    const locs = m.l.split('/').map(loc => `<span class="local-tag ${getLocClass(loc)}">${loc.trim()}</span>`).join(' / ');
+                    let colorClass = "";
+                    if(actL.includes("giesc")) colorClass = "giesc";
+                    else if(actL.includes("hp-8")) colorClass = "hp8";
+                    else if(actL.includes("tutorial")) colorClass = "tutorial";
+                    else if(actL.includes("morfo")) colorClass = "morfo";
+
+                    let displayTitle = abrev(m.p); 
+                    if (m.act.includes("TUTORIAL") || m.act.includes("MORFO")) {
+                        displayTitle = m.act; 
+                    }
+
+                    const locsArr = m.l.split('/');
+                    const pills = locsArr.map(loc => `<span class="pill ${getPillClass(loc)}">${loc.trim()}</span>`).join('');
+                    const hourBadge = (showHours && m.h) ? `<span class="badge-time">${m.h}</span>` : "";
+                    
                     cellContent += `<div class="subject-block ${colorClass}">
-                        <div class="compact-info"><span class="materia">${m.act}</span> - <span class="prof-text">${abrev(m.p)}</span> - ${locs}</div>
-                        <div class="badge-container">${m.dates === "Semanal" ? '<span class="badge badge-weekly">Semanal</span>' : filteredDates.split(',').map(d => `<span class="badge">${d.trim()}</span>`).join('')}</div>
+                        <div class="card-header">
+                            <span class="card-title">${displayTitle}</span>
+                            <div style="display:flex; gap:2px">${pills}</div>
+                        </div>
+                        <div class="date-line">
+                            ${m.dates === "Semanal" ? 'Semanal' : filteredDates}
+                            ${hourBadge}
+                        </div>
                     </div>`;
                 }
             });
