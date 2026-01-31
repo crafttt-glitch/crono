@@ -6,38 +6,41 @@
     <title>Cronograma MED8</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
+        * { box-sizing: border-box; }
+
         :root {
             /* Cores Base */
             --primary-blue: #003366; 
             --header-green: #1b7340; 
-            --border-color: #b0bec5; 
+            --border-color: #cfd8dc; 
             --body-bg: #f4f6f8; 
             --card-bg: #ffffff; 
+            --panel-bg: #ffffff;
             
-            /* Textos */
-            --text-main: #1a202c;
-            --text-secondary: #455a64; 
+            /* Tipografia */
+            --text-title: #102a43;
+            --text-meta: #627d98;
             --text-header: #212121;
-            --bg-header-btn: #ffffff;
+            --bg-header-btn: #f5f7fa;
 
-            /* Matérias */
-            --bg-giesc: #f1f8e9; 
-            --bg-hp8: rgba(0, 86, 179, 0.05); 
-            --bg-tutorial: #fdf2ff; 
-            --bg-morfo: #f3e5f5; 
+            /* Gradientes */
+            --bg-giesc: linear-gradient(135deg, #f1f8e9 0%, #dcedc8 100%);
+            --bg-hp8: linear-gradient(135deg, #ffffff 0%, #f0f7ff 100%);
+            --bg-tutorial: linear-gradient(135deg, #fdf2ff 0%, #f3e5f5 100%);
+            --bg-morfo: linear-gradient(135deg, #f3e5f5 0%, #e1bee7 100%);
             
             /* Barras Laterais */
-            --bar-hp8: #1565c0;
-            --bar-giesc: #2e7d32;
-            --bar-tutorial: #7b1fa2;
-            --bar-morfo: #4a148c;
+            --bar-hp8: #1565c0; --bar-giesc: #2e7d32; --bar-tutorial: #7b1fa2; --bar-morfo: #4a148c;
 
-            /* Pills (Light Mode) */
+            /* Pills Light */
             --c-hms: #ef6c00; --c-uepa: #00897b; --c-hrba: #283593; 
             --c-ures: #d81b60; --c-ubs: #558b2f; --c-amb: #00acc1; --c-neutral: #757575;
 
-            /* Time Badge Light */
+            /* Time Badge */
             --bg-time: #ffebee; --text-time: #c62828; --border-time: #ffcdd2;
+
+            /* Status Dot */
+            --dot-color: #00e676; 
 
             --neon-color: #00bcd4;
             --w-seg: 115px; --w-ter: 115px; --w-qua: 115px; --w-qui: 155px; --w-sex: 115px; --w-sab: 100px;
@@ -45,189 +48,254 @@
 
         /* --- MODO ESCURO --- */
         body.dark-theme {
-            --body-bg: #121212; --card-bg: #1e1e1e; 
-            --border-color: #546e7a; 
-            --primary-blue: #90caf9;
+            --body-bg: #0f1115; --card-bg: #181b21; --panel-bg: #1e2129;
+            --border-color: #37474f; 
+            --primary-blue: #82b1ff;
             
-            /* Textos */
-            --text-main: #eceff1;      
-            --text-secondary: #eeeeee; 
-            --text-header: #ffffff;
-            --bg-header-btn: #263238;
+            --text-title: #eceff1; --text-meta: #90a4ae; --text-header: #ffffff; --bg-header-btn: #2c3038;
             
-            /* Matérias */
-            --bg-hp8: rgba(13, 39, 68, 0.6);
-            --bg-giesc: #1b3320; --bg-tutorial: #2a1b2e; --bg-morfo: #1f1a24;
+            --bg-hp8: linear-gradient(135deg, rgba(20, 30, 48, 0.6) 0%, rgba(36, 59, 85, 0.4) 100%);
+            --bg-giesc: linear-gradient(135deg, #1b3320 0%, #0d1f12 100%);
+            --bg-tutorial: linear-gradient(135deg, #2a1b2e 0%, #1a0f1d 100%);
+            --bg-morfo: linear-gradient(135deg, #1f1a24 0%, #120e16 100%);
             
-            /* Barras Laterais */
-            --bar-hp8: #42a5f5; --bar-giesc: #66bb6a; --bar-tutorial: #ab47bc; --bar-morfo: #7e57c2;
-
-            /* Pills Dark (Outline Colors) */
+            --bar-hp8: #448aff; --bar-giesc: #66bb6a; --bar-tutorial: #ab47bc; --bar-morfo: #7e57c2;
             --c-hms: #ffb74d; --c-uepa: #64ffda; --c-hrba: #448aff; 
             --c-ures: #ff80ab; --c-ubs: #b2ff59; --c-amb: #84ffff;
 
-            /* Time Badge Dark */
             --bg-time: #3e2723; --text-time: #ff8a80; --border-time: #5d4037;
-            
             --neon-color: #00f2ff;
         }
 
-        /* TRANSIÇÃO SUAVE (MÁGICA VISUAL) */
-        body, .subject-block, .btn-action, .filter-btn, .pill, .main-header, th, td, .members-info, .badge-time {
-            transition: background-color 0.4s ease, color 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease;
+        /* Transições */
+        body, .subject-block, .btn-action, .filter-btn, .pill, th, td, .members-info, .badge-time, .context-panel, .command-bar, .btn-icon {
+            transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
         }
 
-        body { font-family: 'Segoe UI', sans-serif; background-color: var(--body-bg); color: var(--text-main); display: flex; flex-direction: column; align-items: center; padding: 10px; }
+        body { font-family: 'Segoe UI', sans-serif; background-color: var(--body-bg); color: var(--text-main); display: flex; flex-direction: column; align-items: center; margin: 0; padding: 5px; }
         
-        /* Remove transição durante o print para não bugar */
-        body.capturing * { animation: none !important; transition: none !important; }
+        body.capturing * { animation: none !important; transition: none !important; transform: none !important; box-shadow: none !important; }
         body.capturing .today-column { box-shadow: none !important; border-color: var(--primary-blue) !important; }
 
-        .controls-panel { width: 100%; max-width: 1250px; background: var(--card-bg); padding: 10px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); margin-bottom: 10px; }
-        .control-row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; justify-content: space-between; }
-        .btn-group { display: flex; gap: 6px; flex-wrap: wrap; }
+        /* --- HEADER WRAPPER --- */
+        .header-wrapper {
+            width: 100%; max-width: 1250px;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            margin-bottom: 8px;
+            border: 1px solid var(--border-color);
+        }
+
+        .command-bar {
+            background-color: #003366; 
+            padding: 8px 15px; 
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
         
+        .app-title { color: white; font-weight: 800; font-size: 1rem; letter-spacing: 1px; text-transform: uppercase; }
+        
+        .action-icons { display: flex; gap: 8px; }
+        .btn-icon {
+            background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2);
+            color: white; width: 32px; height: 32px; border-radius: 6px;
+            cursor: pointer; display: flex; align-items: center; justify-content: center;
+            font-size: 1rem; transition: 0.2s;
+        }
+        .btn-icon:hover { background: rgba(255,255,255,0.25); transform: translateY(-2px); }
+        
+        /* Estado Ativo do Botão de Horas */
+        .btn-icon.active {
+            background: #ffffff; color: #003366; box-shadow: 0 0 10px rgba(255,255,255,0.5);
+        }
+
+        /* --- CONTEXT PANEL --- */
+        .context-panel {
+            background-color: var(--panel-bg);
+            padding: 10px 15px;
+            border-top: 1px solid rgba(0,0,0,0.05);
+        }
+
+        .control-row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; justify-content: space-between; }
+        .control-left { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+        .control-right { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+
         select, .filter-btn { 
-            padding: 4px 10px; border: 1px solid var(--border-color); border-radius: 6px; 
-            cursor: pointer; background: var(--bg-header-btn); font-weight: 700; font-size: 0.75rem; 
+            padding: 5px 10px; border: 1px solid var(--border-color); border-radius: 6px; 
+            cursor: pointer; background: var(--bg-header-btn); font-weight: 700; font-size: 0.72rem; 
             color: var(--text-header); 
         }
-        .filter-btn:hover { opacity: 0.8; }
-        .filter-btn.active { background: #003366; color: white; border-color: #003366; }
-        body.dark-theme .filter-btn.active { background: #64b5f6; color: #000; border-color: #64b5f6; }
+        .filter-btn:hover { background-color: rgba(0,0,0,0.05); }
+        
+        .filter-btn.active { background: #003366 !important; color: white !important; border-color: #003366 !important; }
+        body.dark-theme .filter-btn.active { background: #448aff !important; color: #fff !important; border-color: #448aff !important; box-shadow: 0 0 8px rgba(68,138,255,0.4); }
+        
         .filter-btn.special { background: #fff8e1; border-color: #ffb300; color: #ef6c00; }
         body.dark-theme .filter-btn.special { background: #3e2723; border-color: #ff6f00; color: #ffca28; }
-        body.dark-theme .filter-btn.special.active { 
-            background: #ff6f00 !important; color: #fff !important; border-color: #ffca28 !important;
-            box-shadow: 0 0 10px rgba(255, 111, 0, 0.6);
-        }
-
-        .today-label { font-size: 0.75rem; font-weight: bold; color: #003366; background: #e3f2fd; padding: 4px 12px; border-radius: 6px; border: 1px solid #90caf9; }
-        body.dark-theme .today-label { background: #1a237e; color: #c5cae9; border: 1px solid #3949ab; }
         
-        .members-info { 
-            font-size: 0.72rem; font-weight: 600; background: #fffde7; 
-            padding: 6px 10px; border-radius: 8px; border: 1px solid #fdd835; 
-            margin-top: 8px; line-height: 1.4; width: 100%; box-sizing: border-box; color: #37474f; 
+        .filter-btn.special.active { 
+            background: #ef6c00 !important; color: #fff !important; border-color: #e65100 !important;
+            box-shadow: 0 2px 5px rgba(239, 108, 0, 0.4); 
         }
-        body.dark-theme .members-info { background: #2a1c0a; color: #ffe0b2; border-color: #b78c00; }
+        body.dark-theme .filter-btn.special.active { 
+            background: #ff6f00 !important; color: #fff !important; border-color: #ffca28 !important; 
+            box-shadow: 0 0 10px rgba(255, 111, 0, 0.5); 
+        }
 
-        .schedule-container { width: fit-content; max-content; background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); overflow-x: auto; padding: 2px; }
-        .main-header { background-color: #003366; color: white; text-align: center; padding: 6px; border-radius: 6px 6px 0 0; }
-        .main-header h1 { margin: 0; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px; }
+        .today-display { font-size: 0.72rem; font-weight: 700; color: #003366; background: #e3f2fd; padding: 5px 10px; border-radius: 6px; border: 1px solid #90caf9; }
+        body.dark-theme .today-display { background: #1a237e; color: #c5cae9; border: 1px solid #3949ab; }
+
+        .members-list { 
+            font-size: 0.68rem; font-weight: 600; background: #fffde7; 
+            padding: 6px 10px; border-radius: 6px; border: 1px solid #fdd835; 
+            margin-top: 8px; line-height: 1.3; color: #37474f; 
+        }
+        body.dark-theme .members-list { background: #2a1c0a; color: #ffe0b2; border-color: #b78c00; }
+
+        /* DRAWER */
+        .slider-drawer { display: none; background: var(--bg-header-btn); padding: 10px; border-radius: 8px; margin-top: 8px; border: 1px solid var(--border-color); }
+        .slider-drawer.active { display: block; animation: slideDown 0.3s ease; }
+        .slider-group { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
+        .slider-item { display: flex; flex-direction: column; font-size: 0.65rem; font-weight: bold; color: var(--text-meta); width: 80px; }
+        @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* --- TABELA --- */
+        .schedule-container { 
+            display: inline-block; background: var(--card-bg); 
+            border: 1px solid var(--border-color); border-radius: 12px; 
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05); 
+            overflow-x: auto; padding: 2px; min-width: min-content; 
+        }
 
         table { width: max-content; border-collapse: separate; border-spacing: 0; table-layout: fixed; }
-        th { background-color: var(--header-green); color: white; text-transform: uppercase; font-size: 0.65rem; padding: 6px; border-right: 1px solid rgba(255,255,255,0.1); }
-        th:last-child { border-right: none; }
+        th { background-color: var(--header-green); color: white; text-transform: uppercase; font-size: 0.65rem; padding: 8px; border-right: 1px solid rgba(255,255,255,0.1); letter-spacing: 0.5px; }
+        th:first-child { border-radius: 8px 0 0 0; }
+        th:last-child { border-right: none; border-radius: 0 8px 0 0; }
         td { border-bottom: 1px solid var(--border-color); border-right: 1px solid var(--border-color); vertical-align: top; padding: 4px; font-size: 0.72rem; position: relative; }
         tr:last-child td { border-bottom: none; }
         
-        .today-column { box-shadow: inset 0 0 15px var(--neon-color), 0 0 5px var(--neon-color) !important; z-index: 10; border-color: var(--neon-color) !important; }
+        .today-column { box-shadow: inset 0 0 20px rgba(0, 229, 255, 0.15), 0 0 4px var(--neon-color) !important; z-index: 10; border-color: var(--neon-color) !important; }
 
         .col-seg { width: var(--w-seg); } .col-ter { width: var(--w-ter); } .col-qua { width: var(--w-qua); } .col-qui { width: var(--w-qui); } .col-sex { width: var(--w-sex); } .col-sab { width: var(--w-sab); }
-        .time-col { background-color: #003366; color: white; width: 40px; text-align: center; font-weight: bold; vertical-align: middle; border-bottom: 1px solid rgba(255,255,255,0.1); }
+        .time-col { background-color: #003366; color: white; width: 40px; text-align: center; font-weight: 800; vertical-align: middle; border-bottom: 1px solid rgba(255,255,255,0.1); }
 
-        @keyframes blockEnter { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes blockEnter { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
         
         .subject-block { 
-            padding: 6px 8px 6px 12px; border-radius: 10px; margin-bottom: 4px; position: relative; 
-            overflow: hidden; animation: blockEnter 0.6s ease-out forwards;
-            background-color: var(--bg-hp8); box-shadow: 0 1px 3px rgba(0,0,0,0.05); border: 1px solid rgba(0,0,0,0.03);
+            padding: 8px 10px 8px 14px; 
+            border-radius: 10px; margin-bottom: 4px; position: relative; 
+            overflow: hidden; animation: blockEnter 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+            background: var(--bg-hp8); 
+            box-shadow: 0 2px 4px rgba(0,0,0,0.04); border: 1px solid rgba(0,0,0,0.03);
+            cursor: default;
         }
+        .subject-block:hover { transform: translateY(-3px); box-shadow: 0 6px 12px rgba(0,0,0,0.08); z-index: 5; }
         
         .subject-block::before {
             content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 4px;
             background: var(--bar-color);
         }
 
-        .giesc { background-color: var(--bg-giesc) !important; --bar-color: var(--bar-giesc); }
-        .hp8 { background-color: var(--bg-hp8) !important; --bar-color: var(--bar-hp8); }
-        .tutorial { background-color: var(--bg-tutorial) !important; --bar-color: var(--bar-tutorial); }
-        .morfo { background-color: var(--bg-morfo) !important; --bar-color: var(--bar-morfo); }
+        .giesc { background: var(--bg-giesc) !important; --bar-color: var(--bar-giesc); }
+        .hp8 { background: var(--bg-hp8) !important; --bar-color: var(--bar-hp8); }
+        .tutorial { background: var(--bg-tutorial) !important; --bar-color: var(--bar-tutorial); }
+        .morfo { background: var(--bg-morfo) !important; --bar-color: var(--bar-morfo); }
 
-        .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2px; gap: 5px; }
-        .card-title { font-weight: 700; color: var(--text-main); font-size: 0.78rem; line-height: 1.2; }
+        .card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 4px; gap: 4px; }
+        .card-title { font-weight: 800; color: var(--text-title); font-size: 0.78rem; line-height: 1.1; letter-spacing: -0.2px; }
         
-        /* PILL DESIGN */
         .pill { 
-            font-size: 0.55rem; font-weight: 700; padding: 2px 7px; border-radius: 10px; 
+            font-size: 0.55rem; font-weight: 700; padding: 2px 6px; border-radius: 8px; 
             text-transform: uppercase; letter-spacing: 0.5px; white-space: nowrap; flex-shrink: 0;
-            color: #ffffff; box-shadow: 0 2px 4px rgba(0,0,0,0.15); border: 1px solid transparent; 
+            color: #ffffff; box-shadow: 0 2px 4px rgba(0,0,0,0.1); border: 1px solid transparent; 
         }
-
         body.dark-theme .pill { background-color: transparent !important; box-shadow: none; }
 
-        .pill-hms { background: var(--c-hms); }
-        body.dark-theme .pill-hms { color: var(--c-hms); border-color: var(--c-hms); }
+        .pill-hms { background: var(--c-hms); } body.dark-theme .pill-hms { color: var(--c-hms); border-color: var(--c-hms); }
+        .pill-uepa { background: var(--c-uepa); } body.dark-theme .pill-uepa { color: var(--c-uepa); border-color: var(--c-uepa); }
+        .pill-hrba { background: var(--c-hrba); } 
+        body.dark-theme .pill-hrba { color: var(--c-hrba); border-color: var(--c-hrba); box-shadow: 0 0 6px rgba(68, 138, 255, 0.3) !important; }
+        .pill-ures { background: var(--c-ures); } body.dark-theme .pill-ures { color: var(--c-ures); border-color: var(--c-ures); }
+        .pill-ubs { background: var(--c-ubs); } body.dark-theme .pill-ubs { color: var(--c-ubs); border-color: var(--c-ubs); }
+        .pill-amb { background: var(--c-amb); } body.dark-theme .pill-amb { color: var(--c-amb); border-color: var(--c-amb); }
+        .pill-neutral { background: var(--c-neutral); } body.dark-theme .pill-neutral { color: var(--c-neutral); border-color: var(--c-neutral); }
 
-        .pill-uepa { background: var(--c-uepa); }
-        body.dark-theme .pill-uepa { color: var(--c-uepa); border-color: var(--c-uepa); }
-
-        .pill-hrba { background: var(--c-hrba); }
-        body.dark-theme .pill-hrba { 
-            color: var(--c-hrba); border-color: var(--c-hrba);
-            box-shadow: 0 0 6px rgba(68, 138, 255, 0.3) !important; 
+        .date-line { display: flex; align-items: center; font-size: 0.65rem; color: var(--text-meta); margin-top: 4px; font-weight: 500; font-family: 'Segoe UI', sans-serif; }
+        
+        .status-dot {
+            width: 5px; height: 5px; background-color: var(--dot-color); border-radius: 50%;
+            display: inline-block; margin-right: 5px;
+            animation: pulse 3s infinite ease-in-out; 
+        }
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(0, 230, 118, 0.3); opacity: 0.8; }
+            50% { box-shadow: 0 0 0 3px rgba(0, 230, 118, 0); opacity: 1; }
+            100% { box-shadow: 0 0 0 0 rgba(0, 230, 118, 0); opacity: 0.8; }
         }
 
-        .pill-ures { background: var(--c-ures); }
-        body.dark-theme .pill-ures { color: var(--c-ures); border-color: var(--c-ures); }
+        /* ANIMAÇÃO CSS DE HORÁRIO - ZERO BLINK */
+        .time-line { 
+            max-height: 0; opacity: 0; overflow: hidden; margin-top: 0;
+            transition: all 0.4s ease-out; 
+        }
+        body.show-hours .time-line { 
+            max-height: 20px; opacity: 1; margin-top: 4px; 
+        }
 
-        .pill-ubs { background: var(--c-ubs); }
-        body.dark-theme .pill-ubs { color: var(--c-ubs); border-color: var(--c-ubs); }
-
-        .pill-amb { background: var(--c-amb); }
-        body.dark-theme .pill-amb { color: var(--c-amb); border-color: var(--c-amb); }
-
-        .pill-neutral { background: var(--c-neutral); }
-        body.dark-theme .pill-neutral { color: var(--c-neutral); border-color: var(--c-neutral); }
-
-        .date-line { display: block; font-size: 0.65rem; color: var(--text-secondary); margin-top: 4px; line-height: 1.5; font-weight: 500; }
-        
-        /* TIME BADGE STYLE */
         .badge-time {
-            display: inline-block;
-            padding: 1px 5px;
-            border-radius: 4px;
-            font-size: 0.58rem;
-            font-weight: 700;
-            margin-left: 4px;
-            vertical-align: middle;
-            background-color: var(--bg-time);
-            color: var(--text-time);
-            border: 1px solid var(--border-time);
+            display: inline-block; padding: 2px 6px; border-radius: 4px; font-size: 0.58rem;
+            font-weight: 700; 
+            background-color: var(--bg-time); color: var(--text-time); border: 1px solid var(--border-time);
         }
-
-        .bottom-container { width: 100%; max-width: 1250px; margin-top: 10px; }
-        .bottom-actions { display: flex; justify-content: flex-end; gap: 10px; }
-        .btn-action { padding: 6px 10px; border-radius: 8px; border: 1px solid var(--border-color); cursor: pointer; font-size: 1.1rem; background: var(--card-bg); color: var(--text-main); transition: 0.2s; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
-        .btn-action:hover { transform: translateY(-2px); }
-        
-        .slider-drawer { display: none; background: var(--card-bg); padding: 12px; border-radius: 12px; box-shadow: 0 -4px 20px rgba(0,0,0,0.05); margin-top: 10px; border: 1px solid var(--border-color); }
-        .slider-drawer.active { display: block; }
-        .slider-group { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; }
-        .slider-item { display: flex; flex-direction: column; font-size: 0.65rem; font-weight: bold; color: var(--text-secondary); width: 90px; }
+        body.dark-theme .badge-time { background-color: #3e2723; color: #ff8a80; border-color: #5d4037; }
     </style>
 </head>
 <body>
 
-<div class="controls-panel">
-    <div class="control-row">
-        <div class="btn-group">
-            <select id="groupSelect" onchange="changeGroup(this.value)"></select>
-            <span id="todayDisplay" class="today-label"></span>
+<div class="header-wrapper">
+    <div class="command-bar">
+        <div class="app-title" id="appTitle">MED8 | GRUPO A | 2026.1</div>
+        <div class="action-icons">
+            <button class="btn-icon" title="Tema" onclick="toggleDarkMode()">🌓</button>
+            <button class="btn-icon" id="btnHourToggle" title="Horas" onclick="toggleHours()">⏰</button>
+            <button class="btn-icon" title="Colunas" onclick="toggleSliders()">📏</button>
+            <button class="btn-icon" title="Print" onclick="generateImage()">🖼️</button>
         </div>
-        <div class="btn-group">
-            <button class="filter-btn" id="btn-all" onclick="setFilter('all', this)">Semestre</button>
-            <button class="filter-btn special" id="btn-currWeek" onclick="setFilter('currWeek', this)">Semana Atual</button>
-            <button class="filter-btn special" id="btn-nextWeek" onclick="setFilter('nextWeek', this)">Próxima Semana</button>
-        </div>
-        <div id="monthButtons" class="btn-group"></div>
     </div>
-    <div id="membersDisplay" class="members-info"></div>
+
+    <div class="context-panel">
+        <div class="control-row">
+            <div class="control-left">
+                <select id="groupSelect" onchange="changeGroup(this.value)"></select>
+                <span id="todayDisplay" class="today-display"></span>
+                <button class="filter-btn special" id="btn-currWeek" onclick="setFilter('currWeek', this)">Semana Atual</button>
+                <button class="filter-btn special" id="btn-nextWeek" onclick="setFilter('nextWeek', this)">Próxima Semana</button>
+            </div>
+            
+            <div class="control-right">
+                <button class="filter-btn" id="btn-all" onclick="setFilter('all', this)">Semestre</button>
+                <div id="monthButtons" style="display:flex; gap:6px;"></div>
+            </div>
+        </div>
+        
+        <div id="membersDisplay" class="members-list"></div>
+
+        <div id="sliderDrawer" class="slider-drawer">
+            <div class="slider-group">
+                <div class="slider-item">Seg <input type="range" min="40" max="400" value="115" oninput="document.documentElement.style.setProperty('--w-seg', this.value+'px')"></div>
+                <div class="slider-item">Ter <input type="range" min="40" max="400" value="115" oninput="document.documentElement.style.setProperty('--w-ter', this.value+'px')"></div>
+                <div class="slider-item">Qua <input type="range" min="40" max="400" value="115" oninput="document.documentElement.style.setProperty('--w-qua', this.value+'px')"></div>
+                <div class="slider-item">Qui <input type="range" min="40" max="600" value="155" oninput="document.documentElement.style.setProperty('--w-qui', this.value+'px')"></div>
+                <div class="slider-item">Sex <input type="range" min="40" max="400" value="115" oninput="document.documentElement.style.setProperty('--w-sex', this.value+'px')"></div>
+                <div class="slider-item">Sáb <input type="range" min="40" max="300" value="100" oninput="document.documentElement.style.setProperty('--w-sab', this.value+'px')"></div>
+            </div>
+        </div>
+    </div>
 </div>
 
 <div id="capture-area" class="schedule-container">
-    <div class="main-header"><h1 id="tableTitle">MED8 | 2026.1</h1></div>
     <table>
         <thead>
             <tr id="header-row">
@@ -244,28 +312,8 @@
     </table>
 </div>
 
-<div class="bottom-container">
-    <div class="bottom-actions">
-        <button class="btn-action" title="Tema" onclick="toggleDarkMode()">🌓</button>
-        <button class="btn-action" title="Horas" onclick="toggleHours()">⏰</button>
-        <button class="btn-action" title="Colunas" onclick="toggleSliders()">📏</button>
-        <button class="btn-action" title="Print" onclick="generateImage()" style="background: var(--header-green); color: white; border: none;">🖼️</button>
-    </div>
-    <div id="sliderDrawer" class="slider-drawer">
-        <div class="slider-group">
-            <div class="slider-item">Seg <input type="range" min="40" max="400" value="115" oninput="document.documentElement.style.setProperty('--w-seg', this.value+'px')"></div>
-            <div class="slider-item">Ter <input type="range" min="40" max="400" value="115" oninput="document.documentElement.style.setProperty('--w-ter', this.value+'px')"></div>
-            <div class="slider-item">Qua <input type="range" min="40" max="400" value="115" oninput="document.documentElement.style.setProperty('--w-qua', this.value+'px')"></div>
-            <div class="slider-item">Qui <input type="range" min="40" max="600" value="155" oninput="document.documentElement.style.setProperty('--w-qui', this.value+'px')"></div>
-            <div class="slider-item">Sex <input type="range" min="40" max="400" value="115" oninput="document.documentElement.style.setProperty('--w-sex', this.value+'px')"></div>
-            <div class="slider-item">Sáb <input type="range" min="40" max="300" value="100" oninput="document.documentElement.style.setProperty('--w-sab', this.value+'px')"></div>
-        </div>
-    </div>
-</div>
-
 <script>
 const ANO_LETIVO = 2026;
-let showHours = false;
 
 // 🧩 LEGO DATABASE
 const DATA_LEGO = [
@@ -278,7 +326,7 @@ const DATA_LEGO = [
     { d: "Segunda", t: "Tarde", act: "HP-8", p: "Kalysta Borges", l: "HRBA", g: "C", dates: "02/03, 30/03, 27/04, 25/05, 22/06" },
     { d: "Segunda", t: "Tarde", act: "HP-8", p: "Kalysta Borges", l: "HRBA", g: "D", dates: "09/03, 06/04, 04/05, 01/06" },
 
-    /* TERÇA - COM HORÁRIOS DEFINIDOS */
+    /* TERÇA */
     { d: "Terça", t: "Manhã", act: "HP-8", p: "Kalysta Borges", l: "Aud HRBA", g: "Todos", dates: "Semanal", h: "09:00 - 10:30" },
     { d: "Terça", t: "Manhã", act: "HP-8", p: "Kalysta Borges", l: "HRBA", g: "A", dates: "03/03, 31/03, 28/04, 26/05, 23/06", h: "08:00 - 12:00" },
     { d: "Terça", t: "Manhã", act: "HP-8", p: "Kalysta Borges", l: "HRBA", g: "B", dates: "10/03, 07/04, 05/05, 02/06", h: "08:00 - 12:00" },
@@ -343,7 +391,10 @@ function toggleDarkMode() {
     localStorage.setItem('theme', document.body.classList.contains('dark-theme') ? 'dark' : 'light');
 }
 
-function toggleHours() { showHours = !showHours; updateView(); }
+function toggleHours() { 
+    document.body.classList.toggle('show-hours'); 
+    document.getElementById('btnHourToggle').classList.toggle('active');
+}
 
 function toggleSliders() { document.getElementById('sliderDrawer').classList.toggle('active'); }
 
@@ -354,17 +405,6 @@ function abrev(name) {
         if (words.length < 2) return words[0];
         return `${words[0]} ${words[1].charAt(0)}`;
     }).join(' / ');
-}
-
-function getLocColorVar(l) {
-    const loc = l.toUpperCase();
-    if (loc.includes("HMS")) return "var(--c-hms)";
-    if (loc.includes("UEPA")) return "var(--c-uepa)";
-    if (loc.includes("HRBA")) return "var(--c-hrba)";
-    if (loc.includes("URES")) return "var(--c-ures)";
-    if (loc.includes("UBS")) return "var(--c-ubs)";
-    if (loc.includes("AMB")) return "var(--c-amb)";
-    return "var(--c-neutral)";
 }
 
 function getPillClass(l) {
@@ -409,11 +449,12 @@ function checkWeek(dateStr, offset) {
 function updateView() {
     const group = document.getElementById('groupSelect').value;
     localStorage.setItem('medGroup', group);
+    document.getElementById('appTitle').innerText = `MED8 | GRUPO ${group} | ${ANO_LETIVO}.1`;
+
     const days = ["Segunda", "Terça", "Quarta", "Quinta", "Sexta", "Sábado"];
     const turns = ["Manhã", "Tarde", "Noite"];
     const sorted = [...GROUP_MEMBERS[group]].sort();
     document.getElementById('membersDisplay').innerHTML = `📍 <b>Integrantes:</b> ${sorted.map(m => abrev(m)).join(', ')}`;
-    document.getElementById('tableTitle').innerText = `MED8 | GRUPO ${group} | ${ANO_LETIVO}.1`;
     
     let todayIndex = new Date().getDay();
     if (todayIndex === 0) todayIndex = 7;
@@ -453,18 +494,27 @@ function updateView() {
                     }
 
                     const locsArr = m.l.split('/');
-                    const pills = locsArr.map(loc => `<span class="pill ${getPillClass(loc)}">${loc.trim()}</span>`).join('');
-                    const hourBadge = (showHours && m.h) ? `<span class="badge-time">${m.h}</span>` : "";
+                    const pills = locsArr.filter(l => l.trim().toUpperCase() !== 'UEPA').map(loc => `<span class="pill ${getPillClass(loc)}">${loc.trim()}</span>`).join('');
                     
+                    // AQUI ESTÁ A MÁGICA: Renderiza SEMPRE, o CSS esconde/anima
+                    const hourBadge = m.h ? `<div class="time-line"><span class="badge-time">${m.h}</span></div>` : "";
+                    
+                    let dateDisplay = "";
+                    if (m.dates === "Semanal") {
+                        dateDisplay = `<div class="status-dot"></div> <span style="opacity:0.8">Semanal</span>`;
+                    } else {
+                        dateDisplay = filteredDates;
+                    }
+
                     cellContent += `<div class="subject-block ${colorClass}">
                         <div class="card-header">
                             <span class="card-title">${displayTitle}</span>
                             <div style="display:flex; gap:2px">${pills}</div>
                         </div>
                         <div class="date-line">
-                            ${m.dates === "Semanal" ? 'Semanal' : filteredDates}
-                            ${hourBadge}
+                            ${dateDisplay}
                         </div>
+                        ${hourBadge}
                     </div>`;
                 }
             });
