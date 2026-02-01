@@ -2,8 +2,11 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#003366">
     <title>Cronograma MED8</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📅</text></svg>">
+    
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
         * { box-sizing: border-box; }
@@ -19,9 +22,9 @@
             --card-bg: #ffffff; 
             --panel-bg: #ffffff;
             
-            /* Tipografia Refinada */
-            --text-title: #102a43; /* Azul Profundo (não preto) */
-            --text-meta: #627d98;  /* Cinza Azulado */
+            /* Tipografia */
+            --text-title: #102a43;
+            --text-meta: #627d98;
             --text-header: #212121;
             --bg-header-btn: #f5f7fa;
 
@@ -57,8 +60,7 @@
             --border-color: #37474f; 
             --primary-blue: #82b1ff;
             
-            /* Tipografia Dark Suave */
-            --text-title: #f0f4f8; /* Off-white */
+            --text-title: #f0f4f8;
             --text-meta: #90a4ae; 
             --text-header: #ffffff; --bg-header-btn: #2c3038;
             
@@ -80,7 +82,7 @@
             transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
         }
 
-        body { font-family: 'Segoe UI', sans-serif; background-color: var(--body-bg); color: var(--text-main); display: flex; flex-direction: column; align-items: center; margin: 0; padding: 5px; }
+        body { font-family: 'Segoe UI', sans-serif; background-color: var(--body-bg); color: var(--text-main); display: flex; flex-direction: column; align-items: center; margin: 0; padding: 5px; padding-bottom: 30px; /* Espaço para o Easter Egg */ }
         
         body.capturing * { animation: none !important; transition: none !important; transform: none !important; box-shadow: none !important; }
         body.capturing .today-column { box-shadow: none !important; border-color: var(--primary-blue) !important; }
@@ -225,12 +227,9 @@
 
         .card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 4px; gap: 4px; }
         
-        /* [CORREÇÃO TIPOGRAFIA] Peso 700 + Sentence Case nos dados */
         .card-title { 
-            font-weight: 700; /* Reduzido de 800 */
-            color: var(--text-title); 
-            font-size: 0.8rem; /* Levemente maior */
-            line-height: 1.1; 
+            font-weight: 700; color: var(--text-title); 
+            font-size: 0.8rem; line-height: 1.1; 
         }
         
         .pill { 
@@ -276,6 +275,21 @@
             background-color: var(--bg-time); color: var(--text-time); border: 1px solid var(--border-time);
         }
         body.dark-theme .badge-time { background-color: #3e2723; color: #ff8a80; border-color: #5d4037; }
+
+        /* EASTER EGG SIGNATURE */
+        .signature {
+            margin-top: 30px;
+            font-size: 0.65rem;
+            color: var(--text-meta);
+            opacity: 0; /* Invisível por padrão */
+            cursor: default;
+            transition: opacity 0.6s ease, transform 0.6s ease;
+            user-select: none;
+        }
+        .signature:hover {
+            opacity: 0.7; /* Aparece ao passar o mouse */
+            transform: translateY(-5px);
+        }
     </style>
 </head>
 <body>
@@ -337,6 +351,8 @@
         <tbody id="scheduleBody"></tbody>
     </table>
 </div>
+
+<div class="signature">Desenvolvido por Claudemir | MED8 2026</div>
 
 <script>
 const ANO_LETIVO = 2026;
@@ -517,7 +533,6 @@ function updateView() {
                     else if(actL.includes("morfo")) colorClass = "morfo";
 
                     let displayTitle = abrev(m.p);
-                    // [SENTENCE CASE LOGIC]
                     if (m.act.includes("TUTORIAL")) displayTitle = "Tutorial";
                     else if (m.act.includes("MORFO")) displayTitle = "Morfo";
                     else if (m.act.includes("HP-8")) { /* Mantém nome prof */ }
