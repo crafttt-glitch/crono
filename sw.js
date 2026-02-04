@@ -1,11 +1,11 @@
-const CACHE_NAME = 'med8-dinamico';
+const CACHE_NAME = 'med8-turbo-v1';
 const FILES = [
   './',
   './index.html',
   'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js'
 ];
 
-// 1. Instalação (Cache inicial)
+// 1. Instalação
 self.addEventListener('install', (evt) => {
   evt.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
@@ -14,27 +14,29 @@ self.addEventListener('install', (evt) => {
   );
 });
 
-// 2. A Mágica: REDE PRIMEIRO, CACHE DEPOIS
+// 2. A Mágica: "Stale-While-Revalidate"
 self.addEventListener('fetch', (evt) => {
   evt.respondWith(
-    fetch(evt.request)
-      .then((networkResponse) => {
-        // Se a internet funcionou:
-        // 1. Clona a resposta (para salvar uma cópia)
-        const responseClone = networkResponse.clone();
-        
-        // 2. Atualiza o cache automaticamente com a versão nova
-        caches.open(CACHE_NAME).then((cache) => {
-          cache.put(evt.request, responseClone);
-        });
-
-        // 3. Entrega a versão da internet pro usuário
+    caches.open(CACHE_NAME).then(async (cache) => {
+      // Tenta pegar do cache imediatamente
+      const cachedResponse = await cache.match(evt.request);
+      
+      // DISPARA A ATUALIZAÇÃO EM BACKGROUND
+      // O navegador vai na internet buscar a versão nova
+      const fetchPromise = fetch(evt.request).then((networkResponse) => {
+        // Se a internet respondeu ok, atualiza o cache para a próxima
+        if (networkResponse && networkResponse.status === 200) {
+          cache.put(evt.request, networkResponse.clone());
+        }
         return networkResponse;
-      })
-      .catch(() => {
-        // Se a internet FALHOU (Offline):
-        // Entrega o que tiver salvo no cache
-        return caches.match(evt.request);
-      })
+      }).catch(() => {
+        // Se estiver offline, não faz nada, só segue o baile
+      });
+
+      // REGRA DE OURO:
+      // Se tem cache, entrega ele NA HORA (Instantâneo).
+      // Se não tem (primeira vez), espera a internet.
+      return cachedResponse || fetchPromise;
+    })
   );
 });
