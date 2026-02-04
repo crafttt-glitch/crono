@@ -1,26 +1,40 @@
-const NOME_CACHE = 'med8-offline-v1';
-const ARQUIVOS_PARA_SALVAR = [
+const CACHE_NAME = 'med8-dinamico';
+const FILES = [
   './',
   './index.html',
   'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js'
 ];
 
-// 1. Instala e salva os arquivos
-self.addEventListener('install', (evento) => {
-  evento.waitUntil(
-    caches.open(NOME_CACHE).then((cache) => {
-      console.log('Salvando arquivos para uso offline...');
-      return cache.addAll(ARQUIVOS_PARA_SALVAR);
+// 1. Instalação (Cache inicial)
+self.addEventListener('install', (evt) => {
+  evt.waitUntil(
+    caches.open(CACHE_NAME).then((cache) => {
+      return cache.addAll(FILES);
     })
   );
 });
 
-// 2. Quando você tentar abrir o site...
-self.addEventListener('fetch', (evento) => {
-  evento.respondWith(
-    caches.match(evento.request).then((respostaSalva) => {
-      // Se tiver salvo, entrega o salvo. Se não, tenta a internet.
-      return respostaSalva || fetch(evento.request);
-    })
+// 2. A Mágica: REDE PRIMEIRO, CACHE DEPOIS
+self.addEventListener('fetch', (evt) => {
+  evt.respondWith(
+    fetch(evt.request)
+      .then((networkResponse) => {
+        // Se a internet funcionou:
+        // 1. Clona a resposta (para salvar uma cópia)
+        const responseClone = networkResponse.clone();
+        
+        // 2. Atualiza o cache automaticamente com a versão nova
+        caches.open(CACHE_NAME).then((cache) => {
+          cache.put(evt.request, responseClone);
+        });
+
+        // 3. Entrega a versão da internet pro usuário
+        return networkResponse;
+      })
+      .catch(() => {
+        // Se a internet FALHOU (Offline):
+        // Entrega o que tiver salvo no cache
+        return caches.match(evt.request);
+      })
   );
 });
