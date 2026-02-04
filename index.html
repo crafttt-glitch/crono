@@ -15,7 +15,6 @@
             /* Cores Estruturais */
             --header-bg-blue: #003366; 
             --header-bg-green: #1b7340; 
-            
             --primary-blue: #003366; 
             --border-color: #cfd8dc; 
             --body-bg: #f4f6f8; 
@@ -37,7 +36,7 @@
             /* Barras Laterais */
             --bar-hp8: #1565c0; --bar-giesc: #2e7d32; --bar-tutorial: #7b1fa2; --bar-morfo: #4a148c;
 
-            /* Pills Light */
+            /* Pills */
             --c-hms: #ef6c00; --c-uepa: #00897b; --c-hrba: #283593; 
             --c-ures: #d81b60; --c-ubs: #558b2f; --c-amb: #00acc1; --c-neutral: #757575;
 
@@ -46,6 +45,23 @@
 
             /* Status Dot */
             --dot-color: #00e676; 
+
+            /* Tooltip GLASS */
+            --tooltip-bg: rgba(20, 20, 35, 0.65);
+            --tooltip-text: #ffffff;
+            --tooltip-border: rgba(255, 255, 255, 0.2);
+
+            /* POPUP */
+            --popup-bg: rgba(255, 255, 255, 0.95);
+            --popup-border: #bbdefb;
+            --popup-shadow: 0 10px 40px rgba(0, 51, 102, 0.15);
+            --popup-text: #003366;
+            --popup-accent: #2979ff;
+
+            /* BADGES */
+            --badge-today-bg: #2e7d32;
+            --badge-tmrw-bg: #2979ff;
+            --badge-soon-bg: #78909c;
 
             --neon-color: #00bcd4;
             --w-seg: 115px; --w-ter: 115px; --w-qua: 115px; --w-qui: 155px; --w-sex: 115px; --w-sab: 100px;
@@ -60,8 +76,9 @@
             --border-color: #37474f; 
             --primary-blue: #82b1ff;
             
-            --text-title: #f0f4f8;
-            --text-meta: #90a4ae; 
+            --text-title: #f0f4f8; 
+            /* [ALTERAÇÃO 2] Clareado para branco mais legível nas datas dos cards */
+            --text-meta: #cfd8dc; 
             --text-header: #ffffff; --bg-header-btn: #2c3038;
             
             --bg-hp8: linear-gradient(135deg, rgba(20, 30, 48, 0.6) 0%, rgba(36, 59, 85, 0.4) 100%);
@@ -74,151 +91,119 @@
             --c-ures: #ff80ab; --c-ubs: #b2ff59; --c-amb: #84ffff;
 
             --bg-time: #3e2723; --text-time: #ff8a80; --border-time: #5d4037;
+            
+            --tooltip-bg: rgba(255, 255, 255, 0.7); --tooltip-text: #000000; --tooltip-border: rgba(255, 255, 255, 0.3);
+
+            --popup-bg: rgba(30, 33, 41, 0.95); --popup-border: #37474f; --popup-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+            --popup-text: #eceff1; --popup-accent: #448aff;
+
+            --badge-today-bg: #00e676; --badge-tmrw-bg: #448aff; --badge-soon-bg: #546e7a;
+
             --neon-color: #00f2ff;
         }
 
         /* Transições */
-        body, .subject-block, .btn-action, .filter-btn, .pill, th, td, .members-info, .badge-time, .context-panel, .command-bar, .btn-icon, .time-col, .card-title {
+        body, .subject-block, .btn-action, .filter-btn, .pill, th, td, .members-info, .badge-time, .context-panel, .command-bar, .btn-icon, .time-col, .card-title, .next-class-popup {
             transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
         }
 
-        body { font-family: 'Segoe UI', sans-serif; background-color: var(--body-bg); color: var(--text-main); display: flex; flex-direction: column; align-items: center; margin: 0; padding: 5px; padding-bottom: 30px; /* Espaço para o Easter Egg */ }
+        body { font-family: 'Segoe UI', sans-serif; background-color: var(--body-bg); color: var(--text-main); display: flex; flex-direction: column; align-items: center; margin: 0; padding: 5px; padding-bottom: 90px; }
         
         body.capturing * { animation: none !important; transition: none !important; transform: none !important; box-shadow: none !important; }
         body.capturing .today-column { box-shadow: none !important; border-color: var(--primary-blue) !important; }
+        body.capturing .next-class-popup { display: none !important; }
 
-        /* HEADER WRAPPER */
-        .header-wrapper {
-            width: 100%; max-width: 1250px;
-            border-radius: 12px;
-            overflow: hidden;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
-            margin-bottom: 8px;
-            border: 1px solid var(--border-color);
-        }
-
-        .command-bar {
-            background-color: var(--header-bg-blue); 
-            padding: 8px 15px; 
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        
+        /* HEADER & CONTEXT */
+        .header-wrapper { width: 100%; max-width: 1250px; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.08); margin-bottom: 8px; border: 1px solid var(--border-color); }
+        .command-bar { background-color: var(--header-bg-blue); padding: 8px 15px; display: flex; justify-content: space-between; align-items: center; }
         .app-title { color: white; font-weight: 800; font-size: 1rem; letter-spacing: 1px; text-transform: uppercase; }
-        
         .action-icons { display: flex; gap: 8px; }
-        .btn-icon {
-            background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2);
-            color: white; width: 32px; height: 32px; border-radius: 6px;
-            cursor: pointer; display: flex; align-items: center; justify-content: center;
-            font-size: 1rem; transition: 0.2s;
-        }
+        .btn-icon { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: white; width: 32px; height: 32px; border-radius: 6px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1rem; transition: 0.2s; }
         .btn-icon:hover { background: rgba(255,255,255,0.25); transform: translateY(-2px); }
         .btn-icon.active { background: #ffffff; color: var(--header-bg-blue); box-shadow: 0 0 10px rgba(255,255,255,0.5); }
 
-        /* CONTEXT PANEL */
-        .context-panel {
-            background-color: var(--panel-bg);
-            padding: 10px 15px;
-            border-top: 1px solid rgba(0,0,0,0.05);
-        }
-
+        .context-panel { background-color: var(--panel-bg); padding: 10px 15px; border-top: 1px solid rgba(0,0,0,0.05); }
         .control-row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; justify-content: space-between; }
-        .control-left { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
-        .control-right { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+        .control-left, .control-right { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
 
-        select, .filter-btn { 
-            padding: 5px 10px; border: 1px solid var(--border-color); border-radius: 6px; 
-            cursor: pointer; background: var(--bg-header-btn); font-weight: 700; font-size: 0.72rem; 
-            color: var(--text-header); 
-        }
+        select, .filter-btn { padding: 5px 10px; border: 1px solid var(--border-color); border-radius: 6px; cursor: pointer; background: var(--bg-header-btn); font-weight: 700; font-size: 0.72rem; color: var(--text-header); }
         .filter-btn:hover { background-color: rgba(0,0,0,0.05); }
-        
         .filter-btn.active { background: #003366 !important; color: white !important; border-color: #003366 !important; }
         body.dark-theme .filter-btn.active { background: #448aff !important; color: #fff !important; border-color: #448aff !important; box-shadow: 0 0 8px rgba(68,138,255,0.4); }
-        
         .filter-btn.special { background: #fff8e1; border-color: #ffb300; color: #ef6c00; }
         body.dark-theme .filter-btn.special { background: #3e2723; border-color: #ff6f00; color: #ffca28; }
-        
-        .filter-btn.special.active { 
-            background: #ef6c00 !important; color: #fff !important; border-color: #e65100 !important;
-            box-shadow: 0 2px 5px rgba(239, 108, 0, 0.4); 
-        }
-        body.dark-theme .filter-btn.special.active { 
-            background: #ff6f00 !important; color: #fff !important; border-color: #ffca28 !important; 
-            box-shadow: 0 0 10px rgba(255, 111, 0, 0.5); 
-        }
+        .filter-btn.special.active { background: #ef6c00 !important; color: #fff !important; border-color: #e65100 !important; box-shadow: 0 2px 5px rgba(239, 108, 0, 0.4); }
+        body.dark-theme .filter-btn.special.active { background: #ff6f00 !important; color: #fff !important; border-color: #ffca28 !important; box-shadow: 0 0 10px rgba(255, 111, 0, 0.5); }
 
         .today-display { font-size: 0.72rem; font-weight: 700; color: #003366; background: #e3f2fd; padding: 5px 10px; border-radius: 6px; border: 1px solid #90caf9; }
-        body.dark-theme .today-display { background: #1a237e; color: #c5cae9; border: 1px solid #3949ab; }
-
-        .members-list { 
-            font-size: 0.68rem; font-weight: 600; background: #fffde7; 
-            padding: 6px 10px; border-radius: 6px; border: 1px solid #fdd835; 
-            margin-top: 8px; line-height: 1.3; color: #37474f; 
-        }
+        /* [ALTERAÇÃO 2] Ajuste do Modo Escuro para Branco Puro */
+        body.dark-theme .today-display { background: #1a237e; color: #ffffff; border: 1px solid #5c6bc0; }
+        
+        .members-list { font-size: 0.68rem; font-weight: 600; background: #fffde7; padding: 6px 10px; border-radius: 6px; border: 1px solid #fdd835; margin-top: 8px; line-height: 1.3; color: #37474f; }
         body.dark-theme .members-list { background: #2a1c0a; color: #ffe0b2; border-color: #b78c00; }
 
-        /* DRAWER */
         .slider-drawer { display: none; background: var(--bg-header-btn); padding: 10px; border-radius: 8px; margin-top: 8px; border: 1px solid var(--border-color); }
         .slider-drawer.active { display: block; animation: slideDown 0.3s ease; }
         .slider-group { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
         .slider-item { display: flex; flex-direction: column; font-size: 0.65rem; font-weight: bold; color: var(--text-meta); width: 80px; }
         @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* --- TABELA --- */
-        .schedule-container { 
-            display: inline-block; background: var(--card-bg); 
-            border: 1px solid var(--border-color); border-radius: 12px; 
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05); 
-            overflow-x: auto; padding: 2px; min-width: min-content; 
-        }
-
+        /* TABELA */
+        .schedule-container { display: inline-block; background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); overflow-x: auto; padding: 2px; min-width: min-content; }
         table { width: max-content; border-collapse: separate; border-spacing: 0; table-layout: fixed; }
         
-        th { 
-            background-color: var(--header-bg-green); 
-            color: white; text-transform: uppercase; font-size: 0.65rem; 
-            padding: 8px; border-right: 1px solid rgba(255,255,255,0.1); letter-spacing: 0.5px; 
-        }
+        th { background-color: var(--header-bg-green); color: white; text-transform: uppercase; font-size: 0.65rem; padding: 8px; border-right: 1px solid rgba(255,255,255,0.1); letter-spacing: 0.5px; }
         th:first-child { border-radius: 8px 0 0 0; }
         th:last-child { border-right: none; border-radius: 0 8px 0 0; }
+        #cornerGroup { font-size: 1.1rem; font-weight: 800; background-color: var(--header-bg-green); color: rgba(255,255,255,0.9); text-align: center; vertical-align: middle; }
         
-        #cornerGroup {
-            font-size: 1.1rem; font-weight: 800; background-color: var(--header-bg-green);
-            color: rgba(255,255,255,0.9); text-align: center; vertical-align: middle;
-        }
-
         td { border-bottom: 1px solid var(--border-color); border-right: 1px solid var(--border-color); vertical-align: top; padding: 4px; font-size: 0.72rem; position: relative; }
         tr:last-child td { border-bottom: none; }
         
-        .today-column { box-shadow: inset 0 0 20px rgba(0, 229, 255, 0.15), 0 0 4px var(--neon-color) !important; z-index: 10; border-color: var(--neon-color) !important; }
+        /* [NEON SEAMLESS FIX] - Highlight Contínuo */
+        /* 1. Header Cell */
+        th.today-column {
+            border: 2px solid var(--neon-color) !important;
+            border-bottom: none !important;
+            box-shadow: 0 -4px 15px var(--neon-color) !important; /* Glow Topo */
+            z-index: 10;
+        }
+        /* 2. Body Cells */
+        td.today-column {
+            border-left: 2px solid var(--neon-color) !important;
+            border-right: 2px solid var(--neon-color) !important;
+            border-top: none !important;
+            border-bottom: none !important; /* Remove divisor horizontal */
+            /* Glow Lateral Suave */
+            box-shadow: inset 3px 0 8px -4px var(--neon-color), inset -3px 0 8px -4px var(--neon-color) !important; 
+            z-index: 10;
+        }
+        /* 3. Last Cell */
+        tbody tr:last-child td.today-column {
+            border-bottom: 2px solid var(--neon-color) !important;
+            border-radius: 0 0 12px 12px;
+            box-shadow: 0 4px 15px var(--neon-color), inset 3px 0 8px -4px var(--neon-color), inset -3px 0 8px -4px var(--neon-color) !important;
+        }
 
         .col-seg { width: var(--w-seg); } .col-ter { width: var(--w-ter); } .col-qua { width: var(--w-qua); } .col-qui { width: var(--w-qui); } .col-sex { width: var(--w-sex); } .col-sab { width: var(--w-sab); }
-        
-        .time-col { 
-            background-color: var(--header-bg-blue); 
-            color: white; width: 40px; text-align: center; font-weight: 800; 
-            vertical-align: middle; border-bottom: 1px solid rgba(255,255,255,0.1); 
-        }
+        .time-col { background-color: var(--header-bg-blue); color: white; width: 40px; text-align: center; font-weight: 800; vertical-align: middle; border-bottom: 1px solid rgba(255,255,255,0.1); }
 
         @keyframes blockEnter { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
         
-        .subject-block { 
-            padding: 8px 10px 8px 14px; 
-            border-radius: 10px; margin-bottom: 4px; position: relative; 
-            overflow: hidden; animation: blockEnter 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
-            background: var(--bg-hp8); 
-            box-shadow: 0 2px 4px rgba(0,0,0,0.04); border: 1px solid rgba(0,0,0,0.03);
-            cursor: default;
-        }
+        .subject-block { padding: 8px 10px 8px 14px; border-radius: 10px; margin-bottom: 4px; position: relative; overflow: visible; animation: blockEnter 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) forwards; background: var(--bg-hp8); box-shadow: 0 2px 4px rgba(0,0,0,0.04); border: 1px solid rgba(0,0,0,0.03); cursor: default; }
         .subject-block:hover { transform: translateY(-3px); box-shadow: 0 6px 12px rgba(0,0,0,0.08); z-index: 5; }
-        
-        .subject-block::before {
-            content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 4px;
-            background: var(--bar-color);
+        .subject-block::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 4px; background: var(--bar-color); border-radius: 10px 0 0 10px; }
+
+        /* TRUE GLASS TOOLTIP */
+        .has-tooltip:hover::after {
+            content: attr(data-prof); position: absolute; bottom: 105%; left: 50%; transform: translateX(-50%);
+            background: var(--tooltip-bg); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+            color: var(--tooltip-text); padding: 4px 10px; border-radius: 6px;
+            font-size: 0.65rem; font-weight: 600; white-space: nowrap;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2); opacity: 0; animation: tooltipFade 0.3s forwards 0.1s;
+            pointer-events: none; z-index: 100; border: 1px solid var(--tooltip-border);
         }
+        @keyframes tooltipFade { from { opacity: 0; transform: translateX(-50%) translateY(5px); } to { opacity: 1; transform: translateX(-50%) translateY(0); } }
 
         .giesc { background: var(--bg-giesc) !important; --bar-color: var(--bar-giesc); }
         .hp8 { background: var(--bg-hp8) !important; --bar-color: var(--bar-hp8); }
@@ -226,70 +211,55 @@
         .morfo { background: var(--bg-morfo) !important; --bar-color: var(--bar-morfo); }
 
         .card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 4px; gap: 4px; }
+        .card-title { font-weight: 700; color: var(--text-title); font-size: 0.8rem; line-height: 1.1; }
         
-        .card-title { 
-            font-weight: 700; color: var(--text-title); 
-            font-size: 0.8rem; line-height: 1.1; 
-        }
-        
-        .pill { 
-            font-size: 0.55rem; font-weight: 700; padding: 2px 6px; border-radius: 8px; 
-            text-transform: uppercase; letter-spacing: 0.5px; white-space: nowrap; flex-shrink: 0;
-            color: #ffffff; box-shadow: 0 2px 4px rgba(0,0,0,0.1); border: 1px solid transparent; 
-        }
+        .pill { font-size: 0.55rem; font-weight: 700; padding: 2px 6px; border-radius: 8px; text-transform: uppercase; letter-spacing: 0.5px; white-space: nowrap; flex-shrink: 0; color: #ffffff; box-shadow: 0 2px 4px rgba(0,0,0,0.1); border: 1px solid transparent; }
         body.dark-theme .pill { background-color: transparent !important; box-shadow: none; }
-
         .pill-hms { background: var(--c-hms); } body.dark-theme .pill-hms { color: var(--c-hms); border-color: var(--c-hms); }
         .pill-uepa { background: var(--c-uepa); } body.dark-theme .pill-uepa { color: var(--c-uepa); border-color: var(--c-uepa); }
-        .pill-hrba { background: var(--c-hrba); } 
-        body.dark-theme .pill-hrba { color: var(--c-hrba); border-color: var(--c-hrba); box-shadow: 0 0 6px rgba(68, 138, 255, 0.3) !important; }
+        .pill-hrba { background: var(--c-hrba); } body.dark-theme .pill-hrba { color: var(--c-hrba); border-color: var(--c-hrba); box-shadow: 0 0 6px rgba(68, 138, 255, 0.3) !important; }
         .pill-ures { background: var(--c-ures); } body.dark-theme .pill-ures { color: var(--c-ures); border-color: var(--c-ures); }
         .pill-ubs { background: var(--c-ubs); } body.dark-theme .pill-ubs { color: var(--c-ubs); border-color: var(--c-ubs); }
         .pill-amb { background: var(--c-amb); } body.dark-theme .pill-amb { color: var(--c-amb); border-color: var(--c-amb); }
         .pill-neutral { background: var(--c-neutral); } body.dark-theme .pill-neutral { color: var(--c-neutral); border-color: var(--c-neutral); }
 
         .date-line { display: flex; align-items: center; font-size: 0.65rem; color: var(--text-meta); margin-top: 4px; font-weight: 500; font-family: 'Segoe UI', sans-serif; }
-        
-        .status-dot {
-            width: 5px; height: 5px; background-color: var(--dot-color); border-radius: 50%;
-            display: inline-block; margin-right: 5px;
-            animation: pulse 3s infinite ease-in-out; 
-        }
-        @keyframes pulse {
-            0% { box-shadow: 0 0 0 0 rgba(0, 230, 118, 0.3); opacity: 0.8; }
-            50% { box-shadow: 0 0 0 3px rgba(0, 230, 118, 0); opacity: 1; }
-            100% { box-shadow: 0 0 0 0 rgba(0, 230, 118, 0); opacity: 0.8; }
-        }
-
-        .time-line { 
-            max-height: 0; opacity: 0; overflow: hidden; margin-top: 0;
-            transition: all 0.4s ease-out; 
-        }
-        body.show-hours .time-line { 
-            max-height: 20px; opacity: 1; margin-top: 4px; 
-        }
-
-        .badge-time {
-            display: inline-block; padding: 2px 6px; border-radius: 4px; font-size: 0.58rem;
-            font-weight: 700; 
-            background-color: var(--bg-time); color: var(--text-time); border: 1px solid var(--border-time);
-        }
+        .status-dot { width: 5px; height: 5px; background-color: var(--dot-color); border-radius: 50%; display: inline-block; margin-right: 5px; animation: pulse 3s infinite ease-in-out; }
+        @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(0, 230, 118, 0.3); opacity: 0.8; } 50% { box-shadow: 0 0 0 3px rgba(0, 230, 118, 0); opacity: 1; } 100% { box-shadow: 0 0 0 0 rgba(0, 230, 118, 0); opacity: 0.8; } }
+        .time-line { max-height: 0; opacity: 0; overflow: hidden; margin-top: 0; transition: all 0.4s ease-out; }
+        body.show-hours .time-line { max-height: 20px; opacity: 1; margin-top: 4px; }
+        .badge-time { display: inline-block; padding: 2px 6px; border-radius: 4px; font-size: 0.58rem; font-weight: 700; background-color: var(--bg-time); color: var(--text-time); border: 1px solid var(--border-time); }
         body.dark-theme .badge-time { background-color: #3e2723; color: #ff8a80; border-color: #5d4037; }
 
-        /* EASTER EGG SIGNATURE */
-        .signature {
-            margin-top: 30px;
-            font-size: 0.65rem;
-            color: var(--text-meta);
-            opacity: 0; /* Invisível por padrão */
-            cursor: default;
-            transition: opacity 0.6s ease, transform 0.6s ease;
-            user-select: none;
+        /* SMART POPUP & TIMER */
+        .next-class-popup {
+            position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%) translateY(100px);
+            background: var(--popup-bg); border: 1px solid var(--popup-border); border-left: 5px solid var(--popup-accent);
+            padding: 12px 20px; border-radius: 12px; box-shadow: var(--popup-shadow);
+            display: flex; align-items: center; justify-content: space-between; gap: 15px;
+            min-width: 320px; max-width: 90%; backdrop-filter: blur(10px); z-index: 1000;
+            opacity: 0; overflow: hidden;
         }
-        .signature:hover {
-            opacity: 0.7; /* Aparece ao passar o mouse */
-            transform: translateY(-5px);
-        }
+        .next-class-popup.visible { transform: translateX(-50%) translateY(0); opacity: 1; }
+        .popup-info { display: flex; flex-direction: column; z-index: 2; width: 100%; }
+        .popup-header-row { display: flex; align-items: center; margin-bottom: 6px; }
+        .popup-badge { font-size: 0.6rem; font-weight: 800; color: #ffffff; padding: 1px 6px; border-radius: 4px; margin-right: 6px; letter-spacing: 0.5px; }
+        .badge-today { background: var(--badge-today-bg); }
+        .badge-tomorrow { background: var(--badge-tmrw-bg); }
+        .badge-soon { background: var(--badge-soon-bg); }
+        .popup-label { font-size: 0.65rem; text-transform: uppercase; letter-spacing: 1px; color: var(--text-meta); font-weight: 700; }
+        .popup-title { font-size: 1rem; color: var(--popup-text); font-weight: 800; margin-bottom: 6px; line-height: 1; }
+        .popup-row { display: flex; align-items: center; font-size: 0.75rem; color: var(--popup-text); margin-bottom: 3px; }
+        .popup-row b { font-weight: 700; color: var(--popup-text); margin: 0 3px; }
+        .popup-icon { margin-right: 6px; font-size: 0.8rem; opacity: 0.8; }
+        .popup-close { background: none; border: none; font-size: 1.4rem; cursor: pointer; color: var(--text-meta); padding: 0 0 0 10px; z-index: 2; align-self: flex-start; line-height: 1; }
+        .popup-close:hover { color: var(--popup-text); }
+        .popup-timer { position: absolute; bottom: 0; left: 0; height: 3px; background: var(--popup-accent); width: 100%; opacity: 0.7; z-index: 1; }
+        .visible .popup-timer { animation: countdown 10s linear forwards; }
+        @keyframes countdown { from { width: 100%; } to { width: 0%; } }
+
+        .signature { margin-top: 30px; font-size: 0.65rem; color: var(--text-meta); opacity: 0; cursor: default; transition: opacity 0.6s ease, transform 0.6s ease; user-select: none; }
+        .signature:hover { opacity: 0.7; transform: translateY(-5px); }
     </style>
 </head>
 <body>
@@ -352,11 +322,35 @@
     </table>
 </div>
 
+<div id="nextClassPopup" class="next-class-popup">
+    <div class="popup-info">
+        <div class="popup-header-row" id="popup-header-row">
+            <span class="popup-badge" id="popup-badge">HOJE</span>
+            <span class="popup-label" id="popup-group-label">GR A</span>
+        </div>
+        <div class="popup-title" id="popup-title">HP-8</div>
+        <div class="popup-row">
+            <span class="popup-icon">📅</span> <span id="popup-time">...</span>
+            <span style="margin: 0 6px; opacity: 0.3">|</span>
+            <span class="popup-icon">📍</span> <span id="popup-loc">...</span>
+        </div>
+        <div class="popup-row">
+            <span class="popup-icon">👤</span> <span id="popup-prof">...</span>
+        </div>
+    </div>
+    <button class="popup-close" onclick="closePopupManual()">×</button>
+    <div id="popupTimer" class="popup-timer"></div>
+</div>
+
 <div class="signature">Desenvolvido por Claudemir | MED8 2026</div>
 
 <script>
 const ANO_LETIVO = 2026;
+// [ALTERAÇÃO 1] Data alterada para 19 de Fevereiro (mês 1 em JS)
+const START_DATE = new Date(2026, 1, 19); 
+
 let showHours = false;
+let popupTimeout; 
 
 // 🧩 LEGO DATABASE
 const DATA_LEGO = [
@@ -461,6 +455,17 @@ function getPillClass(l) {
     return "pill-neutral";
 }
 
+function getLocColorVar(l) {
+    const u = l.toUpperCase();
+    if(u.includes('HMS')) return 'var(--c-hms)';
+    if(u.includes('UEPA')) return 'var(--c-uepa)';
+    if(u.includes('HRBA')) return 'var(--c-hrba)';
+    if(u.includes('URES')) return 'var(--c-ures)';
+    if(u.includes('UBS')) return 'var(--c-ubs)';
+    if(u.includes('AMB')) return 'var(--c-amb)';
+    return 'var(--popup-text)';
+}
+
 function generateImage() {
     const element = document.getElementById("capture-area");
     document.body.classList.add('capturing');
@@ -489,7 +494,7 @@ function checkWeek(dateStr, offset) {
     });
 }
 
-function updateView() {
+function updateView(shouldShowPopup = false) {
     const group = document.getElementById('groupSelect').value;
     localStorage.setItem('medGroup', group);
     document.getElementById('appTitle').innerText = `MED8 | GRUPO ${group} | ${ANO_LETIVO}.1`;
@@ -533,10 +538,22 @@ function updateView() {
                     else if(actL.includes("morfo")) colorClass = "morfo";
 
                     let displayTitle = abrev(m.p);
-                    if (m.act.includes("TUTORIAL")) displayTitle = "Tutorial";
-                    else if (m.act.includes("MORFO")) displayTitle = "Morfo";
-                    else if (m.act.includes("HP-8")) { /* Mantém nome prof */ }
-                    else if (m.act.toUpperCase() === "HP") displayTitle = "HP";
+                    let tooltipAttr = "";
+                    let tooltipClass = "";
+
+                    if (m.act.includes("TUTORIAL")) {
+                        displayTitle = "Tutorial";
+                        tooltipAttr = `data-prof="${abrev(m.p)}"`;
+                        tooltipClass = "has-tooltip";
+                    } 
+                    else if (m.act.includes("MORFO")) {
+                        displayTitle = "Morfo";
+                        tooltipAttr = `data-prof="${abrev(m.p)}"`;
+                        tooltipClass = "has-tooltip";
+                    } 
+                    else if (m.act.includes("HP-8")) {
+                        displayTitle = abrev(m.p);
+                    }
 
                     const locsArr = m.l.split('/');
                     const pills = locsArr.filter(l => l.trim().toUpperCase() !== 'UEPA').map(loc => `<span class="pill ${getPillClass(loc)}">${loc.trim()}</span>`).join('');
@@ -549,7 +566,7 @@ function updateView() {
                         dateDisplay = filteredDates;
                     }
 
-                    cellContent += `<div class="subject-block ${colorClass}">
+                    cellContent += `<div class="subject-block ${colorClass} ${tooltipClass}" ${tooltipAttr}>
                         <div class="card-header">
                             <span class="card-title">${displayTitle}</span>
                             <div style="display:flex; gap:2px">${pills}</div>
@@ -569,14 +586,137 @@ function updateView() {
     document.querySelectorAll('#header-row th').forEach((th, i) => {
         if(i > 0) th.classList.toggle('today-column', (isCurrentWeekMode && i === todayIndex));
     });
+    
+    if(shouldShowPopup) updatePopup();
 }
 
 function setFilter(val, btn) {
     document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active'); activeFilter = val; updateView();
+    btn.classList.add('active'); activeFilter = val; updateView(false);
 }
 
-function changeGroup(val) { updateView(); }
+function changeGroup(val) { updateView(true); }
+
+// --- SMART POPUP LOGIC ---
+function updatePopup() {
+    clearTimeout(popupTimeout);
+    const popup = document.getElementById('nextClassPopup');
+    popup.classList.remove('visible');
+    
+    setTimeout(() => {
+        const group = document.getElementById('groupSelect').value;
+        const now = new Date();
+        const effectiveNow = now < START_DATE ? new Date(START_DATE) : now;
+        const daysMap = {"Segunda":1, "Terça":2, "Quarta":3, "Quinta":4, "Sexta":5, "Sábado":6};
+        const timeMap = {"Manhã": 8, "Tarde": 14, "Noite": 18};
+
+        let nextClass = null;
+        let minDiff = Infinity;
+
+        DATA_LEGO.forEach(item => {
+            if (item.g !== "Todos" && !item.g.includes(group)) return;
+
+            const dayIdx = daysMap[item.d];
+            const hour = item.h ? parseInt(item.h.split(':')[0]) : timeMap[item.t];
+            
+            let classDate = new Date(effectiveNow); 
+            classDate.setHours(hour, 0, 0, 0);
+
+            let currentDayIdx = effectiveNow.getDay();
+            let diffDays = dayIdx - currentDayIdx;
+            
+            if (diffDays < 0 || (diffDays === 0 && effectiveNow.getHours() >= hour)) {
+                diffDays += 7; 
+            }
+            classDate.setDate(effectiveNow.getDate() + diffDays);
+
+            if (item.dates !== "Semanal") {
+                const possibleDates = item.dates.split(',').map(d => {
+                    const [dd, mm] = d.trim().split('/');
+                    return new Date(ANO_LETIVO, parseInt(mm)-1, parseInt(dd), hour, 0);
+                });
+                
+                const validDate = possibleDates.find(d => d > effectiveNow);
+                if (!validDate) return; 
+                classDate = validDate;
+            } 
+            
+            if (classDate < START_DATE) {
+                if (item.dates === "Semanal") {
+                    let startDayIdx = START_DATE.getDay();
+                    let diffFromStart = dayIdx - startDayIdx;
+                    if (diffFromStart < 0) diffFromStart += 7;
+                    classDate = new Date(START_DATE);
+                    classDate.setDate(START_DATE.getDate() + diffFromStart);
+                    classDate.setHours(hour, 0, 0, 0);
+                }
+            }
+
+            const diff = classDate - now; 
+            if (diff > 0 && diff < minDiff) {
+                minDiff = diff;
+                nextClass = { ...item, realDate: classDate };
+            }
+        });
+
+        if (nextClass) {
+            const todayMidnight = new Date(); todayMidnight.setHours(0,0,0,0);
+            const targetMidnight = new Date(nextClass.realDate); targetMidnight.setHours(0,0,0,0);
+            const diffTime = targetMidnight - todayMidnight;
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+            let relativeTag = "";
+            let badgeClass = "";
+
+            if (diffDays <= 0) { relativeTag = "HOJE"; badgeClass = "badge-today"; }
+            else if (diffDays === 1) { relativeTag = "AMANHÃ"; badgeClass = "badge-tomorrow"; }
+            else { relativeTag = `EM ${diffDays} DIAS`; badgeClass = "badge-soon"; }
+
+            const dayName = nextClass.realDate.toLocaleDateString('pt-BR', { weekday: 'long' });
+            const dateStr = nextClass.realDate.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' });
+            const timeStr = nextClass.h ? nextClass.h.split(' - ')[0] : nextClass.t; 
+            
+            let when = "";
+            const today = new Date();
+            const tomorrow = new Date(); tomorrow.setDate(today.getDate() + 1);
+
+            if (nextClass.realDate >= START_DATE) {
+                if (nextClass.realDate.toDateString() === today.toDateString()) when = `${dayName.charAt(0).toUpperCase() + dayName.slice(1)} (${dateStr}) às <b>${timeStr}</b>`;
+                else if (nextClass.realDate.toDateString() === tomorrow.toDateString()) when = `${dayName.charAt(0).toUpperCase() + dayName.slice(1)} (${dateStr}) às <b>${timeStr}</b>`;
+                else when = `${dayName.charAt(0).toUpperCase() + dayName.slice(1)} (${dateStr}) às <b>${timeStr}</b>`;
+            } else {
+                when = `${dayName.charAt(0).toUpperCase() + dayName.slice(1)} (${dateStr}) às <b>${timeStr}</b>`;
+            }
+
+            const headerHtml = `<span class="popup-badge ${badgeClass}">${relativeTag}</span> GRUPO ${group}`;
+            document.getElementById('popup-header-row').innerHTML = `<span class="popup-label">${headerHtml}</span>`;
+            document.getElementById('popup-title').innerText = nextClass.act;
+            
+            const locName = nextClass.l.split('/')[0];
+            const locColor = getLocColorVar(locName); 
+            
+            document.getElementById('popup-time').innerHTML = `${dayName.charAt(0).toUpperCase() + dayName.slice(1)} (${dateStr}) às <b>${timeStr}</b>`;
+            document.getElementById('popup-loc').innerHTML = `<b style="color:${locColor}">${locName}</b>`;
+            document.getElementById('popup-prof').innerText = abrev(nextClass.p);
+
+            const timerBar = document.getElementById('popupTimer');
+            timerBar.style.animation = 'none';
+            timerBar.offsetHeight; 
+            timerBar.style.animation = 'countdown 10s linear forwards';
+
+            popup.classList.add('visible');
+            
+            popupTimeout = setTimeout(() => {
+                popup.classList.remove('visible');
+            }, 10000);
+        }
+    }, 100);
+}
+
+function closePopupManual() {
+    clearTimeout(popupTimeout);
+    document.getElementById('nextClassPopup').classList.remove('visible');
+}
 
 (function init() {
     const today = new Date();
@@ -588,7 +728,7 @@ function changeGroup(val) { updateView(); }
     const months = [{n:'Fev',v:'/02'},{n:'Mar',v:'/03'},{n:'Abr',v:'/04'},{n:'Mai',v:'/05'},{n:'Jun',v:'/06'}];
     document.getElementById('monthButtons').innerHTML = months.map(m => `<button class="filter-btn" onclick="setFilter('${m.v}', this)">${m.n}</button>`).join('');
     document.getElementById('btn-currWeek').classList.add('active');
-    updateView();
+    updateView(true);
 })();
 </script>
 </body>
