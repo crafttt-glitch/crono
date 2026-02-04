@@ -733,12 +733,49 @@ function closePopupManual() {
 </script>
 
 <script>
+  // 1. Registra o Service Worker (O Mordomo)
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
-      navigator.serviceWorker.register('./sw.js')
-        .then(reg => console.log('Modo Offline ativado!', reg))
-        .catch(err => console.log('Erro ao ativar offline:', err));
+      navigator.serviceWorker.register('./sw.js').then(reg => {
+        
+        // 2. O ESPIÃO: Verifica se tem atualização assim que carrega
+        if (navigator.onLine) {
+            checkUpdate();
+        }
+        
+      });
     });
+  }
+
+  async function checkUpdate() {
+      try {
+          // A. Pega o arquivo que está sendo mostrado AGORA (do Cache)
+          const responseCache = await fetch('./index.html');
+          const textCache = await responseCache.text();
+
+          // B. Vai na internet buscar o arquivo NOVO (burlando o cache com ?time=...)
+          const responseNetwork = await fetch('./index.html?ver=' + new Date().getTime());
+          const textNetwork = await responseNetwork.text();
+
+          // C. Jogo dos 7 Erros: Compara os dois
+          // Se o tamanho ou conteúdo mudou, significa que você alterou o horário
+          if (textCache !== textNetwork) {
+              console.log("Nova versão detectada! Atualizando...");
+              
+              // Limpa os caches antigos para garantir
+              if ('caches' in window) {
+                  const keys = await caches.keys();
+                  await Promise.all(keys.map(key => caches.delete(key)));
+              }
+              
+              // D. Recarrega a página na força bruta
+              window.location.reload();
+          } else {
+              console.log("Você já está na versão mais atual.");
+          }
+      } catch (error) {
+          console.log("Sem internet ou erro ao verificar atualização.", error);
+      }
   }
 </script>
 </body>
