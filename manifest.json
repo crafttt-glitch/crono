@@ -1,0 +1,9 @@
+{
+  "name": "MED8 Cronograma",
+  "short_name": "MED8",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#003366",
+  "theme_color": "#003366",
+  "icons": []
+}
