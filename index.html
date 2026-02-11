@@ -5,9 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="theme-color" content="#003366">
     <title>Cronograma MED8</title>
+    
+    <link rel="manifest" href="manifest.json">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📅</text></svg>">
     
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" onerror="console.log('Modo Offline: Print desativado');"></script>
+    
     <style>
         * { box-sizing: border-box; }
 
@@ -33,17 +38,15 @@
             --bg-tutorial: linear-gradient(135deg, #fdf2ff 0%, #f3e5f5 100%);
             --bg-morfo: linear-gradient(135deg, #f3e5f5 0%, #e1bee7 100%);
             
-            /* Barras Laterais */
+            /* Barras Laterais e Cores Sólidas */
             --bar-hp8: #1565c0; --bar-giesc: #2e7d32; --bar-tutorial: #7b1fa2; --bar-morfo: #4a148c;
 
-            /* Pills */
+            /* Pills (Cores dos Locais) */
             --c-hms: #ef6c00; --c-uepa: #00897b; --c-hrba: #283593; 
             --c-ures: #d81b60; --c-ubs: #558b2f; --c-amb: #00acc1; --c-neutral: #757575;
 
             /* Time Badge */
             --bg-time: #ffebee; --text-time: #c62828; --border-time: #ffcdd2;
-
-            /* Status Dot */
             --dot-color: #00e676; 
 
             /* Tooltip GLASS */
@@ -77,7 +80,6 @@
             --primary-blue: #82b1ff;
             
             --text-title: #f0f4f8; 
-            /* [ALTERAÇÃO 2] Clareado para branco mais legível nas datas dos cards */
             --text-meta: #cfd8dc; 
             --text-header: #ffffff; --bg-header-btn: #2c3038;
             
@@ -103,7 +105,7 @@
         }
 
         /* Transições */
-        body, .subject-block, .btn-action, .filter-btn, .pill, th, td, .members-info, .badge-time, .context-panel, .command-bar, .btn-icon, .time-col, .card-title, .next-class-popup {
+        body, .subject-block, .btn-action, .filter-btn, .pill, th, td, .members-info, .badge-time, .context-panel, .command-bar, .btn-icon, .time-col, .card-title, .next-class-popup, .calendar-container {
             transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
         }
 
@@ -136,7 +138,6 @@
         body.dark-theme .filter-btn.special.active { background: #ff6f00 !important; color: #fff !important; border-color: #ffca28 !important; box-shadow: 0 0 10px rgba(255, 111, 0, 0.5); }
 
         .today-display { font-size: 0.72rem; font-weight: 700; color: #003366; background: #e3f2fd; padding: 5px 10px; border-radius: 6px; border: 1px solid #90caf9; }
-        /* [ALTERAÇÃO 2] Ajuste do Modo Escuro para Branco Puro */
         body.dark-theme .today-display { background: #1a237e; color: #ffffff; border: 1px solid #5c6bc0; }
         
         .members-list { font-size: 0.68rem; font-weight: 600; background: #fffde7; padding: 6px 10px; border-radius: 6px; border: 1px solid #fdd835; margin-top: 8px; line-height: 1.3; color: #37474f; }
@@ -148,45 +149,53 @@
         .slider-item { display: flex; flex-direction: column; font-size: 0.65rem; font-weight: bold; color: var(--text-meta); width: 80px; }
         @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* TABELA */
+        /* MODO TABELA (MATRIZ) */
         .schedule-container { display: inline-block; background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); overflow-x: auto; padding: 2px; min-width: min-content; }
         table { width: max-content; border-collapse: separate; border-spacing: 0; table-layout: fixed; }
-        
         th { background-color: var(--header-bg-green); color: white; text-transform: uppercase; font-size: 0.65rem; padding: 8px; border-right: 1px solid rgba(255,255,255,0.1); letter-spacing: 0.5px; }
         th:first-child { border-radius: 8px 0 0 0; }
         th:last-child { border-right: none; border-radius: 0 8px 0 0; }
         #cornerGroup { font-size: 1.1rem; font-weight: 800; background-color: var(--header-bg-green); color: rgba(255,255,255,0.9); text-align: center; vertical-align: middle; }
-        
         td { border-bottom: 1px solid var(--border-color); border-right: 1px solid var(--border-color); vertical-align: top; padding: 4px; font-size: 0.72rem; position: relative; }
         tr:last-child td { border-bottom: none; }
         
-        /* [NEON SEAMLESS FIX] - Highlight Contínuo */
-        /* 1. Header Cell */
-        th.today-column {
-            border: 2px solid var(--neon-color) !important;
-            border-bottom: none !important;
-            box-shadow: 0 -4px 15px var(--neon-color) !important; /* Glow Topo */
-            z-index: 10;
-        }
-        /* 2. Body Cells */
-        td.today-column {
-            border-left: 2px solid var(--neon-color) !important;
-            border-right: 2px solid var(--neon-color) !important;
-            border-top: none !important;
-            border-bottom: none !important; /* Remove divisor horizontal */
-            /* Glow Lateral Suave */
-            box-shadow: inset 3px 0 8px -4px var(--neon-color), inset -3px 0 8px -4px var(--neon-color) !important; 
-            z-index: 10;
-        }
-        /* 3. Last Cell */
-        tbody tr:last-child td.today-column {
-            border-bottom: 2px solid var(--neon-color) !important;
-            border-radius: 0 0 12px 12px;
-            box-shadow: 0 4px 15px var(--neon-color), inset 3px 0 8px -4px var(--neon-color), inset -3px 0 8px -4px var(--neon-color) !important;
-        }
+        /* [NEON SEAMLESS FIX] */
+        th.today-column { border: 2px solid var(--neon-color) !important; border-bottom: none !important; box-shadow: 0 -4px 15px var(--neon-color) !important; z-index: 10; }
+        td.today-column { border-left: 2px solid var(--neon-color) !important; border-right: 2px solid var(--neon-color) !important; border-top: none !important; border-bottom: none !important; box-shadow: inset 3px 0 8px -4px var(--neon-color), inset -3px 0 8px -4px var(--neon-color) !important; z-index: 10; }
+        tbody tr:last-child td.today-column { border-bottom: 2px solid var(--neon-color) !important; border-radius: 0 0 12px 12px; box-shadow: 0 4px 15px var(--neon-color), inset 3px 0 8px -4px var(--neon-color), inset -3px 0 8px -4px var(--neon-color) !important; }
 
         .col-seg { width: var(--w-seg); } .col-ter { width: var(--w-ter); } .col-qua { width: var(--w-qua); } .col-qui { width: var(--w-qui); } .col-sex { width: var(--w-sex); } .col-sab { width: var(--w-sab); }
         .time-col { background-color: var(--header-bg-blue); color: white; width: 40px; text-align: center; font-weight: 800; vertical-align: middle; border-bottom: 1px solid rgba(255,255,255,0.1); }
+
+        /* MODO CALENDÁRIO */
+        .calendar-container { display: none; width: 100%; max-width: 1250px; background: var(--card-bg); padding: 8px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border: 1px solid var(--border-color); }
+        .calendar-header-title { text-align: center; font-weight: 800; color: var(--header-bg-blue); margin-bottom: 10px; font-size: 1rem; text-transform: uppercase; letter-spacing: 1px; }
+        body.dark-theme .calendar-header-title { color: var(--primary-blue); }
+        .calendar-grid { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 4px; }
+        .cal-header { text-align: center; font-size: 0.65rem; font-weight: 800; color: var(--text-title); text-transform: uppercase; padding: 4px 0; border-bottom: 2px solid var(--header-bg-green); margin-bottom: 4px; }
+        
+        .cal-day { background: var(--bg-header-btn); min-height: 100px; border-radius: 8px; padding: 4px; display: flex; flex-direction: column; border: 1px solid var(--border-color); overflow-y: auto; }
+        .cal-day.empty { background: transparent; border-color: transparent; }
+        .cal-date { font-size: 0.75rem; font-weight: bold; color: var(--text-meta); text-align: right; margin-bottom: 2px; }
+        .cal-day.is-today { border: 2px solid var(--neon-color); box-shadow: inset 0 0 8px rgba(0, 188, 212, 0.2); }
+        .cal-day.is-today .cal-date { color: var(--neon-color); font-weight: 900; }
+        
+        /* Zonas Manhã/Tarde/Noite no Calendário (Swimlanes Flexíveis com Indicador) */
+        .cal-zone { flex: 1 0 auto; display: flex; flex-direction: column; gap: 2px; min-height: 24px; background: rgba(0, 0, 0, 0.03); border: 1px solid rgba(0, 0, 0, 0.02); border-radius: 4px; padding: 2px 2px 2px 14px; margin-bottom: 2px; position: relative; }
+        body.dark-theme .cal-zone { background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.02); }
+        .cal-zone:last-child { margin-bottom: 0; }
+        
+        /* Indicadores de Turno (M, T, N) na lateral de cada zona */
+        .cal-zone::before { position: absolute; left: 3px; top: 4px; font-size: 0.55rem; font-weight: 800; color: var(--text-meta); opacity: 0.6; }
+        .cal-day > .cal-zone:nth-child(2)::before { content: 'M'; }
+        .cal-day > .cal-zone:nth-child(3)::before { content: 'T'; }
+        .cal-day > .cal-zone:nth-child(4)::before { content: 'N'; }
+
+        /* Micro-cards adaptados ao Dark Mode (Fundo ligeiramente escuro 0.3) */
+        .micro-card { font-size: 0.58rem; font-weight: 700; padding: 3px 5px; border-radius: 4px; background-color: var(--micro-color); color: #fff; cursor: pointer; text-align: left; box-shadow: 0 2px 4px rgba(0,0,0,0.1); line-height: 1.1; transition: transform 0.2s, filter 0.2s; border-left: 3px solid rgba(255,255,255,0.4); overflow: hidden; white-space: nowrap; text-overflow: ellipsis; flex-shrink: 0; }
+        .micro-card:hover { transform: scale(1.02) translateX(2px); filter: brightness(1.1); }
+        
+        body.dark-theme .micro-card { background-color: rgba(0, 0, 0, 0.3) !important; color: var(--micro-color); border: 1px solid var(--micro-color); border-left: 3px solid var(--micro-color); box-shadow: none; }
 
         @keyframes blockEnter { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
         
@@ -194,15 +203,7 @@
         .subject-block:hover { transform: translateY(-3px); box-shadow: 0 6px 12px rgba(0,0,0,0.08); z-index: 5; }
         .subject-block::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 4px; background: var(--bar-color); border-radius: 10px 0 0 10px; }
 
-        /* TRUE GLASS TOOLTIP */
-        .has-tooltip:hover::after {
-            content: attr(data-prof); position: absolute; bottom: 105%; left: 50%; transform: translateX(-50%);
-            background: var(--tooltip-bg); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
-            color: var(--tooltip-text); padding: 4px 10px; border-radius: 6px;
-            font-size: 0.65rem; font-weight: 600; white-space: nowrap;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.2); opacity: 0; animation: tooltipFade 0.3s forwards 0.1s;
-            pointer-events: none; z-index: 100; border: 1px solid var(--tooltip-border);
-        }
+        .has-tooltip:hover::after { content: attr(data-prof); position: absolute; bottom: 105%; left: 50%; transform: translateX(-50%); background: var(--tooltip-bg); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); color: var(--tooltip-text); padding: 4px 10px; border-radius: 6px; font-size: 0.65rem; font-weight: 600; white-space: nowrap; box-shadow: 0 8px 25px rgba(0,0,0,0.2); opacity: 0; animation: tooltipFade 0.3s forwards 0.1s; pointer-events: none; z-index: 100; border: 1px solid var(--tooltip-border); }
         @keyframes tooltipFade { from { opacity: 0; transform: translateX(-50%) translateY(5px); } to { opacity: 1; transform: translateX(-50%) translateY(0); } }
 
         .giesc { background: var(--bg-giesc) !important; --bar-color: var(--bar-giesc); }
@@ -223,23 +224,29 @@
         .pill-amb { background: var(--c-amb); } body.dark-theme .pill-amb { color: var(--c-amb); border-color: var(--c-amb); }
         .pill-neutral { background: var(--c-neutral); } body.dark-theme .pill-neutral { color: var(--c-neutral); border-color: var(--c-neutral); }
 
-        .date-line { display: flex; align-items: center; font-size: 0.65rem; color: var(--text-meta); margin-top: 4px; font-weight: 500; font-family: 'Segoe UI', sans-serif; }
+        /* LÓGICA DE OCULTAR DATAS (MATRIZ) */
+        .date-line { display: flex; align-items: center; font-size: 0.65rem; color: var(--text-meta); margin-top: 4px; font-weight: 500; font-family: 'Segoe UI', sans-serif; max-height: 50px; opacity: 1; overflow: hidden; transition: all 0.4s ease-out; }
+        body.hide-dates .date-line { max-height: 0; opacity: 0; margin-top: 0; }
+
         .status-dot { width: 5px; height: 5px; background-color: var(--dot-color); border-radius: 50%; display: inline-block; margin-right: 5px; animation: pulse 3s infinite ease-in-out; }
         @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(0, 230, 118, 0.3); opacity: 0.8; } 50% { box-shadow: 0 0 0 3px rgba(0, 230, 118, 0); opacity: 1; } 100% { box-shadow: 0 0 0 0 rgba(0, 230, 118, 0); opacity: 0.8; } }
+        
         .time-line { max-height: 0; opacity: 0; overflow: hidden; margin-top: 0; transition: all 0.4s ease-out; }
         body.show-hours .time-line { max-height: 20px; opacity: 1; margin-top: 4px; }
         .badge-time { display: inline-block; padding: 2px 6px; border-radius: 4px; font-size: 0.58rem; font-weight: 700; background-color: var(--bg-time); color: var(--text-time); border: 1px solid var(--border-time); }
         body.dark-theme .badge-time { background-color: #3e2723; color: #ff8a80; border-color: #5d4037; }
 
-        /* SMART POPUP & TIMER */
-        .next-class-popup {
-            position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%) translateY(100px);
-            background: var(--popup-bg); border: 1px solid var(--popup-border); border-left: 5px solid var(--popup-accent);
-            padding: 12px 20px; border-radius: 12px; box-shadow: var(--popup-shadow);
-            display: flex; align-items: center; justify-content: space-between; gap: 15px;
-            min-width: 320px; max-width: 90%; backdrop-filter: blur(10px); z-index: 1000;
-            opacity: 0; overflow: hidden;
+        /* LÓGICA DE OCULTAR ELEMENTOS NO MODO CALENDÁRIO */
+        body.calendar-mode #btnDateToggle,
+        body.calendar-mode #btnHourToggle,
+        body.calendar-mode #btnSliderToggle,
+        body.calendar-mode #btn-currWeek,
+        body.calendar-mode #btn-nextWeek {
+            display: none !important;
         }
+
+        /* SMART POPUP & TIMER */
+        .next-class-popup { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%) translateY(100px); background: var(--popup-bg); border: 1px solid var(--popup-border); border-left: 5px solid var(--popup-accent); padding: 12px 20px; border-radius: 12px; box-shadow: var(--popup-shadow); display: flex; align-items: center; justify-content: space-between; gap: 15px; min-width: 320px; max-width: 90%; backdrop-filter: blur(10px); z-index: 1000; opacity: 0; overflow: hidden; }
         .next-class-popup.visible { transform: translateX(-50%) translateY(0); opacity: 1; }
         .popup-info { display: flex; flex-direction: column; z-index: 2; width: 100%; }
         .popup-header-row { display: flex; align-items: center; margin-bottom: 6px; }
@@ -268,9 +275,12 @@
     <div class="command-bar">
         <div class="app-title" id="appTitle">MED8 | GRUPO A | 2026.1</div>
         <div class="action-icons">
-            <button class="btn-icon" title="Tema" onclick="toggleDarkMode()">🌓</button>
+            <button class="btn-icon active" id="btnDateToggle" title="Datas" onclick="toggleDates()">👁️</button>
             <button class="btn-icon" id="btnHourToggle" title="Horas" onclick="toggleHours()">⏰</button>
-            <button class="btn-icon" title="Colunas" onclick="toggleSliders()">📏</button>
+            <button class="btn-icon" id="btnSliderToggle" title="Colunas" onclick="toggleSliders()">📏</button>
+            
+            <button class="btn-icon" id="btnViewToggle" title="Ver Calendário" onclick="toggleViewMode()">🗓️</button>
+            <button class="btn-icon active" id="btnThemeToggle" title="Tema" onclick="toggleDarkMode()">🌓</button>
             <button class="btn-icon" title="Print" onclick="generateImage()">🖼️</button>
         </div>
     </div>
@@ -322,6 +332,8 @@
     </table>
 </div>
 
+<div id="calendar-area" class="calendar-container"></div>
+
 <div id="nextClassPopup" class="next-class-popup">
     <div class="popup-info">
         <div class="popup-header-row" id="popup-header-row">
@@ -346,18 +358,25 @@
 
 <script>
 const ANO_LETIVO = 2026;
-// [ALTERAÇÃO 1] Data alterada para 19 de Fevereiro (mês 1 em JS)
 const START_DATE = new Date(2026, 1, 19); 
 
 let showHours = false;
 let popupTimeout; 
+let viewMode = localStorage.getItem('viewMode') || 'matrix';
 
 // 🧩 LEGO DATABASE
 const DATA_LEGO = [
+    /* SEGUNDA */
+    { d: "Segunda", t: "Manhã", act: "GIESC-8", p: "David Pires", l: "UBS", g: "A", dates: "16/03, 13/04, 11/05, 08/06" },
+    { d: "Segunda", t: "Manhã", act: "GIESC-8", p: "David Pires", l: "UBS", g: "B", dates: "09/03, 06/04, 04/05, 01/06" },
+    { d: "Segunda", t: "Manhã", act: "GIESC-8", p: "David Pires", l: "UBS", g: "C", dates: "02/03, 30/03, 27/04, 25/05" },
+    { d: "Segunda", t: "Manhã", act: "GIESC-8", p: "David Pires", l: "UBS", g: "D", dates: "23/02, 23/03, 20/04, 18/05, 15/06" },
+
     { d: "Segunda", t: "Manhã", act: "HP-8", p: "Paulo Pires", l: "URES", g: "A", dates: "23/02, 23/03, 20/04, 18/05, 15/06" },
-    { d: "Segunda", t: "Manhã", act: "HP-8", p: "Paulo Pires", l: "URES", g: "B", dates: "02/03, 30/03, 27/04, 25/05, 22/06" },
+    { d: "Segunda", t: "Manhã", act: "HP-8", p: "Paulo Pires", l: "URES", g: "B", dates: "02/03, 30/03, 27/04, 25/05" },
     { d: "Segunda", t: "Manhã", act: "HP-8", p: "Paulo Pires", l: "URES", g: "C", dates: "09/03, 06/04, 04/05, 01/06" },
     { d: "Segunda", t: "Manhã", act: "HP-8", p: "Paulo Pires", l: "URES", g: "D", dates: "16/03, 13/04, 11/05, 08/06" },
+
     { d: "Segunda", t: "Tarde", act: "HP-8", p: "Kalysta Borges", l: "HRBA", g: "A", dates: "16/03, 13/04, 11/05, 08/06" },
     { d: "Segunda", t: "Tarde", act: "HP-8", p: "Kalysta Borges", l: "HRBA", g: "B", dates: "23/02, 23/03, 20/04, 18/05, 15/06" },
     { d: "Segunda", t: "Tarde", act: "HP-8", p: "Kalysta Borges", l: "HRBA", g: "C", dates: "02/03, 30/03, 27/04, 25/05, 22/06" },
@@ -374,33 +393,41 @@ const DATA_LEGO = [
     { d: "Terça", t: "Noite", act: "TUTORIAL-8", p: "Wesley Muniz / Marcos Honorato", l: "UEPA", g: "Todos", dates: "Semanal" },
 
     /* QUARTA */
-    { d: "Quarta", t: "Tarde", act: "HP-8", p: "Kalysta Borges", l: "HRBA", g: "A", dates: "11/03, 08/04, 06/05, 03/06" },
-    { d: "Quarta", t: "Tarde", act: "HP-8", p: "Kalysta Borges", l: "HRBA", g: "B", dates: "18/03, 15/04, 13/05, 10/06" },
-    { d: "Quarta", t: "Tarde", act: "HP-8", p: "Kalysta Borges", l: "HRBA", g: "C", dates: "25/02, 25/03, 22/04, 20/05, 17/06" },
-    { d: "Quarta", t: "Tarde", act: "HP-8", p: "Kalysta Borges", l: "HRBA", g: "D", dates: "04/03, 01/04, 29/04, 27/05, 24/06" },
-    { d: "Quarta", t: "Tarde", act: "HP-8", p: "Alexandre Neto", l: "UEPA", g: "Todos", dates: "Semanal" },
+    { d: "Quarta", t: "Manhã", act: "GIESC-8", p: "David Pires", l: "UBS", g: "A", dates: "11/03, 08/04, 06/05, 03/06" },
+    { d: "Quarta", t: "Manhã", act: "GIESC-8", p: "David Pires", l: "UBS", g: "B", dates: "18/03, 15/04, 13/05, 10/06" },
+    { d: "Quarta", t: "Manhã", act: "GIESC-8", p: "David Pires", l: "UBS", g: "C", dates: "25/02, 25/03, 22/04, 20/05, 17/06" },
+    { d: "Quarta", t: "Manhã", act: "GIESC-8", p: "David Pires", l: "UBS", g: "D", dates: "04/03, 01/04, 29/04, 27/05, 24/06" },
+
+    { d: "Quarta", t: "Tarde", act: "HP-8", p: "Kalysta Borges", l: "HRBA", g: "A", dates: "11/03, 08/04, 06/05, 03/06", h: "13:30 - 16:00" },
+    { d: "Quarta", t: "Tarde", act: "HP-8", p: "Kalysta Borges", l: "HRBA", g: "B", dates: "18/03, 15/04, 13/05, 10/06", h: "13:30 - 16:00" },
+    { d: "Quarta", t: "Tarde", act: "HP-8", p: "Kalysta Borges", l: "HRBA", g: "C", dates: "25/02, 25/03, 22/04, 20/05, 17/06", h: "13:30 - 16:00" },
+    { d: "Quarta", t: "Tarde", act: "HP-8", p: "Kalysta Borges", l: "HRBA", g: "D", dates: "04/03, 01/04, 29/04, 27/05, 24/06", h: "13:30 - 16:00" },
+    { d: "Quarta", t: "Tarde", act: "HP-8", p: "Alexandre Neto", l: "UEPA", g: "Todos", dates: "Semanal", h: "17:00 - 18:00" },
     { d: "Quarta", t: "Noite", act: "HP-8", p: "Adriana Pires / Paulo Pires", l: "UEPA", g: "Todos", dates: "Semanal" },
 
     /* QUINTA */
-    { d: "Quinta", t: "Manhã", act: "HP-8", p: "Wesley Muniz", l: "HMS", g: "A", dates: "26/02, 26/03, 23/04, 21/05, 18/06" },
-    { d: "Quinta", t: "Manhã", act: "HP-8", p: "Wesley Muniz", l: "HMS", g: "B", dates: "05/03, 02/04, 30/04, 28/05, 25/06" },
-    { d: "Quinta", t: "Manhã", act: "HP-8", p: "Wesley Muniz", l: "HMS", g: "C", dates: "19/03, 16/04, 14/05, 11/06" },
-    { d: "Quinta", t: "Manhã", act: "HP-8", p: "Wesley Muniz", l: "HMS", g: "D", dates: "12/03, 09/04, 07/05" },
-    { d: "Quinta", t: "Manhã", act: "HP-8", p: "Marcos Honorato", l: "UEPA/Amb", g: "B, C", dates: "26/02, 12/03, 26/03, 09/04, 23/04, 07/05, 21/05, 18/06" },
-    { d: "Quinta", t: "Manhã", act: "HP-8", p: "Marcos Honorato", l: "UEPA/Amb", g: "A, D", dates: "05/03, 19/03, 02/04, 16/04, 30/04, 14/05, 28/05, 11/06, 25/06" },
-    { d: "Quinta", t: "Manhã", act: "HP-8", p: "Adriana Pires / Paulo Pires", l: "HMS/URES", g: "D", dates: "26/02, 26/03, 23/04, 21/05, 18/06" },
-    { d: "Quinta", t: "Manhã", act: "HP-8", p: "Adriana Pires / Paulo Pires", l: "HMS/URES", g: "A", dates: "12/03, 09/04, 07/05" },
-    { d: "Quinta", t: "Manhã", act: "HP-8", p: "Adriana Pires / Paulo Pires", l: "HMS/URES", g: "B", dates: "19/03, 16/04, 14/05, 11/06" },
-    { d: "Quinta", t: "Manhã", act: "HP-8", p: "Adriana Pires / Paulo Pires", l: "HMS/URES", g: "C", dates: "05/03, 02/04, 30/04, 28/05, 25/06" },
-    
-    { d: "Quinta", t: "Tarde", act: "HP-8", p: "Wesley Muniz", l: "HMS", g: "A", dates: "19/03, 16/04, 14/05, 11/06" },
-    { d: "Quinta", t: "Tarde", act: "HP-8", p: "Wesley Muniz", l: "HMS", g: "B", dates: "26/02, 26/03, 23/04, 21/05, 18/06" },
-    { d: "Quinta", t: "Tarde", act: "HP-8", p: "Wesley Muniz", l: "HMS", g: "C", dates: "05/03, 02/04, 30/04, 28/05, 25/06" },
-    { d: "Quinta", t: "Tarde", act: "HP-8", p: "Wesley Muniz", l: "HMS", g: "D", dates: "12/03, 09/04, 07/05" },
+    { d: "Quinta", t: "Manhã", act: "HP-8", p: "Paulo Pires / Adriana Pires", l: "URES/HMS", g: "A", dates: "12/03, 09/04, 07/05" },
+    { d: "Quinta", t: "Manhã", act: "HP-8", p: "Paulo Pires / Adriana Pires", l: "URES/HMS", g: "B", dates: "19/03, 16/04, 14/05, 11/06" },
+    { d: "Quinta", t: "Manhã", act: "HP-8", p: "Paulo Pires / Adriana Pires", l: "URES/HMS", g: "C", dates: "05/03, 02/04, 30/04, 28/05, 25/06" },
+    { d: "Quinta", t: "Manhã", act: "HP-8", p: "Paulo Pires / Adriana Pires", l: "URES/HMS", g: "D", dates: "26/02, 26/03, 23/04, 21/05, 18/06" },
+
+    { d: "Quinta", t: "Manhã", act: "HP-8", p: "Marcos Honorato", l: "Amb", g: "B, C", dates: "26/02, 12/03, 26/03, 09/04, 23/04, 07/05, 21/05, 18/06" },
+    { d: "Quinta", t: "Manhã", act: "HP-8", p: "Marcos Honorato", l: "Amb", g: "A, D", dates: "05/03, 19/03, 02/04, 16/04, 30/04, 14/05, 28/05, 11/06, 25/06" },
+
+    { d: "Quinta", t: "Manhã", act: "HP-8", p: "Wesley Muniz", l: "HRBA", g: "A", dates: "26/02, 26/03, 23/04, 21/05, 18/06" },
+    { d: "Quinta", t: "Manhã", act: "HP-8", p: "Wesley Muniz", l: "HRBA", g: "B", dates: "05/03, 02/04, 30/04, 28/05, 25/06" },
+    { d: "Quinta", t: "Manhã", act: "HP-8", p: "Wesley Muniz", l: "HRBA", g: "C", dates: "19/03, 16/04, 14/05, 11/06" },
+    { d: "Quinta", t: "Manhã", act: "HP-8", p: "Wesley Muniz", l: "HRBA", g: "D", dates: "12/03, 09/04, 07/05" },
+
     { d: "Quinta", t: "Tarde", act: "HP-8", p: "Marcos Honorato", l: "HMS", g: "A", dates: "26/02, 26/03, 23/04, 21/05, 18/06" },
-    { d: "Quinta", t: "Tarde", act: "HP-8", p: "Marcos Honorato", l: "HMS", g: "B", dates: "12/03, 09/04, 07/05" },
-    { d: "Quinta", t: "Tarde", act: "HP-8", p: "Marcos Honorato", l: "HMS", g: "C", dates: "19/03, 16/04, 14/05, 11/06" },
-    { d: "Quinta", t: "Tarde", act: "HP-8", p: "Marcos Honorato", l: "HMS", g: "D", dates: "05/03, 02/04, 30/04, 28/05, 25/06" },
+    { d: "Quinta", t: "Tarde", act: "HP-8", p: "Marcos Honorato", l: "HMS", g: "B", dates: "05/03, 02/04, 30/04, 28/05, 25/06" },
+    { d: "Quinta", t: "Tarde", act: "HP-8", p: "Marcos Honorato", l: "HMS", g: "C", dates: "12/03, 09/04, 07/05" },
+    { d: "Quinta", t: "Tarde", act: "HP-8", p: "Marcos Honorato", l: "HMS", g: "D", dates: "19/03, 16/04, 14/05, 11/06" },
+
+    { d: "Quinta", t: "Tarde", act: "HP-8", p: "Wesley Muniz", l: "HRBA", g: "A", dates: "19/03, 16/04, 14/05, 11/06" },
+    { d: "Quinta", t: "Tarde", act: "HP-8", p: "Wesley Muniz", l: "HRBA", g: "B", dates: "26/02, 26/03, 23/04, 21/05, 18/06" },
+    { d: "Quinta", t: "Tarde", act: "HP-8", p: "Wesley Muniz", l: "HRBA", g: "C", dates: "05/03, 02/04, 30/04, 28/05, 25/06" },
+    { d: "Quinta", t: "Tarde", act: "HP-8", p: "Wesley Muniz", l: "HRBA", g: "D", dates: "12/03, 09/04, 07/05" },
     { d: "Quinta", t: "Noite", act: "HP-8/CONF", p: "Marcos Honorato", l: "UEPA", g: "Todos", dates: "Semanal" },
 
     /* SEXTA */
@@ -408,10 +435,10 @@ const DATA_LEGO = [
     { d: "Sexta", t: "Noite", act: "TUTORIAL-8", p: "Wesley Muniz / Marcos Honorato", l: "UEPA", g: "Todos", dates: "Semanal" },
 
     /* SÁBADO */
-    { d: "Sábado", t: "Manhã", act: "HP-8 (Uro)", p: "Wesley Muniz", l: "UEPA UROLOGIA", g: "A", dates: "07/03, 09/05, 20/06" },
-    { d: "Sábado", t: "Manhã", act: "HP-8 (Uro)", p: "Wesley Muniz", l: "UEPA UROLOGIA", g: "B", dates: "21/03, 16/05" },
-    { d: "Sábado", t: "Manhã", act: "HP-8 (Uro)", p: "Wesley Muniz", l: "UEPA UROLOGIA", g: "C", dates: "11/04, 29/05" },
-    { d: "Sábado", t: "Manhã", act: "HP-8 (Uro)", p: "Wesley Muniz", l: "UEPA UROLOGIA", g: "D", dates: "18/04, 13/06" }
+    { d: "Sábado", t: "Manhã", act: "HP-8 (Uro)", p: "Wesley Muniz", l: "Amb", g: "A", dates: "07/03, 09/05, 20/06" },
+    { d: "Sábado", t: "Manhã", act: "HP-8 (Uro)", p: "Wesley Muniz", l: "Amb", g: "B", dates: "21/03, 16/05" },
+    { d: "Sábado", t: "Manhã", act: "HP-8 (Uro)", p: "Wesley Muniz", l: "Amb", g: "C", dates: "11/04, 30/05" },
+    { d: "Sábado", t: "Manhã", act: "HP-8 (Uro)", p: "Wesley Muniz", l: "Amb", g: "D", dates: "18/04, 13/06" }
 ];
 
 const GROUP_MEMBERS = {
@@ -424,13 +451,38 @@ const GROUP_MEMBERS = {
 let activeFilter = 'currWeek';
 
 function toggleDarkMode() {
-    document.body.classList.toggle('dark-theme');
-    localStorage.setItem('theme', document.body.classList.contains('dark-theme') ? 'dark' : 'light');
+    const isDark = document.body.classList.toggle('dark-theme');
+    localStorage.setItem('theme', isDark ? 'dark' : 'light');
+    document.getElementById('btnThemeToggle').classList.toggle('active', !isDark);
 }
 
 function toggleHours() { 
     document.body.classList.toggle('show-hours'); 
     document.getElementById('btnHourToggle').classList.toggle('active');
+}
+
+function toggleDates() { 
+    const isHidden = document.body.classList.toggle('hide-dates'); 
+    const btn = document.getElementById('btnDateToggle');
+    btn.classList.toggle('active', !isHidden);
+    btn.innerText = isHidden ? '🙈' : '👁️';
+}
+
+function toggleViewMode() {
+    viewMode = viewMode === 'matrix' ? 'calendar' : 'matrix';
+    localStorage.setItem('viewMode', viewMode);
+    
+    const btn = document.getElementById('btnViewToggle');
+    if(viewMode === 'calendar') {
+        btn.classList.add('active');
+        btn.title = 'Ver Matriz';
+        document.body.classList.add('calendar-mode');
+    } else {
+        btn.classList.remove('active');
+        btn.title = 'Ver Calendário';
+        document.body.classList.remove('calendar-mode');
+    }
+    updateView(false);
 }
 
 function toggleSliders() { document.getElementById('sliderDrawer').classList.toggle('active'); }
@@ -467,13 +519,14 @@ function getLocColorVar(l) {
 }
 
 function generateImage() {
-    const element = document.getElementById("capture-area");
+    const targetId = viewMode === 'calendar' ? "calendar-area" : "capture-area";
+    const element = document.getElementById(targetId);
     document.body.classList.add('capturing');
     var bgCor = getComputedStyle(document.body).getPropertyValue('--card-bg').trim();
     html2canvas(element, { backgroundColor: bgCor, scale: 2 }).then(canvas => {
         document.body.classList.remove('capturing');
         const link = document.createElement('a');
-        link.download = `Cronograma_MED8.png`;
+        link.download = `Cronograma_MED8_${viewMode}.png`;
         link.href = canvas.toDataURL(); link.click();
     });
 }
@@ -494,6 +547,159 @@ function checkWeek(dateStr, offset) {
     });
 }
 
+function renderCalendar() {
+    const group = document.getElementById('groupSelect').value;
+    const now = new Date();
+    
+    // Descobrir qual mês mostrar baseado no filtro
+    let targetMonth = now.getMonth();
+    let targetYear = ANO_LETIVO;
+
+    if (activeFilter.includes('/')) {
+        targetMonth = parseInt(activeFilter.split('/')[1]) - 1;
+    } else {
+        let offset = 0;
+        if (activeFilter === 'nextWeek') offset = 1;
+        
+        const currentDay = now.getDay();
+        const dayAdjusted = currentDay === 0 ? 7 : currentDay;
+        const diff = now.getDate() - (dayAdjusted - 1) + (offset * 7);
+        const weekDate = new Date(now.setDate(diff));
+        targetMonth = weekDate.getMonth();
+    }
+
+    const monthNames = ["JANEIRO", "FEVEREIRO", "MARÇO", "ABRIL", "MAIO", "JUNHO", "JULHO", "AGOSTO", "SETEMBRO", "OUTUBRO", "NOVEMBRO", "DEZEMBRO"];
+    
+    const firstDay = new Date(targetYear, targetMonth, 1).getDay();
+    const daysInMonth = new Date(targetYear, targetMonth + 1, 0).getDate();
+
+    let html = `<div class="calendar-header-title">🗓️ ${monthNames[targetMonth]} DE ${targetYear}</div>`;
+    html += '<div class="calendar-grid">';
+    
+    const weekDays = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
+    weekDays.forEach(d => html += `<div class="cal-header">${d}</div>`);
+
+    // Espaços vazios no começo
+    for (let i = 0; i < firstDay; i++) {
+        html += `<div class="cal-day empty"></div>`;
+    }
+
+    const daysMap = {"Segunda":1, "Terça":2, "Quarta":3, "Quinta":4, "Sexta":5, "Sábado":6};
+    
+    // Dias do mês
+    for (let day = 1; day <= daysInMonth; day++) {
+        const currentDate = new Date(targetYear, targetMonth, day);
+        const isToday = currentDate.toDateString() === new Date().toDateString();
+        const dayClass = isToday ? 'cal-day is-today' : 'cal-day';
+        
+        let dayHtml = `<div class="${dayClass}"><div class="cal-date">${day}</div>`;
+        
+        let cardsM = '';
+        let cardsT = '';
+        let cardsN = '';
+        
+        DATA_LEGO.forEach(item => {
+            if (item.g !== "Todos" && !item.g.includes(group)) return;
+
+            let hasEventToday = false;
+            const eventDayOfWeek = daysMap[item.d];
+
+            if (item.dates === "Semanal") {
+                if (currentDate.getDay() === eventDayOfWeek && currentDate >= START_DATE) {
+                    hasEventToday = true;
+                }
+            } else {
+                const specificDates = item.dates.split(',').map(d => d.trim());
+                const currentStr = `${String(day).padStart(2, '0')}/${String(targetMonth + 1).padStart(2, '0')}`;
+                if (specificDates.includes(currentStr)) {
+                    hasEventToday = true;
+                }
+            }
+
+            if (hasEventToday) {
+                const actL = item.act.toLowerCase();
+                let colorVar = "var(--bar-hp8)";
+                if(actL.includes("giesc")) colorVar = "var(--bar-giesc)";
+                else if(actL.includes("tutorial")) colorVar = "var(--bar-tutorial)";
+                else if(actL.includes("morfo")) colorVar = "var(--bar-morfo)";
+                else if(actL.includes("hp-8") || actL.includes("hp-8 (uro)")) {
+                    colorVar = getLocColorVar(item.l.split('/')[0]);
+                }
+
+                const safeItem = encodeURIComponent(JSON.stringify({...item, realDay: day, realMonth: targetMonth}));
+                
+                let displayTitle = item.act.replace('-8', '');
+                
+                // Regra de Nomes no Calendário
+                if (actL.includes("hp-8") || actL.includes("hp-8 (uro)")) {
+                    displayTitle = abrev(item.p);
+                } else if (actL.includes("giesc")) {
+                    displayTitle = abrev(item.p);
+                } else if (actL.includes("morfo")) {
+                    displayTitle = "Morfo";
+                } else if (actL.includes("tutorial")) {
+                    displayTitle = "Tutorial";
+                }
+                
+                const cardHtml = `<div class="micro-card" style="--micro-color: ${colorVar}" onclick="showCalPopup('${safeItem}')">${displayTitle}</div>`;
+                
+                if (item.t === "Manhã") cardsM += cardHtml;
+                else if (item.t === "Tarde") cardsT += cardHtml;
+                else if (item.t === "Noite") cardsN += cardHtml;
+            }
+        });
+
+        // Adiciona as zonas de natação (Swimlanes) do dia
+        dayHtml += `<div class="cal-zone">${cardsM}</div>`;
+        dayHtml += `<div class="cal-zone">${cardsT}</div>`;
+        dayHtml += `<div class="cal-zone">${cardsN}</div>`;
+        dayHtml += `</div>`;
+        html += dayHtml;
+    }
+
+    // Preencher quadrados no final pra ficar retangular
+    const totalCells = firstDay + daysInMonth;
+    const remainingCells = (7 - (totalCells % 7)) % 7;
+    for (let i = 0; i < remainingCells; i++) {
+        html += `<div class="cal-day empty"></div>`;
+    }
+
+    html += '</div>';
+    document.getElementById('calendar-area').innerHTML = html;
+}
+
+function showCalPopup(encodedData) {
+    const item = JSON.parse(decodeURIComponent(encodedData));
+    const popup = document.getElementById('nextClassPopup');
+    clearTimeout(popupTimeout);
+    
+    const headerHtml = `<span class="popup-badge badge-tomorrow">CALENDÁRIO</span> GRUPO ${document.getElementById('groupSelect').value}`;
+    document.getElementById('popup-header-row').innerHTML = `<span class="popup-label">${headerHtml}</span>`;
+    document.getElementById('popup-title').innerText = item.act;
+    
+    const locName = item.l.split('/')[0];
+    const locColor = getLocColorVar(locName); 
+    
+    const dayName = item.d;
+    const dateStr = `${String(item.realDay).padStart(2,'0')}/${String(item.realMonth+1).padStart(2,'0')}`;
+    const timeStr = item.h ? item.h.split(' - ')[0] : item.t; 
+    
+    document.getElementById('popup-time').innerHTML = `${dayName} (${dateStr}) às <b>${timeStr}</b>`;
+    document.getElementById('popup-loc').innerHTML = `<b style="color:${locColor}">${locName}</b>`;
+    document.getElementById('popup-prof').innerText = abrev(item.p);
+
+    const timerBar = document.getElementById('popupTimer');
+    timerBar.style.animation = 'none';
+    timerBar.offsetHeight; 
+    timerBar.style.animation = 'countdown 5s linear forwards';
+
+    popup.classList.add('visible');
+    
+    popupTimeout = setTimeout(() => {
+        popup.classList.remove('visible');
+    }, 5000);
+}
+
 function updateView(shouldShowPopup = false) {
     const group = document.getElementById('groupSelect').value;
     localStorage.setItem('medGroup', group);
@@ -504,7 +710,20 @@ function updateView(shouldShowPopup = false) {
     const turns = ["Manhã", "Tarde", "Noite"];
     const sorted = [...GROUP_MEMBERS[group]].sort();
     document.getElementById('membersDisplay').innerHTML = `📍 <b>Integrantes:</b> ${sorted.map(m => abrev(m)).join(', ')}`;
-    
+
+    if (viewMode === 'calendar') {
+        document.getElementById('capture-area').style.display = 'none';
+        document.getElementById('calendar-area').style.display = 'block';
+        if(document.getElementById('btnViewToggle')) document.getElementById('btnViewToggle').classList.add('active');
+        renderCalendar();
+        return; 
+    }
+
+    // Código da Matriz (Tabela) continua aqui
+    document.getElementById('calendar-area').style.display = 'none';
+    document.getElementById('capture-area').style.display = 'inline-block';
+    if(document.getElementById('btnViewToggle')) document.getElementById('btnViewToggle').classList.remove('active');
+
     let todayIndex = new Date().getDay();
     if (todayIndex === 0) todayIndex = 7;
     const isCurrentWeekMode = activeFilter === 'currWeek';
@@ -533,7 +752,7 @@ function updateView(shouldShowPopup = false) {
                     const actL = m.act.toLowerCase();
                     let colorClass = "";
                     if(actL.includes("giesc")) colorClass = "giesc";
-                    else if(actL.includes("hp-8")) colorClass = "hp8";
+                    else if(actL.includes("hp-8") || actL.includes("hp-8 (uro)")) colorClass = "hp8";
                     else if(actL.includes("tutorial")) colorClass = "tutorial";
                     else if(actL.includes("morfo")) colorClass = "morfo";
 
@@ -551,6 +770,11 @@ function updateView(shouldShowPopup = false) {
                         tooltipAttr = `data-prof="${abrev(m.p)}"`;
                         tooltipClass = "has-tooltip";
                     } 
+                    else if (m.act.includes("GIESC")) {
+                        displayTitle = "Giesc";
+                        tooltipAttr = `data-prof="${abrev(m.p)}"`;
+                        tooltipClass = "has-tooltip";
+                    }
                     else if (m.act.includes("HP-8")) {
                         displayTitle = abrev(m.p);
                     }
@@ -597,7 +821,6 @@ function setFilter(val, btn) {
 
 function changeGroup(val) { updateView(true); }
 
-// --- SMART POPUP LOGIC ---
 function updatePopup() {
     clearTimeout(popupTimeout);
     const popup = document.getElementById('nextClassPopup');
@@ -724,7 +947,17 @@ function closePopupManual() {
     const sel = document.getElementById('groupSelect');
     Object.keys(DATA_LEGO.reduce((acc, curr) => { if(curr.g !== "Todos") curr.g.split(',').forEach(g => acc[g.trim()] = true); return acc; }, {})).sort().forEach(k => sel.add(new Option(`Grupo ${k}`, k)));
     sel.value = localStorage.getItem('medGroup') || 'A';
-    if(localStorage.getItem('theme') === 'dark') document.body.classList.add('dark-theme');
+    
+    if(localStorage.getItem('theme') === 'dark') {
+        document.body.classList.add('dark-theme');
+        document.getElementById('btnThemeToggle').classList.remove('active');
+    }
+    
+    if(viewMode === 'calendar') {
+        document.getElementById('btnViewToggle').classList.add('active');
+        document.body.classList.add('calendar-mode');
+    }
+
     const months = [{n:'Fev',v:'/02'},{n:'Mar',v:'/03'},{n:'Abr',v:'/04'},{n:'Mai',v:'/05'},{n:'Jun',v:'/06'}];
     document.getElementById('monthButtons').innerHTML = months.map(m => `<button class="filter-btn" onclick="setFilter('${m.v}', this)">${m.n}</button>`).join('');
     document.getElementById('btn-currWeek').classList.add('active');
@@ -733,42 +966,30 @@ function closePopupManual() {
 </script>
 
 <script>
-  // 1. Registra o Service Worker (O Mordomo)
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
       navigator.serviceWorker.register('./sw.js').then(reg => {
-        
-        // 2. O ESPIÃO: Verifica se tem atualização assim que carrega
         if (navigator.onLine) {
             checkUpdate();
         }
-        
-      });
+      }).catch(err => console.log('Erro ao registrar SW:', err));
     });
   }
 
   async function checkUpdate() {
       try {
-          // A. Pega o arquivo que está sendo mostrado AGORA (do Cache)
           const responseCache = await fetch('./index.html');
           const textCache = await responseCache.text();
 
-          // B. Vai na internet buscar o arquivo NOVO (burlando o cache com ?time=...)
           const responseNetwork = await fetch('./index.html?ver=' + new Date().getTime());
           const textNetwork = await responseNetwork.text();
 
-          // C. Jogo dos 7 Erros: Compara os dois
-          // Se o tamanho ou conteúdo mudou, significa que você alterou o horário
           if (textCache !== textNetwork) {
               console.log("Nova versão detectada! Atualizando...");
-              
-              // Limpa os caches antigos para garantir
               if ('caches' in window) {
                   const keys = await caches.keys();
                   await Promise.all(keys.map(key => caches.delete(key)));
               }
-              
-              // D. Recarrega a página na força bruta
               window.location.reload();
           } else {
               console.log("Você já está na versão mais atual.");
@@ -778,5 +999,6 @@ function closePopupManual() {
       }
   }
 </script>
+
 </body>
 </html>
