@@ -53,11 +53,6 @@
             --bg-time: #ffebee; --text-time: #c62828; --border-time: #ffcdd2;
             --dot-color: #00e676; 
 
-            /* Tooltip GLASS */
-            --tooltip-bg: rgba(20, 20, 35, 0.65);
-            --tooltip-text: #ffffff;
-            --tooltip-border: rgba(255, 255, 255, 0.2);
-
             /* POPUP */
             --popup-bg: rgba(255, 255, 255, 0.95);
             --popup-border: #bbdefb;
@@ -217,6 +212,7 @@
         .card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 6px; gap: 4px; }
         .card-title { font-weight: 700; color: var(--text-title); font-size: 0.85rem; line-height: 1.1; letter-spacing: -0.2px; }
         
+        .pill-wrapper { display: flex; gap: 2px; flex-wrap: wrap; justify-content: flex-end; }
         .pill { font-size: 0.55rem; font-weight: 700; padding: 3px 6px; border-radius: 6px; text-transform: uppercase; letter-spacing: 0.5px; white-space: nowrap; flex-shrink: 0; color: #ffffff; box-shadow: 0 2px 4px rgba(0,0,0,0.1); border: 1px solid transparent; }
         body.dark-theme .pill { background-color: transparent !important; box-shadow: none; }
         .pill-hms { background: var(--c-hms); } body.dark-theme .pill-hms { color: var(--c-hms); border-color: var(--c-hms); }
@@ -269,28 +265,32 @@
 
         /* --- MODO PANORÂMICO (ZOOM OUT MOBILE) --- */
         body.panoramic-mode .schedule-container, 
-        body.panoramic-mode .calendar-container { max-width: none; width: 100vw; margin-left: -5px; padding: 0; }
+        body.panoramic-mode .calendar-container { max-width: none; width: 100vw; margin-left: -5px; padding: 0; overflow-x: hidden; }
         body.panoramic-mode table { width: 100%; min-width: 0; }
         body.panoramic-mode .col-seg, body.panoramic-mode .col-ter, body.panoramic-mode .col-qua, 
         body.panoramic-mode .col-qui, body.panoramic-mode .col-sex, body.panoramic-mode .col-sab { width: auto !important; }
-        body.panoramic-mode td { padding: 2px; font-size: 0.45rem; line-height: 1.1; }
-        body.panoramic-mode th { padding: 4px 2px; font-size: 0.45rem; }
-        body.panoramic-mode .subject-block { padding: 4px 4px 4px 8px; border-radius: 6px; margin-bottom: 2px; }
-        body.panoramic-mode .subject-block::before { width: 3px; }
-        body.panoramic-mode .card-title { font-size: 0.5rem; }
-        body.panoramic-mode .pill { font-size: 0.35rem; padding: 1px 3px; }
-        body.panoramic-mode .date-line { font-size: 0.4rem; margin-top: 2px; }
-        body.panoramic-mode .badge-time { font-size: 0.4rem; padding: 1px 3px; }
-        body.panoramic-mode .time-col { width: 25px !important; font-size: 0.5rem; }
+        body.panoramic-mode td { padding: 2px; font-size: 0.4rem; line-height: 1; }
+        body.panoramic-mode th { padding: 4px 1px; font-size: 0.4rem; }
         
-        /* Ajustes específicos do Calendário Panorâmico */
-        body.panoramic-mode .calendar-grid { min-width: 100%; gap: 1px; grid-template-columns: repeat(7, minmax(0, 1fr)); }
-        body.panoramic-mode .cal-header { font-size: 0.45rem; padding: 2px 0; }
+        /* Ajuste dos Blocos e Pills na Matriz Panorâmica */
+        body.panoramic-mode .subject-block { padding: 3px 3px 3px 6px; border-radius: 4px; margin-bottom: 2px; }
+        body.panoramic-mode .subject-block::before { width: 2px; }
+        body.panoramic-mode .card-header { flex-direction: column; align-items: flex-start; gap: 2px; margin-bottom: 2px; }
+        body.panoramic-mode .pill-wrapper { justify-content: flex-start; gap: 1px; }
+        body.panoramic-mode .card-title { font-size: 0.45rem; white-space: normal; word-break: break-word; }
+        body.panoramic-mode .pill { font-size: 0.35rem; padding: 1px 3px; letter-spacing: 0; border-radius: 3px; }
+        body.panoramic-mode .date-line { font-size: 0.4rem; margin-top: 2px; }
+        body.panoramic-mode .badge-time { font-size: 0.35rem; padding: 1px 2px; }
+        body.panoramic-mode .time-col { width: 20px !important; font-size: 0.45rem; }
+        
+        /* Ajuste do Calendário no Panorâmico */
+        body.panoramic-mode .calendar-grid { min-width: 0; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 2px; }
+        body.panoramic-mode .cal-header { font-size: 0.4rem; padding: 2px 0; }
         body.panoramic-mode .cal-day { min-height: 50px; padding: 1px; border-radius: 4px; }
-        body.panoramic-mode .cal-date { font-size: 0.5rem; margin-bottom: 1px; padding-right: 2px; }
-        body.panoramic-mode .cal-zone { padding: 1px 1px 1px 7px; min-height: 14px; gap: 1px; }
-        body.panoramic-mode .cal-zone::before { font-size: 0.35rem; left: 1px; top: 2px; }
-        body.panoramic-mode .micro-card { font-size: 0.35rem; padding: 1px 2px; white-space: normal; word-break: break-word; line-height: 1; border-radius: 2px; border-left-width: 2px; }
+        body.panoramic-mode .cal-date { font-size: 0.45rem; margin-bottom: 2px; padding-right: 2px; }
+        body.panoramic-mode .cal-zone { padding: 1px 1px 1px 6px; min-height: 12px; gap: 1px; margin-bottom: 1px; }
+        body.panoramic-mode .cal-zone::before { font-size: 0.4rem; left: 1px; top: 2px; }
+        body.panoramic-mode .micro-card { font-size: 0.35rem; padding: 1px 2px; white-space: normal; line-height: 1.1; border-radius: 2px; border-left-width: 2px; }
         
         body.panoramic-mode #sliderDrawer { display: none !important; }
 
@@ -844,8 +844,9 @@ function updateView(shouldShowPopup = false) {
                     if (m.dates === "Semanal") { dateDisplay = `<div class="status-dot"></div> <span style="opacity:0.8">Semanal</span>`; } 
                     else { dateDisplay = filteredDates; }
 
+                    // Adicionado a div .pill-wrapper em volta das pills para garantir o flex-wrap
                     cellContent += `<div class="subject-block ${colorClass}" onclick="showCalPopup('${m.id}')">
-                        <div class="card-header"><span class="card-title">${displayTitle}</span><div style="display:flex; gap:2px">${pills}</div></div>
+                        <div class="card-header"><span class="card-title">${displayTitle}</span><div class="pill-wrapper">${pills}</div></div>
                         <div class="date-line">${dateDisplay}</div>${hourBadge}
                     </div>`;
                 }
@@ -1016,4 +1017,3 @@ if ('serviceWorker' in navigator) {
 
 </body>
 </html>
-
