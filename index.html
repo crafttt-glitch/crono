@@ -2,7 +2,7 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#003366">
     <title>Cronograma MED8</title>
     
@@ -267,6 +267,26 @@
         /* MENSAGEM ESTADO VAZIO */
         .empty-state { text-align: center; padding: 40px 20px; font-size: 0.9rem; font-weight: 600; color: var(--text-meta); }
 
+        /* --- MODO PANORÂMICO (ZOOM OUT MOBILE) --- */
+        body.panoramic-mode .schedule-container, 
+        body.panoramic-mode .calendar-container { max-width: none; width: 100vw; margin-left: -5px; padding: 0; }
+        body.panoramic-mode table { width: 100%; min-width: 0; }
+        body.panoramic-mode .col-seg, body.panoramic-mode .col-ter, body.panoramic-mode .col-qua, 
+        body.panoramic-mode .col-qui, body.panoramic-mode .col-sex, body.panoramic-mode .col-sab { width: auto !important; }
+        body.panoramic-mode td { padding: 2px; font-size: 0.45rem; line-height: 1.1; }
+        body.panoramic-mode th { padding: 4px 2px; font-size: 0.45rem; }
+        body.panoramic-mode .subject-block { padding: 4px 4px 4px 8px; border-radius: 6px; margin-bottom: 2px; }
+        body.panoramic-mode .subject-block::before { width: 3px; }
+        body.panoramic-mode .card-title { font-size: 0.5rem; }
+        body.panoramic-mode .pill { font-size: 0.35rem; padding: 1px 3px; }
+        body.panoramic-mode .date-line { font-size: 0.4rem; margin-top: 2px; }
+        body.panoramic-mode .badge-time { font-size: 0.4rem; padding: 1px 3px; }
+        body.panoramic-mode .time-col { width: 25px !important; font-size: 0.5rem; }
+        body.panoramic-mode .calendar-grid { min-width: 100%; gap: 2px; }
+        body.panoramic-mode .cal-day { min-height: 60px; padding: 2px; }
+        body.panoramic-mode .micro-card { font-size: 0.4rem; padding: 2px; white-space: normal; }
+        body.panoramic-mode #sliderDrawer { display: none !important; } /* Esconde os sliders pois a largura fica automática */
+
         @media (max-width: 600px) {
             .app-title { font-size: 0.85rem; }
             .btn-icon { width: 34px; height: 34px; font-size: 0.95rem; }
@@ -285,6 +305,7 @@
         <div class="app-title" id="appTitle">MED8 | GRUPO D | 2026.1</div>
         <div class="action-icons">
             <button class="btn-icon" id="btnHourToggle" title="Horas" onclick="toggleHours()">⏰</button>
+            <button class="btn-icon" id="btnPanToggle" title="Visão Panorâmica" onclick="togglePanoramic()">🔍</button>
             <button class="btn-icon" id="btnViewToggle" title="Ver Calendário" onclick="toggleViewMode()">🗓️</button>
             <button class="btn-icon active" id="btnThemeToggle" title="Tema" onclick="toggleDarkMode()">🌓</button>
             <button class="btn-icon" title="Print" onclick="generateImage()">🖼️</button>
@@ -519,6 +540,11 @@ function toggleHours() {
     document.getElementById('btnHourToggle').classList.toggle('active');
 }
 
+function togglePanoramic() {
+    document.body.classList.toggle('panoramic-mode');
+    document.getElementById('btnPanToggle').classList.toggle('active');
+}
+
 function toggleViewMode() {
     viewMode = viewMode === 'matrix' ? 'calendar' : 'matrix';
     localStorage.setItem('viewMode', viewMode);
@@ -638,6 +664,7 @@ function renderCalendar() {
         let dayHtml = `<div class="${dayClass}"><div class="cal-date">${day}</div>`;
         
         let cardsM = ''; let cardsT = ''; let cardsN = '';
+        let hasContent = false;
         
         DATA_LEGO.forEach(item => {
             if (item.g !== "Todos" && !item.g.includes(group)) return;
@@ -657,6 +684,7 @@ function renderCalendar() {
             }
 
             if (hasEventToday) {
+                hasContent = true;
                 const actL = item.act.toLowerCase();
                 let colorVar = "var(--bar-hp8)";
                 if(actL.includes("giesc")) colorVar = "var(--bar-giesc)";
@@ -925,7 +953,7 @@ function updatePopup() {
             const timerBar = document.getElementById('popupTimer');
             timerBar.style.animation = 'none'; timerBar.offsetHeight; timerBar.style.animation = 'countdown 8s linear forwards';
             popup.classList.add('visible');
-            popupTimeout = setTimeout(() => { popup.classList.remove('visible'); }, 8000);
+            popupTimeout = setTimeout(() => { popup.classList.remove('visible'); }, 10000);
         }
     }, 100);
 }
