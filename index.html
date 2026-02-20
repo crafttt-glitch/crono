@@ -11,6 +11,10 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📅</text></svg>">
     
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" onerror="console.log('Modo Offline: Print desativado');"></script>
     
     <style>
@@ -94,8 +98,6 @@
 
             --bg-time: #3e2723; --text-time: #ff8a80; --border-time: #5d4037;
             
-            --tooltip-bg: rgba(255, 255, 255, 0.7); --tooltip-text: #000000; --tooltip-border: rgba(255, 255, 255, 0.3);
-
             --popup-bg: rgba(30, 33, 41, 0.95); --popup-border: #37474f; --popup-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
             --popup-text: #eceff1; --popup-accent: #448aff;
 
@@ -109,7 +111,7 @@
             transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
         }
 
-        body { font-family: 'Segoe UI', sans-serif; background-color: var(--body-bg); color: var(--text-main); display: flex; flex-direction: column; align-items: center; margin: 0; padding: 5px; padding-bottom: 90px; overflow-x: hidden; }
+        body { font-family: 'Inter', 'Segoe UI', sans-serif; background-color: var(--body-bg); color: var(--text-main); display: flex; flex-direction: column; align-items: center; margin: 0; padding: 5px; padding-bottom: 90px; overflow-x: hidden; }
         
         body.capturing * { animation: none !important; transition: none !important; transform: none !important; box-shadow: none !important; }
         body.capturing .today-column { box-shadow: none !important; border-color: var(--primary-blue) !important; }
@@ -117,30 +119,35 @@
 
         /* HEADER & CONTEXT */
         .header-wrapper { width: 100%; max-width: 1250px; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.08); margin-bottom: 8px; border: 1px solid var(--border-color); flex-shrink: 0; }
-        .command-bar { background-color: var(--header-bg-blue); padding: 8px 15px; display: flex; justify-content: space-between; align-items: center; }
+        .command-bar { background-color: var(--header-bg-blue); padding: 10px 15px; display: flex; justify-content: space-between; align-items: center; }
         .app-title { color: white; font-weight: 800; font-size: 1rem; letter-spacing: 1px; text-transform: uppercase; }
         .action-icons { display: flex; gap: 8px; }
-        .btn-icon { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: white; width: 32px; height: 32px; border-radius: 6px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1rem; transition: 0.2s; flex-shrink: 0; }
+        .btn-icon { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: white; width: 38px; height: 38px; border-radius: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; transition: 0.2s; flex-shrink: 0; }
         .btn-icon:hover { background: rgba(255,255,255,0.25); transform: translateY(-2px); }
         .btn-icon.active { background: #ffffff; color: var(--header-bg-blue); box-shadow: 0 0 10px rgba(255,255,255,0.5); }
 
-        .context-panel { background-color: var(--panel-bg); padding: 10px 15px; border-top: 1px solid rgba(0,0,0,0.05); }
-        .control-row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; justify-content: space-between; }
-        .control-left, .control-right { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+        .context-panel { background-color: var(--panel-bg); padding: 12px 15px; border-top: 1px solid rgba(0,0,0,0.05); }
+        
+        /* FILTROS DESLIZANTES PARA MOBILE */
+        .control-row { display: flex; flex-direction: column; gap: 10px; }
+        .filter-scroll-area { display: flex; gap: 8px; flex-wrap: nowrap; overflow-x: auto; padding-bottom: 4px; -ms-overflow-style: none; scrollbar-width: none; width: 100%; align-items: center; }
+        .filter-scroll-area::-webkit-scrollbar { display: none; }
 
-        select, .filter-btn { padding: 5px 10px; border: 1px solid var(--border-color); border-radius: 6px; cursor: pointer; background: var(--bg-header-btn); font-weight: 700; font-size: 0.72rem; color: var(--text-header); }
+        select, .filter-btn { padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 8px; cursor: pointer; background: var(--bg-header-btn); font-weight: 600; font-size: 0.75rem; color: var(--text-header); white-space: nowrap; flex-shrink: 0; }
         .filter-btn:hover { background-color: rgba(0,0,0,0.05); }
-        .filter-btn.active { background: #003366 !important; color: white !important; border-color: #003366 !important; }
-        body.dark-theme .filter-btn.active { background: #448aff !important; color: #fff !important; border-color: #448aff !important; box-shadow: 0 0 8px rgba(68,138,255,0.4); }
+        
+        .context-panel .filter-btn.active { background: var(--primary-blue); color: white; border-color: var(--primary-blue); }
+        body.dark-theme .context-panel .filter-btn.active { background: #448aff; color: #fff; border-color: #448aff; box-shadow: 0 0 8px rgba(68,138,255,0.4); }
+        
         .filter-btn.special { background: #fff8e1; border-color: #ffb300; color: #ef6c00; }
         body.dark-theme .filter-btn.special { background: #3e2723; border-color: #ff6f00; color: #ffca28; }
-        .filter-btn.special.active { background: #ef6c00 !important; color: #fff !important; border-color: #e65100 !important; box-shadow: 0 2px 5px rgba(239, 108, 0, 0.4); }
-        body.dark-theme .filter-btn.special.active { background: #ff6f00 !important; color: #fff !important; border-color: #ffca28 !important; box-shadow: 0 0 10px rgba(255, 111, 0, 0.5); }
+        .context-panel .filter-btn.special.active { background: #ef6c00; color: #fff; border-color: #e65100; box-shadow: 0 2px 5px rgba(239, 108, 0, 0.4); }
+        body.dark-theme .context-panel .filter-btn.special.active { background: #ff6f00; color: #fff; border-color: #ffca28; box-shadow: 0 0 10px rgba(255, 111, 0, 0.5); }
 
-        .today-display { font-size: 0.72rem; font-weight: 700; color: #003366; background: #e3f2fd; padding: 5px 10px; border-radius: 6px; border: 1px solid #90caf9; }
+        .today-display { font-size: 0.75rem; font-weight: 700; color: #003366; background: #e3f2fd; padding: 8px 12px; border-radius: 8px; border: 1px solid #90caf9; white-space: nowrap; flex-shrink: 0; }
         body.dark-theme .today-display { background: #1a237e; color: #ffffff; border: 1px solid #5c6bc0; }
         
-        .members-list { font-size: 0.68rem; font-weight: 600; background: #fffde7; padding: 6px 10px; border-radius: 6px; border: 1px solid #fdd835; margin-top: 8px; line-height: 1.3; color: #37474f; }
+        .members-list { font-size: 0.7rem; font-weight: 500; background: #fffde7; padding: 8px 12px; border-radius: 8px; border: 1px solid #fdd835; margin-top: 10px; line-height: 1.4; color: #37474f; }
         body.dark-theme .members-list { background: #2a1c0a; color: #ffe0b2; border-color: #b78c00; }
 
         .slider-drawer { display: none; background: var(--bg-header-btn); padding: 10px; border-radius: 8px; margin-top: 8px; border: 1px solid var(--border-color); }
@@ -149,20 +156,18 @@
         .slider-item { display: flex; flex-direction: column; font-size: 0.65rem; font-weight: bold; color: var(--text-meta); width: 80px; }
         @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* MODO TABELA (MATRIZ) - ADAPTAÇÃO MOBILE PREMIUM */
+        /* MODO TABELA (MATRIZ) */
         .schedule-container { display: inline-block; background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); overflow-x: auto; padding: 2px; max-width: 100%; -webkit-overflow-scrolling: touch; }
         table { width: max-content; border-collapse: separate; border-spacing: 0; table-layout: fixed; }
-        th { background-color: var(--header-bg-green); color: white; text-transform: uppercase; font-size: 0.65rem; padding: 8px; border-right: 1px solid rgba(255,255,255,0.1); letter-spacing: 0.5px; position: sticky; top: 0; z-index: 10; }
+        th { background-color: var(--header-bg-green); color: white; text-transform: uppercase; font-size: 0.65rem; padding: 10px 8px; border-right: 1px solid rgba(255,255,255,0.1); letter-spacing: 0.5px; position: sticky; top: 0; z-index: 10; font-weight: 700; }
         th:first-child { border-radius: 8px 0 0 0; z-index: 30; left: 0; }
         th:last-child { border-right: none; border-radius: 0 8px 0 0; }
         #cornerGroup { font-size: 1.1rem; font-weight: 800; background-color: var(--header-bg-green); color: rgba(255,255,255,0.9); text-align: center; vertical-align: middle; }
-        td { border-bottom: 1px solid var(--border-color); border-right: 1px solid var(--border-color); vertical-align: top; padding: 4px; font-size: 0.72rem; position: relative; }
+        td { border-bottom: 1px solid var(--border-color); border-right: 1px solid var(--border-color); vertical-align: top; padding: 6px; font-size: 0.72rem; position: relative; }
         tr:last-child td { border-bottom: none; }
         
-        /* COLUNA DO HORÁRIO (Sticky Left) */
         .time-col { background-color: var(--header-bg-blue); color: white; width: 40px; text-align: center; font-weight: 800; vertical-align: middle; border-bottom: 1px solid rgba(255,255,255,0.1); position: sticky; left: 0; z-index: 20; }
 
-        /* [NEON SEAMLESS FIX] */
         th.today-column { border: 2px solid var(--neon-color) !important; border-bottom: none !important; box-shadow: 0 -4px 15px var(--neon-color) !important; z-index: 25; }
         td.today-column { border-left: 2px solid var(--neon-color) !important; border-right: 2px solid var(--neon-color) !important; border-top: none !important; border-bottom: none !important; box-shadow: inset 3px 0 8px -4px var(--neon-color), inset -3px 0 8px -4px var(--neon-color) !important; z-index: 5; }
         tbody tr:last-child td.today-column { border-bottom: 2px solid var(--neon-color) !important; border-radius: 0 0 12px 12px; box-shadow: 0 4px 15px var(--neon-color), inset 3px 0 8px -4px var(--neon-color), inset -3px 0 8px -4px var(--neon-color) !important; }
@@ -170,55 +175,49 @@
         .col-seg { width: var(--w-seg); } .col-ter { width: var(--w-ter); } .col-qua { width: var(--w-qua); } .col-qui { width: var(--w-qui); } .col-sex { width: var(--w-sex); } .col-sab { width: var(--w-sab); }
 
         /* MODO CALENDÁRIO */
-        .calendar-container { display: none; width: 100%; max-width: 1250px; background: var(--card-bg); padding: 8px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border: 1px solid var(--border-color); overflow-x: auto; -webkit-overflow-scrolling: touch; }
-        .calendar-header-title { text-align: center; font-weight: 800; color: var(--header-bg-blue); margin-bottom: 10px; font-size: 1rem; text-transform: uppercase; letter-spacing: 1px; position: sticky; left: 0; }
+        .calendar-container { display: none; width: 100%; max-width: 1250px; background: var(--card-bg); padding: 12px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border: 1px solid var(--border-color); overflow-x: auto; -webkit-overflow-scrolling: touch; }
+        .calendar-header-title { text-align: center; font-weight: 800; color: var(--header-bg-blue); margin-bottom: 12px; font-size: 1.1rem; text-transform: uppercase; letter-spacing: 1px; position: sticky; left: 0; }
         body.dark-theme .calendar-header-title { color: var(--primary-blue); }
         
-        .calendar-grid { display: grid; grid-template-columns: repeat(7, minmax(130px, 1fr)); gap: 4px; min-width: 800px; /* Força scroll no mobile */ }
+        .calendar-grid { display: grid; grid-template-columns: repeat(7, minmax(130px, 1fr)); gap: 6px; min-width: 800px; }
         
-        .cal-header { text-align: center; font-size: 0.65rem; font-weight: 800; color: var(--text-title); text-transform: uppercase; padding: 4px 0; border-bottom: 2px solid var(--header-bg-green); margin-bottom: 4px; }
+        .cal-header { text-align: center; font-size: 0.7rem; font-weight: 800; color: var(--text-title); text-transform: uppercase; padding: 4px 0; border-bottom: 2px solid var(--header-bg-green); margin-bottom: 4px; }
         
-        .cal-day { background: var(--bg-header-btn); min-height: 100px; border-radius: 8px; padding: 4px; display: flex; flex-direction: column; border: 1px solid var(--border-color); }
+        .cal-day { background: var(--bg-header-btn); min-height: 110px; border-radius: 8px; padding: 4px; display: flex; flex-direction: column; border: 1px solid var(--border-color); }
         .cal-day.empty { background: transparent; border-color: transparent; }
-        .cal-date { font-size: 0.75rem; font-weight: bold; color: var(--text-meta); text-align: right; margin-bottom: 2px; }
+        .cal-date { font-size: 0.8rem; font-weight: bold; color: var(--text-meta); text-align: right; margin-bottom: 4px; padding-right: 4px;}
         .cal-day.is-today { border: 2px solid var(--neon-color); box-shadow: inset 0 0 8px rgba(0, 188, 212, 0.2); }
         .cal-day.is-today .cal-date { color: var(--neon-color); font-weight: 900; }
         
-        /* Zonas Manhã/Tarde/Noite no Calendário (Swimlanes Flexíveis com Indicador) */
-        .cal-zone { flex: 1 0 auto; display: flex; flex-direction: column; gap: 2px; min-height: 24px; background: rgba(0, 0, 0, 0.03); border: 1px solid rgba(0, 0, 0, 0.02); border-radius: 4px; padding: 2px 2px 2px 14px; margin-bottom: 2px; position: relative; }
+        .cal-zone { flex: 1 0 auto; display: flex; flex-direction: column; gap: 3px; min-height: 24px; background: rgba(0, 0, 0, 0.03); border: 1px solid rgba(0, 0, 0, 0.02); border-radius: 4px; padding: 3px 3px 3px 14px; margin-bottom: 3px; position: relative; }
         body.dark-theme .cal-zone { background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.02); }
         .cal-zone:last-child { margin-bottom: 0; }
         
-        /* Indicadores de Turno (M, T, N) na lateral de cada zona */
-        .cal-zone::before { position: absolute; left: 3px; top: 4px; font-size: 0.55rem; font-weight: 800; color: var(--text-meta); opacity: 0.6; }
+        .cal-zone::before { position: absolute; left: 3px; top: 5px; font-size: 0.55rem; font-weight: 800; color: var(--text-meta); opacity: 0.6; }
         .cal-day > .cal-zone:nth-child(2)::before { content: 'M'; }
         .cal-day > .cal-zone:nth-child(3)::before { content: 'T'; }
         .cal-day > .cal-zone:nth-child(4)::before { content: 'N'; }
 
-        /* Micro-cards adaptados ao Dark Mode (Fundo ligeiramente escuro 0.3) */
-        .micro-card { font-size: 0.58rem; font-weight: 700; padding: 3px 5px; border-radius: 4px; background-color: var(--micro-color); color: #fff; cursor: pointer; text-align: left; box-shadow: 0 2px 4px rgba(0,0,0,0.1); line-height: 1.1; transition: transform 0.2s, filter 0.2s; border-left: 3px solid rgba(255,255,255,0.4); overflow: hidden; white-space: nowrap; text-overflow: ellipsis; flex-shrink: 0; }
+        .micro-card { font-size: 0.6rem; font-weight: 700; padding: 4px 6px; border-radius: 4px; background-color: var(--micro-color); color: #fff; cursor: pointer; text-align: left; box-shadow: 0 2px 4px rgba(0,0,0,0.1); line-height: 1.1; transition: transform 0.2s, filter 0.2s; border-left: 3px solid rgba(255,255,255,0.4); overflow: hidden; white-space: nowrap; text-overflow: ellipsis; flex-shrink: 0; }
         .micro-card:hover { transform: scale(1.02) translateX(2px); filter: brightness(1.1); }
         
         body.dark-theme .micro-card { background-color: rgba(0, 0, 0, 0.3) !important; color: var(--micro-color); border: 1px solid var(--micro-color); border-left: 3px solid var(--micro-color); box-shadow: none; }
 
         @keyframes blockEnter { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
         
-        .subject-block { padding: 8px 10px 8px 14px; border-radius: 10px; margin-bottom: 4px; position: relative; overflow: visible; animation: blockEnter 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) forwards; background: var(--bg-hp8); box-shadow: 0 2px 4px rgba(0,0,0,0.04); border: 1px solid rgba(0,0,0,0.03); cursor: default; }
+        .subject-block { padding: 10px 10px 10px 14px; border-radius: 10px; margin-bottom: 6px; position: relative; overflow: visible; animation: blockEnter 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) forwards; background: var(--bg-hp8); box-shadow: 0 2px 4px rgba(0,0,0,0.04); border: 1px solid rgba(0,0,0,0.03); cursor: pointer; }
         .subject-block:hover { transform: translateY(-3px); box-shadow: 0 6px 12px rgba(0,0,0,0.08); z-index: 5; }
-        .subject-block::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 4px; background: var(--bar-color); border-radius: 10px 0 0 10px; }
-
-        .has-tooltip:hover::after { content: attr(data-prof); position: absolute; bottom: 105%; left: 50%; transform: translateX(-50%); background: var(--tooltip-bg); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); color: var(--tooltip-text); padding: 4px 10px; border-radius: 6px; font-size: 0.65rem; font-weight: 600; white-space: nowrap; box-shadow: 0 8px 25px rgba(0,0,0,0.2); opacity: 0; animation: tooltipFade 0.3s forwards 0.1s; pointer-events: none; z-index: 100; border: 1px solid var(--tooltip-border); }
-        @keyframes tooltipFade { from { opacity: 0; transform: translateX(-50%) translateY(5px); } to { opacity: 1; transform: translateX(-50%) translateY(0); } }
+        .subject-block::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 5px; background: var(--bar-color); border-radius: 10px 0 0 10px; }
 
         .giesc { background: var(--bg-giesc) !important; --bar-color: var(--bar-giesc); }
         .hp8 { background: var(--bg-hp8) !important; --bar-color: var(--bar-hp8); }
         .tutorial { background: var(--bg-tutorial) !important; --bar-color: var(--bar-tutorial); }
         .morfo { background: var(--bg-morfo) !important; --bar-color: var(--bar-morfo); }
 
-        .card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 4px; gap: 4px; }
-        .card-title { font-weight: 700; color: var(--text-title); font-size: 0.8rem; line-height: 1.1; }
+        .card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 6px; gap: 4px; }
+        .card-title { font-weight: 700; color: var(--text-title); font-size: 0.85rem; line-height: 1.1; letter-spacing: -0.2px; }
         
-        .pill { font-size: 0.55rem; font-weight: 700; padding: 2px 6px; border-radius: 8px; text-transform: uppercase; letter-spacing: 0.5px; white-space: nowrap; flex-shrink: 0; color: #ffffff; box-shadow: 0 2px 4px rgba(0,0,0,0.1); border: 1px solid transparent; }
+        .pill { font-size: 0.55rem; font-weight: 700; padding: 3px 6px; border-radius: 6px; text-transform: uppercase; letter-spacing: 0.5px; white-space: nowrap; flex-shrink: 0; color: #ffffff; box-shadow: 0 2px 4px rgba(0,0,0,0.1); border: 1px solid transparent; }
         body.dark-theme .pill { background-color: transparent !important; box-shadow: none; }
         .pill-hms { background: var(--c-hms); } body.dark-theme .pill-hms { color: var(--c-hms); border-color: var(--c-hms); }
         .pill-uepa { background: var(--c-uepa); } body.dark-theme .pill-uepa { color: var(--c-uepa); border-color: var(--c-uepa); }
@@ -228,20 +227,16 @@
         .pill-amb { background: var(--c-amb); } body.dark-theme .pill-amb { color: var(--c-amb); border-color: var(--c-amb); }
         .pill-neutral { background: var(--c-neutral); } body.dark-theme .pill-neutral { color: var(--c-neutral); border-color: var(--c-neutral); }
 
-        /* LÓGICA DE OCULTAR DATAS (MATRIZ) */
-        .date-line { display: flex; align-items: center; font-size: 0.65rem; color: var(--text-meta); margin-top: 4px; font-weight: 500; font-family: 'Segoe UI', sans-serif; max-height: 50px; opacity: 1; overflow: hidden; transition: all 0.4s ease-out; }
+        .date-line { display: flex; align-items: center; font-size: 0.65rem; color: var(--text-meta); margin-top: 4px; font-weight: 500; font-family: 'Inter', sans-serif; max-height: 50px; opacity: 1; overflow: hidden; transition: all 0.4s ease-out; }
         
-        /* DATA ALWAYS VISIBLE - Removed .hide-dates logic */
-
         .status-dot { width: 5px; height: 5px; background-color: var(--dot-color); border-radius: 50%; display: inline-block; margin-right: 5px; animation: pulse 3s infinite ease-in-out; }
         @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(0, 230, 118, 0.3); opacity: 0.8; } 50% { box-shadow: 0 0 0 3px rgba(0, 230, 118, 0); opacity: 1; } 100% { box-shadow: 0 0 0 0 rgba(0, 230, 118, 0); opacity: 0.8; } }
         
         .time-line { max-height: 0; opacity: 0; overflow: hidden; margin-top: 0; transition: all 0.4s ease-out; }
-        body.show-hours .time-line { max-height: 20px; opacity: 1; margin-top: 4px; }
-        .badge-time { display: inline-block; padding: 2px 6px; border-radius: 4px; font-size: 0.58rem; font-weight: 700; background-color: var(--bg-time); color: var(--text-time); border: 1px solid var(--border-time); }
+        body.show-hours .time-line { max-height: 20px; opacity: 1; margin-top: 6px; }
+        .badge-time { display: inline-block; padding: 3px 6px; border-radius: 4px; font-size: 0.6rem; font-weight: 700; background-color: var(--bg-time); color: var(--text-time); border: 1px solid var(--border-time); }
         body.dark-theme .badge-time { background-color: #3e2723; color: #ff8a80; border-color: #5d4037; }
 
-        /* LÓGICA DE OCULTAR ELEMENTOS NO MODO CALENDÁRIO */
         body.calendar-mode #btnDateToggle,
         body.calendar-mode #btnHourToggle,
         body.calendar-mode #btnSliderToggle,
@@ -250,31 +245,33 @@
             display: none !important;
         }
 
-        /* SMART POPUP & TIMER */
-        .next-class-popup { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%) translateY(100px); background: var(--popup-bg); border: 1px solid var(--popup-border); border-left: 5px solid var(--popup-accent); padding: 12px 20px; border-radius: 12px; box-shadow: var(--popup-shadow); display: flex; align-items: center; justify-content: space-between; gap: 15px; min-width: 320px; max-width: 90%; backdrop-filter: blur(10px); z-index: 1000; opacity: 0; overflow: hidden; }
+        .next-class-popup { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%) translateY(100px); background: var(--popup-bg); border: 1px solid var(--popup-border); border-left: 5px solid var(--popup-accent); padding: 15px 20px; border-radius: 12px; box-shadow: var(--popup-shadow); display: flex; align-items: center; justify-content: space-between; gap: 15px; min-width: 320px; max-width: 90%; backdrop-filter: blur(10px); z-index: 1000; opacity: 0; overflow: hidden; }
         .next-class-popup.visible { transform: translateX(-50%) translateY(0); opacity: 1; }
         .popup-info { display: flex; flex-direction: column; z-index: 2; width: 100%; }
-        .popup-header-row { display: flex; align-items: center; margin-bottom: 6px; }
-        .popup-badge { font-size: 0.6rem; font-weight: 800; color: #ffffff; padding: 1px 6px; border-radius: 4px; margin-right: 6px; letter-spacing: 0.5px; }
+        .popup-header-row { display: flex; align-items: center; margin-bottom: 8px; }
+        .popup-badge { font-size: 0.6rem; font-weight: 800; color: #ffffff; padding: 2px 6px; border-radius: 4px; margin-right: 6px; letter-spacing: 0.5px; }
         .badge-today { background: var(--badge-today-bg); }
         .badge-tomorrow { background: var(--badge-tmrw-bg); }
         .badge-soon { background: var(--badge-soon-bg); }
         .popup-label { font-size: 0.65rem; text-transform: uppercase; letter-spacing: 1px; color: var(--text-meta); font-weight: 700; }
-        .popup-title { font-size: 1rem; color: var(--popup-text); font-weight: 800; margin-bottom: 6px; line-height: 1; }
-        .popup-row { display: flex; align-items: center; font-size: 0.75rem; color: var(--popup-text); margin-bottom: 3px; }
-        .popup-row b { font-weight: 700; color: var(--popup-text); margin: 0 3px; }
-        .popup-icon { margin-right: 6px; font-size: 0.8rem; opacity: 0.8; }
-        .popup-close { background: none; border: none; font-size: 1.4rem; cursor: pointer; color: var(--text-meta); padding: 0 0 0 10px; z-index: 2; align-self: flex-start; line-height: 1; }
+        .popup-title { font-size: 1.1rem; color: var(--popup-text); font-weight: 800; margin-bottom: 8px; line-height: 1; letter-spacing: -0.3px; }
+        .popup-row { display: flex; align-items: center; font-size: 0.8rem; color: var(--popup-text); margin-bottom: 4px; }
+        .popup-row b { font-weight: 700; color: var(--popup-text); margin: 0 4px; }
+        .popup-icon { margin-right: 6px; font-size: 0.9rem; opacity: 0.8; }
+        .popup-close { background: none; border: none; font-size: 1.6rem; cursor: pointer; color: var(--text-meta); padding: 0 0 0 10px; z-index: 2; align-self: flex-start; line-height: 1; }
         .popup-close:hover { color: var(--popup-text); }
         .popup-timer { position: absolute; bottom: 0; left: 0; height: 3px; background: var(--popup-accent); width: 100%; opacity: 0.7; z-index: 1; }
-        .visible .popup-timer { animation: countdown 10s linear forwards; }
+        .visible .popup-timer { animation: countdown 8s linear forwards; }
         @keyframes countdown { from { width: 100%; } to { width: 0%; } }
 
-        /* Ajustes Mobile para Cabeçalho */
+        /* MENSAGEM ESTADO VAZIO */
+        .empty-state { text-align: center; padding: 40px 20px; font-size: 0.9rem; font-weight: 600; color: var(--text-meta); }
+
         @media (max-width: 600px) {
             .app-title { font-size: 0.85rem; }
-            .btn-icon { width: 28px; height: 28px; font-size: 0.85rem; }
-            .command-bar { padding: 6px 10px; }
+            .btn-icon { width: 34px; height: 34px; font-size: 0.95rem; }
+            .command-bar { padding: 8px 10px; }
+            .context-panel { padding: 10px; }
         }
 
         .signature { margin-top: 30px; font-size: 0.65rem; color: var(--text-meta); opacity: 0; cursor: default; transition: opacity 0.6s ease, transform 0.6s ease; user-select: none; }
@@ -285,7 +282,7 @@
 
 <div class="header-wrapper">
     <div class="command-bar">
-        <div class="app-title" id="appTitle">MED8 | GRUPO A | 2026.1</div>
+        <div class="app-title" id="appTitle">MED8 | GRUPO D | 2026.1</div>
         <div class="action-icons">
             <button class="btn-icon" id="btnHourToggle" title="Horas" onclick="toggleHours()">⏰</button>
             <button class="btn-icon" id="btnViewToggle" title="Ver Calendário" onclick="toggleViewMode()">🗓️</button>
@@ -296,16 +293,16 @@
 
     <div class="context-panel">
         <div class="control-row">
-            <div class="control-left">
+            <div class="filter-scroll-area">
                 <select id="groupSelect" onchange="changeGroup(this.value)"></select>
                 <span id="todayDisplay" class="today-display"></span>
                 <button class="filter-btn special" id="btn-currWeek" onclick="setFilter('currWeek', this)">Semana Atual</button>
                 <button class="filter-btn special" id="btn-nextWeek" onclick="setFilter('nextWeek', this)">Próxima Semana</button>
             </div>
             
-            <div class="control-right">
+            <div class="filter-scroll-area" id="monthButtonsContainer">
                 <button class="filter-btn" id="btn-all" onclick="setFilter('all', this)">Semestre</button>
-                <div id="monthButtons" style="display:flex; gap:6px;"></div>
+                <div id="monthButtons" style="display:contents;"></div>
             </div>
         </div>
         
@@ -347,7 +344,7 @@
     <div class="popup-info">
         <div class="popup-header-row" id="popup-header-row">
             <span class="popup-badge" id="popup-badge">HOJE</span>
-            <span class="popup-label" id="popup-group-label">GR A</span>
+            <span class="popup-label" id="popup-group-label">GR D</span>
         </div>
         <div class="popup-title" id="popup-title">HP-8</div>
         <div class="popup-row">
@@ -368,7 +365,7 @@
 <script>
 const ANO_LETIVO = 2026;
 const START_DATE = new Date(2026, 1, 19); 
-const CACHE_KEY = "med8_csv_cache_v1"; // Chave para salvar no celular
+const CACHE_KEY = "med8_csv_cache_v2"; 
 
 let showHours = false;
 let popupTimeout; 
@@ -384,7 +381,6 @@ const GROUP_MEMBERS = {
 
 let activeFilter = 'currWeek';
 
-// 1. PARSER CSV (Mantido igual)
 function parseCSV(str) {
     const arr = [];
     let quote = false;
@@ -404,7 +400,6 @@ function parseCSV(str) {
     return arr;
 }
 
-// 2. PROCESSADOR DE DADOS (Transforma CSV em DATA_LEGO)
 function processarDados(csvText) {
     try {
         const rows = parseCSV(csvText);
@@ -423,7 +418,7 @@ function processarDados(csvText) {
             gB: headers.findIndex(h => h.includes("grupo b")),
             gC: headers.findIndex(h => h.includes("grupo c")),
             gD: headers.findIndex(h => h.includes("grupo d")),
-            geral: headers.findIndex(h => h.includes("semanal")) // Coluna "Semanal" que contém datas ou texto
+            geral: headers.findIndex(h => h.includes("semanal"))
         };
 
         const novoLego = [];
@@ -432,7 +427,10 @@ function processarDados(csvText) {
             const row = rows[i];
             if (!row[idx.act] || row[idx.act].trim() === "") continue; 
 
+            const uniqueId = 'evt_' + Math.random().toString(36).substr(2, 9);
+
             const base = {
+                id: uniqueId,
                 d: row[idx.d].trim(),
                 t: row[idx.t].trim(),
                 act: row[idx.act].trim(),
@@ -445,15 +443,12 @@ function processarDados(csvText) {
             
             const cleanDate = (val) => val ? val.replace(/"/g, '').trim() : "-";
 
-            // Lógica ajustada para ler a coluna Semanal corretamente
             let conteudoGeral = row[idx.geral] ? row[idx.geral].trim() : "-";
             conteudoGeral = cleanDate(conteudoGeral);
 
             if (conteudoGeral !== "-" && conteudoGeral !== "") {
-                // Se tem conteúdo na coluna semanal (seja a palavra "Semanal" ou datas), aplica a Todos
                 novoLego.push({ ...base, g: "Todos", dates: conteudoGeral });
             } else {
-                // Se não, busca por grupo específico
                 const dtA = cleanDate(row[idx.gA]);
                 const dtB = cleanDate(row[idx.gB]);
                 const dtC = cleanDate(row[idx.gC]);
@@ -467,7 +462,7 @@ function processarDados(csvText) {
         }
         
         DATA_LEGO = novoLego;
-        updateView(false); // Atualiza a tela sem popup
+        updateView(false); 
         return true;
     } catch (e) {
         console.error("Erro ao processar CSV", e);
@@ -475,14 +470,11 @@ function processarDados(csvText) {
     }
 }
 
-// 3. GERENCIADOR DE SINCRONIZAÇÃO (CACHE + NETWORK)
 async function sincronizarDados() {
     const url = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSamcJhE1lES5UalkMy7koJGpWOLubK7mBzdWhdgh1NDSKwwBDe39KqhSlr93-PYhxIN-wQJp_SGd2H/pub?output=csv";
     const localData = localStorage.getItem(CACHE_KEY);
     const appTitle = document.getElementById('appTitle');
-    const originalTitle = appTitle.innerText;
 
-    // PASSO 1: Carrega Instantaneamente do Cache (Se existir)
     if (localData) {
         processarDados(localData);
         console.log("⚡ Dados carregados do cache local.");
@@ -491,20 +483,17 @@ async function sincronizarDados() {
         document.getElementById('capture-area').style.opacity = '0.5';
     }
 
-    // PASSO 2: Busca atualização em background
     try {
         const response = await fetch(url + "&nocache=" + new Date().getTime());
         const netData = await response.text();
         
-        // PASSO 3: Compara e Atualiza se necessário
         if (netData !== localData) {
             console.log("🔄 Novas alterações detectadas. Atualizando...");
             localStorage.setItem(CACHE_KEY, netData);
             processarDados(netData);
             
-            // Feedback visual discreto de sucesso
             appTitle.innerText = "✅ ATUALIZADO";
-            setTimeout(() => { appTitle.innerText = `MED8 | GRUPO ${localStorage.getItem('medGroup') || 'A'} | ${ANO_LETIVO}.1`; }, 2000);
+            setTimeout(() => { appTitle.innerText = `MED8 | GRUPO ${localStorage.getItem('medGroup') || 'D'} | ${ANO_LETIVO}.1`; }, 2000);
         } else {
             console.log("✅ Cache já estava atualizado.");
         }
@@ -528,16 +517,6 @@ function toggleDarkMode() {
 function toggleHours() { 
     document.body.classList.toggle('show-hours'); 
     document.getElementById('btnHourToggle').classList.toggle('active');
-}
-
-/* REMOVIDO: toggleDates()
-  A função foi removida e o botão comentado para as datas ficarem sempre visíveis.
-*/
-function toggleDates() { 
-    // const isHidden = document.body.classList.toggle('hide-dates'); 
-    // const btn = document.getElementById('btnDateToggle');
-    // btn.classList.toggle('active', !isHidden);
-    // btn.innerText = isHidden ? '🙈' : '👁️';
 }
 
 function toggleViewMode() {
@@ -598,20 +577,22 @@ function generateImage() {
     });
 }
 
-function checkWeek(dateStr, offset) {
+function getDatesForWeek(dateStr, offset) {
+    if (dateStr === "Semanal") return ["Semanal"];
     const now = new Date(); 
     const currentDay = now.getDay();
     const dayAdjusted = currentDay === 0 ? 7 : currentDay;
     const diff = now.getDate() - (dayAdjusted - 1) + (offset * 7);
     const start = new Date(now.setDate(diff)); start.setHours(0,0,0,0);
     const end = new Date(start); end.setDate(start.getDate() + 6); end.setHours(23,59,59);
-    return dateStr.split(',').some(d => {
+    
+    return dateStr.split(',').filter(d => {
         const parts = d.trim().split('/');
         if (parts.length < 2) return false;
         const [dayPart, monthPart] = parts.map(Number);
         const classDate = new Date(ANO_LETIVO, monthPart - 1, dayPart);
         return classDate >= start && classDate <= end;
-    });
+    }).map(d => d.trim());
 }
 
 function renderCalendar() {
@@ -685,15 +666,15 @@ function renderCalendar() {
                     colorVar = getLocColorVar(item.l.split('/')[0]);
                 }
 
-                const safeItem = encodeURIComponent(JSON.stringify({...item, realDay: day, realMonth: targetMonth}));
                 let displayTitle = item.act.replace('-8', '');
                 
                 if (actL.includes("hp-8") || actL.includes("hp-8 (uro)")) displayTitle = abrev(item.p);
-                else if (actL.includes("giesc")) displayTitle = abrev(item.p);
+                else if (actL.includes("giesc")) displayTitle = "Giesc";
                 else if (actL.includes("morfo")) displayTitle = "Morfo";
                 else if (actL.includes("tutorial")) displayTitle = "Tutorial";
                 
-                const cardHtml = `<div class="micro-card" style="--micro-color: ${colorVar}" onclick="showCalPopup('${safeItem}')">${displayTitle}</div>`;
+                const cardHtml = `<div class="micro-card" style="--micro-color: ${colorVar}" onclick="showCalPopup('${item.id}', ${day}, ${targetMonth})">${displayTitle}</div>`;
+                
                 if (item.t === "Manhã") cardsM += cardHtml;
                 else if (item.t === "Tarde") cardsT += cardHtml;
                 else if (item.t === "Noite") cardsN += cardHtml;
@@ -711,29 +692,38 @@ function renderCalendar() {
     document.getElementById('calendar-area').innerHTML = html;
 }
 
-function showCalPopup(encodedData) {
-    const item = JSON.parse(decodeURIComponent(encodedData));
+function showCalPopup(eventId, realDay, realMonth) {
+    const item = DATA_LEGO.find(i => i.id === eventId);
+    if (!item) return;
+
     const popup = document.getElementById('nextClassPopup');
     clearTimeout(popupTimeout);
     
-    const headerHtml = `<span class="popup-badge badge-tomorrow">CALENDÁRIO</span> GRUPO ${document.getElementById('groupSelect').value}`;
+    const headerHtml = `<span class="popup-badge badge-tomorrow">DETALHES</span> GRUPO ${document.getElementById('groupSelect').value}`;
     document.getElementById('popup-header-row').innerHTML = `<span class="popup-label">${headerHtml}</span>`;
     document.getElementById('popup-title').innerText = item.act;
     
     const locName = item.l.split('/')[0];
     const locColor = getLocColorVar(locName); 
     const dayName = item.d;
-    const dateStr = `${String(item.realDay).padStart(2,'0')}/${String(item.realMonth+1).padStart(2,'0')}`;
+    
+    let dateDisplay = "";
+    if (realDay !== undefined && realMonth !== undefined) {
+         dateDisplay = `${String(realDay).padStart(2,'0')}/${String(realMonth+1).padStart(2,'0')}`;
+    } else {
+         dateDisplay = item.dates === "Semanal" ? "Semanal" : item.dates.substring(0, 20) + (item.dates.length > 20 ? "..." : "");
+    }
+    
     const timeStr = item.h ? item.h.split(' - ')[0] : item.t; 
     
-    document.getElementById('popup-time').innerHTML = `${dayName} (${dateStr}) às <b>${timeStr}</b>`;
+    document.getElementById('popup-time').innerHTML = `${dayName} ${dateDisplay !== "Semanal" ? '('+dateDisplay+')' : ''} às <b>${timeStr}</b>`;
     document.getElementById('popup-loc').innerHTML = `<b style="color:${locColor}">${locName}</b>`;
     document.getElementById('popup-prof').innerText = abrev(item.p);
 
     const timerBar = document.getElementById('popupTimer');
-    timerBar.style.animation = 'none'; timerBar.offsetHeight; timerBar.style.animation = 'countdown 5s linear forwards';
+    timerBar.style.animation = 'none'; timerBar.offsetHeight; timerBar.style.animation = 'countdown 8s linear forwards';
     popup.classList.add('visible');
-    popupTimeout = setTimeout(() => { popup.classList.remove('visible'); }, 5000);
+    popupTimeout = setTimeout(() => { popup.classList.remove('visible'); }, 8000);
 }
 
 function updateView(shouldShowPopup = false) {
@@ -763,6 +753,8 @@ function updateView(shouldShowPopup = false) {
     const isCurrentWeekMode = activeFilter === 'currWeek';
     
     let html = "";
+    let visibleCount = 0;
+
     turns.forEach(turn => {
         html += `<tr><td class="time-col">${turn[0]}</td>`;
         days.forEach((day, index) => {
@@ -773,16 +765,28 @@ function updateView(shouldShowPopup = false) {
             const highlightClass = (isCurrentWeekMode && (index + 1) === todayIndex) ? 'today-column' : '';
             let cellContent = "";
             matches.forEach(m => {
-                let show = (activeFilter === 'all' || m.dates === "Semanal");
-                let filteredDates = m.dates;
-                if (!show) {
-                    if (activeFilter.includes('/')) {
-                        const dateArr = m.dates.split(',').filter(d => d.includes(activeFilter));
-                        if (dateArr.length > 0) { show = true; filteredDates = dateArr.join(', '); }
-                    } else if (activeFilter === 'currWeek') { show = checkWeek(m.dates, 0); }
-                    else if (activeFilter === 'nextWeek') { show = checkWeek(m.dates, 1); }
+                let show = false;
+                let filteredDates = "";
+
+                if (activeFilter === 'all') {
+                    show = true;
+                    filteredDates = m.dates;
+                } else if (m.dates === "Semanal") {
+                    show = true;
+                    filteredDates = "Semanal";
+                } else if (activeFilter.includes('/')) {
+                    const dateArr = m.dates.split(',').filter(d => d.includes(activeFilter));
+                    if (dateArr.length > 0) { show = true; filteredDates = dateArr.join(', '); }
+                } else if (activeFilter === 'currWeek') {
+                    const inWeek = getDatesForWeek(m.dates, 0);
+                    if (inWeek.length > 0) { show = true; filteredDates = inWeek.join(', '); }
+                } else if (activeFilter === 'nextWeek') {
+                    const inWeek = getDatesForWeek(m.dates, 1);
+                    if (inWeek.length > 0) { show = true; filteredDates = inWeek.join(', '); }
                 }
+
                 if (show) {
+                    visibleCount++;
                     const actL = m.act.toLowerCase();
                     let colorClass = "";
                     if(actL.includes("giesc")) colorClass = "giesc";
@@ -791,12 +795,11 @@ function updateView(shouldShowPopup = false) {
                     else if(actL.includes("morfo")) colorClass = "morfo";
 
                     let displayTitle = abrev(m.p);
-                    let tooltipAttr = ""; let tooltipClass = "";
 
-                    if (m.act.includes("TUTORIAL")) { displayTitle = "Tutorial"; tooltipAttr = `data-prof="${abrev(m.p)}"`; tooltipClass = "has-tooltip"; } 
-                    else if (m.act.includes("MORFO")) { displayTitle = "Morfo"; tooltipAttr = `data-prof="${abrev(m.p)}"`; tooltipClass = "has-tooltip"; } 
-                    else if (m.act.includes("GIESC")) { displayTitle = "Giesc"; tooltipAttr = `data-prof="${abrev(m.p)}"`; tooltipClass = "has-tooltip"; }
-                    else if (m.act.includes("HP-8")) { displayTitle = abrev(m.p); }
+                    if (m.act.includes("TUTORIAL")) displayTitle = "Tutorial";
+                    else if (m.act.includes("MORFO")) displayTitle = "Morfo";
+                    else if (m.act.includes("GIESC")) displayTitle = "Giesc";
+                    else if (m.act.includes("HP-8")) displayTitle = abrev(m.p);
 
                     const locsArr = m.l.split('/');
                     const pills = locsArr.filter(l => l.trim().toUpperCase() !== 'UEPA').map(loc => `<span class="pill ${getPillClass(loc)}">${loc.trim()}</span>`).join('');
@@ -806,17 +809,27 @@ function updateView(shouldShowPopup = false) {
                     if (m.dates === "Semanal") { dateDisplay = `<div class="status-dot"></div> <span style="opacity:0.8">Semanal</span>`; } 
                     else { dateDisplay = filteredDates; }
 
-                    cellContent += `<div class="subject-block ${colorClass} ${tooltipClass}" ${tooltipAttr}><div class="card-header"><span class="card-title">${displayTitle}</span><div style="display:flex; gap:2px">${pills}</div></div><div class="date-line">${dateDisplay}</div>${hourBadge}</div>`;
+                    cellContent += `<div class="subject-block ${colorClass}" onclick="showCalPopup('${m.id}')">
+                        <div class="card-header"><span class="card-title">${displayTitle}</span><div style="display:flex; gap:2px">${pills}</div></div>
+                        <div class="date-line">${dateDisplay}</div>${hourBadge}
+                    </div>`;
                 }
             });
             html += `<td class="${highlightClass}">${cellContent || "—"}</td>`;
         });
         html += "</tr>";
     });
-    document.getElementById('scheduleBody').innerHTML = html;
+
+    if (visibleCount === 0) {
+        document.getElementById('scheduleBody').innerHTML = `<tr><td colspan="7"><div class="empty-state">🎉 Nenhuma aula programada para este filtro!</div></td></tr>`;
+    } else {
+        document.getElementById('scheduleBody').innerHTML = html;
+    }
+
     document.querySelectorAll('#header-row th').forEach((th, i) => {
         if(i > 0) th.classList.toggle('today-column', (isCurrentWeekMode && i === todayIndex));
     });
+    
     if(shouldShowPopup) updatePopup();
 }
 
@@ -910,9 +923,9 @@ function updatePopup() {
             document.getElementById('popup-prof').innerText = abrev(nextClass.p);
 
             const timerBar = document.getElementById('popupTimer');
-            timerBar.style.animation = 'none'; timerBar.offsetHeight; timerBar.style.animation = 'countdown 10s linear forwards';
+            timerBar.style.animation = 'none'; timerBar.offsetHeight; timerBar.style.animation = 'countdown 8s linear forwards';
             popup.classList.add('visible');
-            popupTimeout = setTimeout(() => { popup.classList.remove('visible'); }, 10000);
+            popupTimeout = setTimeout(() => { popup.classList.remove('visible'); }, 8000);
         }
     }, 100);
 }
@@ -922,15 +935,15 @@ function closePopupManual() {
     document.getElementById('nextClassPopup').classList.remove('visible');
 }
 
-// 4. INICIALIZAÇÃO
+// 4. INICIALIZAÇÃO E NOVO FLUXO DE SERVICE WORKER
 (function init() {
     const today = new Date();
     document.getElementById('todayDisplay').innerText = `Hoje: ${today.toLocaleDateString('pt-BR')}`;
     
-    // Configura menu de grupos (Agora estático no início, pois os dados podem demorar)
     const sel = document.getElementById('groupSelect');
     ['A','B','C','D'].forEach(k => sel.add(new Option(`Grupo ${k}`, k)));
-    sel.value = localStorage.getItem('medGroup') || 'A';
+    
+    sel.value = localStorage.getItem('medGroup') || 'D';
     
     if(localStorage.getItem('theme') === 'dark') {
         document.body.classList.add('dark-theme'); document.getElementById('btnThemeToggle').classList.remove('active');
@@ -943,44 +956,27 @@ function closePopupManual() {
     document.getElementById('monthButtons').innerHTML = months.map(m => `<button class="filter-btn" onclick="setFilter('${m.v}', this)">${m.n}</button>`).join('');
     document.getElementById('btn-currWeek').classList.add('active');
     
-    // Inicia a sincronização
     sincronizarDados();
 })();
-</script>
 
-<script>
-  if ('serviceWorker' in navigator) {
+// Atualização via Service Worker NATIVA
+if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
-      navigator.serviceWorker.register('./sw.js').then(reg => {
-        if (navigator.onLine) {
-            checkUpdate();
-        }
-      }).catch(err => console.log('Erro ao registrar SW:', err));
+        navigator.serviceWorker.register('./sw.js').then(reg => {
+            reg.onupdatefound = () => {
+                const installingWorker = reg.installing;
+                installingWorker.onstatechange = () => {
+                    if (installingWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                        const btnText = document.getElementById('appTitle');
+                        btnText.innerText = "🔄 NOVO APP (CLIQUE)";
+                        btnText.style.cursor = "pointer";
+                        btnText.onclick = () => window.location.reload();
+                    }
+                };
+            };
+        }).catch(err => console.log('Erro ao registrar SW:', err));
     });
-  }
-
-  async function checkUpdate() {
-      try {
-          const responseCache = await fetch('./index.html');
-          const textCache = await responseCache.text();
-
-          const responseNetwork = await fetch('./index.html?ver=' + new Date().getTime());
-          const textNetwork = await responseNetwork.text();
-
-          if (textCache !== textNetwork) {
-              console.log("Nova versão detectada! Atualizando...");
-              if ('caches' in window) {
-                  const keys = await caches.keys();
-                  await Promise.all(keys.map(key => caches.delete(key)));
-              }
-              window.location.reload();
-          } else {
-              console.log("Você já está na versão mais atual.");
-          }
-      } catch (error) {
-          console.log("Sem internet ou erro ao verificar atualização.", error);
-      }
-  }
+}
 </script>
 
 </body>
