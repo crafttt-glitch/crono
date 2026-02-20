@@ -282,10 +282,17 @@
         body.panoramic-mode .date-line { font-size: 0.4rem; margin-top: 2px; }
         body.panoramic-mode .badge-time { font-size: 0.4rem; padding: 1px 3px; }
         body.panoramic-mode .time-col { width: 25px !important; font-size: 0.5rem; }
-        body.panoramic-mode .calendar-grid { min-width: 100%; gap: 2px; }
-        body.panoramic-mode .cal-day { min-height: 60px; padding: 2px; }
-        body.panoramic-mode .micro-card { font-size: 0.4rem; padding: 2px; white-space: normal; }
-        body.panoramic-mode #sliderDrawer { display: none !important; } /* Esconde os sliders pois a largura fica automática */
+        
+        /* Ajustes específicos do Calendário Panorâmico */
+        body.panoramic-mode .calendar-grid { min-width: 100%; gap: 1px; grid-template-columns: repeat(7, minmax(0, 1fr)); }
+        body.panoramic-mode .cal-header { font-size: 0.45rem; padding: 2px 0; }
+        body.panoramic-mode .cal-day { min-height: 50px; padding: 1px; border-radius: 4px; }
+        body.panoramic-mode .cal-date { font-size: 0.5rem; margin-bottom: 1px; padding-right: 2px; }
+        body.panoramic-mode .cal-zone { padding: 1px 1px 1px 7px; min-height: 14px; gap: 1px; }
+        body.panoramic-mode .cal-zone::before { font-size: 0.35rem; left: 1px; top: 2px; }
+        body.panoramic-mode .micro-card { font-size: 0.35rem; padding: 1px 2px; white-space: normal; word-break: break-word; line-height: 1; border-radius: 2px; border-left-width: 2px; }
+        
+        body.panoramic-mode #sliderDrawer { display: none !important; }
 
         @media (max-width: 600px) {
             .app-title { font-size: 0.85rem; }
@@ -1009,3 +1016,4 @@ if ('serviceWorker' in navigator) {
 
 </body>
 </html>
+
