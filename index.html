@@ -53,6 +53,11 @@
             --bg-time: #ffebee; --text-time: #c62828; --border-time: #ffcdd2;
             --dot-color: #00e676; 
 
+            /* Tooltip GLASS */
+            --tooltip-bg: rgba(20, 20, 35, 0.65);
+            --tooltip-text: #ffffff;
+            --tooltip-border: rgba(255, 255, 255, 0.2);
+
             /* POPUP */
             --popup-bg: rgba(255, 255, 255, 0.95);
             --popup-border: #bbdefb;
@@ -233,11 +238,13 @@
         .badge-time { display: inline-block; padding: 3px 6px; border-radius: 4px; font-size: 0.6rem; font-weight: 700; background-color: var(--bg-time); color: var(--text-time); border: 1px solid var(--border-time); }
         body.dark-theme .badge-time { background-color: #3e2723; color: #ff8a80; border-color: #5d4037; }
 
+        /* LÓGICA DE OCULTAR ELEMENTOS NO MODO CALENDÁRIO */
         body.calendar-mode #btnDateToggle,
         body.calendar-mode #btnHourToggle,
         body.calendar-mode #btnSliderToggle,
         body.calendar-mode #btn-currWeek,
-        body.calendar-mode #btn-nextWeek {
+        body.calendar-mode #btn-nextWeek,
+        body.calendar-mode #btn-all {
             display: none !important;
         }
 
@@ -324,12 +331,12 @@
             <div class="filter-scroll-area">
                 <select id="groupSelect" onchange="changeGroup(this.value)"></select>
                 <span id="todayDisplay" class="today-display"></span>
-                <button class="filter-btn special" id="btn-currWeek" onclick="setFilter('currWeek', this)">Semana Atual</button>
-                <button class="filter-btn special" id="btn-nextWeek" onclick="setFilter('nextWeek', this)">Próxima Semana</button>
+                <button class="filter-btn special" id="btn-currWeek" onclick="setFilter('currWeek')">Semana Atual</button>
+                <button class="filter-btn special" id="btn-nextWeek" onclick="setFilter('nextWeek')">Próxima Semana</button>
             </div>
             
             <div class="filter-scroll-area" id="monthButtonsContainer">
-                <button class="filter-btn" id="btn-all" onclick="setFilter('all', this)">Semestre</button>
+                <button class="filter-btn" id="btn-all" onclick="setFilter('all')">Semestre</button>
                 <div id="monthButtons" style="display:contents;"></div>
             </div>
         </div>
@@ -398,6 +405,7 @@ const CACHE_KEY = "med8_csv_cache_v2";
 let showHours = false;
 let popupTimeout; 
 let viewMode = localStorage.getItem('viewMode') || 'matrix';
+let activeFilter = 'currWeek';
 let DATA_LEGO = [];
 
 const GROUP_MEMBERS = {
@@ -406,8 +414,6 @@ const GROUP_MEMBERS = {
     C: ["Diego M Rocha", "Jeremias J Souza", "William A Abreu", "Dayvison T Trindade", "Vinícius S Remédios"],
     D: ["Brenda S Lima", "Bruno A Silva", "Frank J Nascimento", "Tiago M Brasil", "Roberta F Menezes", "Maysa C Bastos"]
 };
-
-let activeFilter = 'currWeek';
 
 function parseCSV(str) {
     const arr = [];
@@ -548,23 +554,33 @@ function toggleHours() {
 }
 
 function togglePanoramic() {
-    document.body.classList.toggle('panoramic-mode');
-    document.getElementById('btnPanToggle').classList.toggle('active');
+    const isPan = document.body.classList.toggle('panoramic-mode');
+    document.getElementById('btnPanToggle').classList.toggle('active', isPan);
+    localStorage.setItem('panoramicMode', isPan ? 'true' : 'false');
 }
 
 function toggleViewMode() {
     viewMode = viewMode === 'matrix' ? 'calendar' : 'matrix';
     localStorage.setItem('viewMode', viewMode);
     const btn = document.getElementById('btnViewToggle');
+    
     if(viewMode === 'calendar') {
-        btn.classList.add('active'); btn.title = 'Ver Matriz'; document.body.classList.add('calendar-mode');
+        btn.classList.add('active'); 
+        btn.title = 'Ver Matriz'; 
+        document.body.classList.add('calendar-mode');
+        
+        // Se estiver num filtro de semana, seleciona o mês automaticamente
+        if (!activeFilter.includes('/')) {
+            const mm = String(new Date().getMonth() + 1).padStart(2, '0');
+            setFilter('/' + mm, true); // true = pula o updateView para não renderizar 2x
+        }
     } else {
-        btn.classList.remove('active'); btn.title = 'Ver Calendário'; document.body.classList.remove('calendar-mode');
+        btn.classList.remove('active'); 
+        btn.title = 'Ver Calendário'; 
+        document.body.classList.remove('calendar-mode');
     }
     updateView(false);
 }
-
-function toggleSliders() { document.getElementById('sliderDrawer').classList.toggle('active'); }
 
 function abrev(name) {
     if (name === "-" || !name) return "";
@@ -671,7 +687,6 @@ function renderCalendar() {
         let dayHtml = `<div class="${dayClass}"><div class="cal-date">${day}</div>`;
         
         let cardsM = ''; let cardsT = ''; let cardsN = '';
-        let hasContent = false;
         
         DATA_LEGO.forEach(item => {
             if (item.g !== "Todos" && !item.g.includes(group)) return;
@@ -691,7 +706,6 @@ function renderCalendar() {
             }
 
             if (hasEventToday) {
-                hasContent = true;
                 const actL = item.act.toLowerCase();
                 let colorVar = "var(--bar-hp8)";
                 if(actL.includes("giesc")) colorVar = "var(--bar-giesc)";
@@ -844,7 +858,6 @@ function updateView(shouldShowPopup = false) {
                     if (m.dates === "Semanal") { dateDisplay = `<div class="status-dot"></div> <span style="opacity:0.8">Semanal</span>`; } 
                     else { dateDisplay = filteredDates; }
 
-                    // Adicionado a div .pill-wrapper em volta das pills para garantir o flex-wrap
                     cellContent += `<div class="subject-block ${colorClass}" onclick="showCalPopup('${m.id}')">
                         <div class="card-header"><span class="card-title">${displayTitle}</span><div class="pill-wrapper">${pills}</div></div>
                         <div class="date-line">${dateDisplay}</div>${hourBadge}
@@ -869,9 +882,16 @@ function updateView(shouldShowPopup = false) {
     if(shouldShowPopup) updatePopup();
 }
 
-function setFilter(val, btn) {
-    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active'); activeFilter = val; updateView(false);
+// Atualiza o estado visual dos botões de filtro e salva a escolha
+function setFilter(val, skipUpdate = false) {
+    document.querySelectorAll('.filter-btn').forEach(b => {
+        b.classList.remove('active');
+        if (b.getAttribute('onclick') && b.getAttribute('onclick').includes(`'${val}'`)) {
+            b.classList.add('active');
+        }
+    });
+    activeFilter = val;
+    if(!skipUpdate) updateView(false);
 }
 
 function changeGroup(val) { updateView(true); }
@@ -971,7 +991,7 @@ function closePopupManual() {
     document.getElementById('nextClassPopup').classList.remove('visible');
 }
 
-// 4. INICIALIZAÇÃO E NOVO FLUXO DE SERVICE WORKER
+// 4. INICIALIZAÇÃO
 (function init() {
     const today = new Date();
     document.getElementById('todayDisplay').innerText = `Hoje: ${today.toLocaleDateString('pt-BR')}`;
@@ -982,15 +1002,30 @@ function closePopupManual() {
     sel.value = localStorage.getItem('medGroup') || 'D';
     
     if(localStorage.getItem('theme') === 'dark') {
-        document.body.classList.add('dark-theme'); document.getElementById('btnThemeToggle').classList.remove('active');
+        document.body.classList.add('dark-theme'); 
+        document.getElementById('btnThemeToggle').classList.remove('active');
     }
-    if(viewMode === 'calendar') {
-        document.getElementById('btnViewToggle').classList.add('active'); document.body.classList.add('calendar-mode');
+    
+    // Inicia os botões de Mês na UI
+    const months = [{n:'Fev',v:'/02'},{n:'Mar',v:'/03'},{n:'Abr',v:'/04'},{n:'Mai',v:'/05'},{n:'Jun',v:'/06'}];
+    document.getElementById('monthButtons').innerHTML = months.map(m => `<button class="filter-btn" onclick="setFilter('${m.v}')">${m.n}</button>`).join('');
+    
+    // Verifica Memória do Zoom Panorâmico
+    if(localStorage.getItem('panoramicMode') === 'true') {
+        document.body.classList.add('panoramic-mode');
+        document.getElementById('btnPanToggle').classList.add('active');
     }
 
-    const months = [{n:'Fev',v:'/02'},{n:'Mar',v:'/03'},{n:'Abr',v:'/04'},{n:'Mai',v:'/05'},{n:'Jun',v:'/06'}];
-    document.getElementById('monthButtons').innerHTML = months.map(m => `<button class="filter-btn" onclick="setFilter('${m.v}', this)">${m.n}</button>`).join('');
-    document.getElementById('btn-currWeek').classList.add('active');
+    // Configuração de Visualização Inicial (Calendário ou Matriz)
+    if(viewMode === 'calendar') {
+        document.getElementById('btnViewToggle').classList.add('active'); 
+        document.body.classList.add('calendar-mode');
+        // Auto-seleciona o mês atual visualmente
+        const mm = String(new Date().getMonth() + 1).padStart(2, '0');
+        setFilter('/' + mm, true);
+    } else {
+        setFilter('currWeek', true);
+    }
     
     sincronizarDados();
 })();
