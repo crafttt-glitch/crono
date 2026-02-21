@@ -34,7 +34,8 @@
             --text-title: #102a43;
             --text-meta: #627d98;
             --text-header: #212121;
-            
+            --bg-header-btn: #f5f7fa;
+
             /* Gradientes */
             --bg-giesc: linear-gradient(135deg, #f1f8e9 0%, #dcedc8 100%);
             --bg-hp8: linear-gradient(135deg, #ffffff 0%, #f0f7ff 100%);
@@ -203,7 +204,7 @@
         .col-seg { width: var(--w-seg); } .col-ter { width: var(--w-ter); } .col-qua { width: var(--w-qua); } .col-qui { width: var(--w-qui); } .col-sex { width: var(--w-sex); } .col-sab { width: var(--w-sab); }
 
         /* MODO CALENDÁRIO */
-        .calendar-container { display: none; width: 100%; max-width: 1250px; background: var(--card-bg); padding: 12px; border-radius: 16px; box-shadow: 0 8px 25px rgba(0,0,0,0.06); border: 1px solid var(--border-color); overflow-x: auto; -webkit-overflow-scrolling: touch; }
+        .calendar-container { display: none; width: 100%; max-width: 1250px; background: var(--card-bg); padding: 12px; border-radius: 12px; box-shadow: 0 8px 25px rgba(0,0,0,0.06); border: 1px solid var(--border-color); overflow-x: auto; -webkit-overflow-scrolling: touch; }
         .calendar-header-title { text-align: center; font-weight: 800; color: var(--header-bg-blue); margin-bottom: 12px; font-size: 1.1rem; text-transform: uppercase; letter-spacing: 1px; position: sticky; left: 0; }
         body.dark-theme .calendar-header-title { color: var(--primary-blue); }
         
@@ -278,6 +279,7 @@
         body.calendar-mode #btnSliderToggle,
         body.calendar-mode #btn-currWeek,
         body.calendar-mode #btn-nextWeek,
+        body.calendar-mode #btn-padrao,
         body.calendar-mode #btn-all {
             display: none !important;
         }
@@ -392,6 +394,7 @@
             </div>
             
             <div class="filter-scroll-area" id="monthButtonsContainer">
+                <button class="filter-btn" id="btn-padrao" onclick="setFilter('padrao')">Padrão</button>
                 <button class="filter-btn" id="btn-all" onclick="setFilter('all')">Semestre</button>
                 <div id="monthButtons" style="display:contents;"></div>
             </div>
@@ -812,7 +815,7 @@ function renderCalendar() {
     document.getElementById('calendar-area').innerHTML = html;
 }
 
-// Popup aprimorado com cálculo dinâmico da aula que você clicou
+// Popup aprimorado com cálculo dinâmico
 function showCalPopup(eventId, dateDisplay) {
     const item = DATA_LEGO.find(i => i.id === eventId);
     if (!item) return;
@@ -830,7 +833,7 @@ function showCalPopup(eventId, dateDisplay) {
     if (item.dates === "Semanal") {
         relativeTag = "SEMANAL";
     } else {
-        const possibleDatesStr = (dateDisplay && dateDisplay !== "Semanal") ? dateDisplay : item.dates;
+        const possibleDatesStr = (dateDisplay && dateDisplay !== "Semanal" && dateDisplay !== "Rodízio" && dateDisplay !== "Quinzenal") ? dateDisplay : item.dates;
         const datesArr = possibleDatesStr.split(',').map(d => {
             const [dd, mm] = d.trim().split('/');
             return new Date(ANO_LETIVO, parseInt(mm)-1, parseInt(dd));
@@ -850,11 +853,9 @@ function showCalPopup(eventId, dateDisplay) {
         }
     }
 
-    // Header Automático
     const headerHtml = `<span class="popup-badge ${badgeClass}">${relativeTag}</span> <span class="popup-group">GRUPO ${group}</span>`;
     document.getElementById('popup-badges').innerHTML = headerHtml;
     
-    // Título e Local
     document.getElementById('popup-title').innerText = item.act;
     const locName = item.l.split('/')[0];
     const locColor = getLocColorVar(locName); 
@@ -863,11 +864,9 @@ function showCalPopup(eventId, dateDisplay) {
     locEl.innerText = locName;
     locEl.style.backgroundColor = locColor;
     
-    // Cor da Borda e da Barra
     popup.style.borderLeftColor = locColor;
     document.getElementById('popupTimer').style.backgroundColor = locColor;
     
-    // Horário e Data 
     const timeStr = item.h ? item.h.split(' - ')[0] : item.t; 
     let finalDate = dateDisplay && dateDisplay !== "Semanal" ? dateDisplay : "Semanal";
     
@@ -876,11 +875,8 @@ function showCalPopup(eventId, dateDisplay) {
     }
     
     document.getElementById('popup-time').innerHTML = `<b>${timeStr}</b> <span style="opacity:0.4; margin:0 6px">•</span> ${item.d} ${finalDate !== "Semanal" ? '('+finalDate+')' : ''}`;
-    
-    // Professor
     document.getElementById('popup-prof').innerHTML = `<b>${abrev(item.p)}</b>`;
 
-    // Dispara animação
     const timerBar = document.getElementById('popupTimer');
     timerBar.style.animation = 'none'; timerBar.offsetHeight; timerBar.style.animation = 'countdown 8s linear forwards';
     popup.classList.add('visible');
@@ -933,6 +929,20 @@ function updateView(shouldShowPopup = false) {
                 if (activeFilter === 'all') {
                     show = true;
                     filteredDates = m.dates;
+                } else if (activeFilter === 'padrao') {
+                    show = true;
+                    if (m.dates === "Semanal") {
+                        filteredDates = "Semanal";
+                    } else {
+                        const dateCount = m.dates.split(',').length;
+                        if (m.p.toLowerCase().includes("wesley")) {
+                            filteredDates = "Quinzenal";
+                        } else if (dateCount > 1) {
+                            filteredDates = "Rodízio";
+                        } else {
+                            filteredDates = m.dates;
+                        }
+                    }
                 } else if (m.dates === "Semanal") {
                     show = true;
                     filteredDates = "Semanal";
@@ -968,8 +978,11 @@ function updateView(shouldShowPopup = false) {
                     const hourBadge = m.h ? `<div class="time-line"><span class="badge-time">${m.h}</span></div>` : "";
                     
                     let dateDisplay = "";
-                    if (m.dates === "Semanal") { dateDisplay = `<div class="status-dot"></div> <span style="opacity:0.8">Semanal</span>`; } 
-                    else { dateDisplay = filteredDates; }
+                    if (filteredDates === "Semanal" || filteredDates === "Quinzenal" || filteredDates === "Rodízio") { 
+                        dateDisplay = `<div class="status-dot"></div> <span style="opacity:0.8">${filteredDates}</span>`; 
+                    } else { 
+                        dateDisplay = filteredDates; 
+                    }
 
                     cellContent += `<div class="subject-block ${colorClass}" onclick="showCalPopup('${m.id}', '${filteredDates}')">
                         <div class="card-header"><span class="card-title">${displayTitle}</span><div class="pill-wrapper">${pills}</div></div>
