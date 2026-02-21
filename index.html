@@ -53,11 +53,6 @@
             --bg-time: #ffebee; --text-time: #c62828; --border-time: #ffcdd2;
             --dot-color: #00e676; 
 
-            /* Tooltip GLASS */
-            --tooltip-bg: rgba(20, 20, 35, 0.65);
-            --tooltip-text: #ffffff;
-            --tooltip-border: rgba(255, 255, 255, 0.2);
-
             /* POPUP */
             --popup-bg: rgba(255, 255, 255, 0.95);
             --popup-border: #bbdefb;
@@ -461,10 +456,10 @@ function processarDados(csvText) {
             const row = rows[i];
             if (!row[idx.act] || row[idx.act].trim() === "") continue; 
 
-            const uniqueId = 'evt_' + Math.random().toString(36).substr(2, 9);
+            // Criando uma função rápida para gerar ID diferente para CADA grupo
+            const genId = () => 'evt_' + Math.random().toString(36).substr(2, 9);
 
             const base = {
-                id: uniqueId,
                 d: row[idx.d].trim(),
                 t: row[idx.t].trim(),
                 act: row[idx.act].trim(),
@@ -481,22 +476,23 @@ function processarDados(csvText) {
             conteudoGeral = cleanDate(conteudoGeral);
 
             if (conteudoGeral !== "-" && conteudoGeral !== "") {
-                novoLego.push({ ...base, g: "Todos", dates: conteudoGeral });
+                novoLego.push({ ...base, id: genId(), g: "Todos", dates: conteudoGeral });
             } else {
                 const dtA = cleanDate(row[idx.gA]);
                 const dtB = cleanDate(row[idx.gB]);
                 const dtC = cleanDate(row[idx.gC]);
                 const dtD = cleanDate(row[idx.gD]);
 
-                if (dtA !== "-") novoLego.push({ ...base, g: "A", dates: dtA });
-                if (dtB !== "-") novoLego.push({ ...base, g: "B", dates: dtB });
-                if (dtC !== "-") novoLego.push({ ...base, g: "C", dates: dtC });
-                if (dtD !== "-") novoLego.push({ ...base, g: "D", dates: dtD });
+                // Agora o ID muda a cada push. Fim do erro que mostrava só Grupo A!
+                if (dtA !== "-") novoLego.push({ ...base, id: genId(), g: "A", dates: dtA });
+                if (dtB !== "-") novoLego.push({ ...base, id: genId(), g: "B", dates: dtB });
+                if (dtC !== "-") novoLego.push({ ...base, id: genId(), g: "C", dates: dtC });
+                if (dtD !== "-") novoLego.push({ ...base, id: genId(), g: "D", dates: dtD });
             }
         }
         
         DATA_LEGO = novoLego;
-        updateView(false); 
+        updateView(true); // Alterado para disparar o popup na inicialização
         return true;
     } catch (e) {
         console.error("Erro ao processar CSV", e);
@@ -569,17 +565,16 @@ function toggleViewMode() {
         btn.title = 'Ver Matriz'; 
         document.body.classList.add('calendar-mode');
         
-        // Se estiver num filtro de semana, seleciona o mês automaticamente
         if (!activeFilter.includes('/')) {
             const mm = String(new Date().getMonth() + 1).padStart(2, '0');
-            setFilter('/' + mm, true); // true = pula o updateView para não renderizar 2x
+            setFilter('/' + mm, true); 
         }
     } else {
         btn.classList.remove('active'); 
         btn.title = 'Ver Calendário'; 
         document.body.classList.remove('calendar-mode');
     }
-    updateView(false);
+    updateView(true); // Popup sobe ao alterar visão também!
 }
 
 function abrev(name) {
@@ -722,7 +717,8 @@ function renderCalendar() {
                 else if (actL.includes("morfo")) displayTitle = "Morfo";
                 else if (actL.includes("tutorial")) displayTitle = "Tutorial";
                 
-                const cardHtml = `<div class="micro-card" style="--micro-color: ${colorVar}" onclick="showCalPopup('${item.id}', ${day}, ${targetMonth})">${displayTitle}</div>`;
+                const dateStrParam = `${String(day).padStart(2,'0')}/${String(targetMonth + 1).padStart(2,'0')}`;
+                const cardHtml = `<div class="micro-card" style="--micro-color: ${colorVar}" onclick="showCalPopup('${item.id}', '${dateStrParam}')">${displayTitle}</div>`;
                 
                 if (item.t === "Manhã") cardsM += cardHtml;
                 else if (item.t === "Tarde") cardsT += cardHtml;
@@ -741,7 +737,8 @@ function renderCalendar() {
     document.getElementById('calendar-area').innerHTML = html;
 }
 
-function showCalPopup(eventId, realDay, realMonth) {
+// Essa função agora recebe o ID e o Texto da Data já filtrado
+function showCalPopup(eventId, dateDisplay) {
     const item = DATA_LEGO.find(i => i.id === eventId);
     if (!item) return;
 
@@ -756,16 +753,9 @@ function showCalPopup(eventId, realDay, realMonth) {
     const locColor = getLocColorVar(locName); 
     const dayName = item.d;
     
-    let dateDisplay = "";
-    if (realDay !== undefined && realMonth !== undefined) {
-         dateDisplay = `${String(realDay).padStart(2,'0')}/${String(realMonth+1).padStart(2,'0')}`;
-    } else {
-         dateDisplay = item.dates === "Semanal" ? "Semanal" : item.dates.substring(0, 20) + (item.dates.length > 20 ? "..." : "");
-    }
-    
     const timeStr = item.h ? item.h.split(' - ')[0] : item.t; 
     
-    document.getElementById('popup-time').innerHTML = `${dayName} ${dateDisplay !== "Semanal" ? '('+dateDisplay+')' : ''} às <b>${timeStr}</b>`;
+    document.getElementById('popup-time').innerHTML = `${dayName} ${dateDisplay && dateDisplay !== "Semanal" ? '('+dateDisplay+')' : ''} às <b>${timeStr}</b>`;
     document.getElementById('popup-loc').innerHTML = `<b style="color:${locColor}">${locName}</b>`;
     document.getElementById('popup-prof').innerText = abrev(item.p);
 
@@ -791,6 +781,7 @@ function updateView(shouldShowPopup = false) {
         document.getElementById('calendar-area').style.display = 'block';
         if(document.getElementById('btnViewToggle')) document.getElementById('btnViewToggle').classList.add('active');
         renderCalendar();
+        if(shouldShowPopup) updatePopup();
         return; 
     }
 
@@ -858,7 +849,8 @@ function updateView(shouldShowPopup = false) {
                     if (m.dates === "Semanal") { dateDisplay = `<div class="status-dot"></div> <span style="opacity:0.8">Semanal</span>`; } 
                     else { dateDisplay = filteredDates; }
 
-                    cellContent += `<div class="subject-block ${colorClass}" onclick="showCalPopup('${m.id}')">
+                    // Aqui passamos a string inteira de filteredDates para garantir a exibição correta!
+                    cellContent += `<div class="subject-block ${colorClass}" onclick="showCalPopup('${m.id}', '${filteredDates}')">
                         <div class="card-header"><span class="card-title">${displayTitle}</span><div class="pill-wrapper">${pills}</div></div>
                         <div class="date-line">${dateDisplay}</div>${hourBadge}
                     </div>`;
@@ -882,7 +874,6 @@ function updateView(shouldShowPopup = false) {
     if(shouldShowPopup) updatePopup();
 }
 
-// Atualiza o estado visual dos botões de filtro e salva a escolha
 function setFilter(val, skipUpdate = false) {
     document.querySelectorAll('.filter-btn').forEach(b => {
         b.classList.remove('active');
@@ -891,7 +882,7 @@ function setFilter(val, skipUpdate = false) {
         }
     });
     activeFilter = val;
-    if(!skipUpdate) updateView(false);
+    if(!skipUpdate) updateView(false); // Usuário escolhendo filtro não abre popup
 }
 
 function changeGroup(val) { updateView(true); }
@@ -1006,31 +997,26 @@ function closePopupManual() {
         document.getElementById('btnThemeToggle').classList.remove('active');
     }
     
-    // Inicia os botões de Mês na UI
     const months = [{n:'Fev',v:'/02'},{n:'Mar',v:'/03'},{n:'Abr',v:'/04'},{n:'Mai',v:'/05'},{n:'Jun',v:'/06'}];
     document.getElementById('monthButtons').innerHTML = months.map(m => `<button class="filter-btn" onclick="setFilter('${m.v}')">${m.n}</button>`).join('');
     
-    // Verifica Memória do Zoom Panorâmico
     if(localStorage.getItem('panoramicMode') === 'true') {
         document.body.classList.add('panoramic-mode');
         document.getElementById('btnPanToggle').classList.add('active');
     }
 
-    // Configuração de Visualização Inicial (Calendário ou Matriz)
     if(viewMode === 'calendar') {
         document.getElementById('btnViewToggle').classList.add('active'); 
         document.body.classList.add('calendar-mode');
-        // Auto-seleciona o mês atual visualmente
         const mm = String(new Date().getMonth() + 1).padStart(2, '0');
         setFilter('/' + mm, true);
     } else {
         setFilter('currWeek', true);
     }
     
-    sincronizarDados();
+    sincronizarDados(); // Isso chamará updateView(true) internamente
 })();
 
-// Atualização via Service Worker NATIVA
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
         navigator.serviceWorker.register('./sw.js').then(reg => {
