@@ -84,6 +84,7 @@
             --text-title: #f0f4f8; 
             --text-meta: #cfd8dc; 
             --text-header: #ffffff;
+            --bg-header-btn: #262c36; /* VARIÁVEL CORRIGIDA: Devolve o fundo escuro pro calendário */
             
             --bg-hp8: linear-gradient(135deg, rgba(20, 30, 48, 0.6) 0%, rgba(36, 59, 85, 0.4) 100%);
             --bg-giesc: linear-gradient(135deg, #1b3320 0%, #0d1f12 100%);
@@ -853,9 +854,11 @@ function showCalPopup(eventId, dateDisplay) {
         }
     }
 
+    // Header Automático
     const headerHtml = `<span class="popup-badge ${badgeClass}">${relativeTag}</span> <span class="popup-group">GRUPO ${group}</span>`;
     document.getElementById('popup-badges').innerHTML = headerHtml;
     
+    // Título e Local
     document.getElementById('popup-title').innerText = item.act;
     const locName = item.l.split('/')[0];
     const locColor = getLocColorVar(locName); 
@@ -864,9 +867,11 @@ function showCalPopup(eventId, dateDisplay) {
     locEl.innerText = locName;
     locEl.style.backgroundColor = locColor;
     
+    // Cor da Borda e da Barra
     popup.style.borderLeftColor = locColor;
     document.getElementById('popupTimer').style.backgroundColor = locColor;
     
+    // Horário e Data 
     const timeStr = item.h ? item.h.split(' - ')[0] : item.t; 
     let finalDate = dateDisplay && dateDisplay !== "Semanal" ? dateDisplay : "Semanal";
     
@@ -935,6 +940,7 @@ function updateView(shouldShowPopup = false) {
                         filteredDates = "Semanal";
                     } else {
                         const dateCount = m.dates.split(',').length;
+                        // Regra ajustada: Só é quinzenal se for do Wesley E for Terça-feira
                         if (m.p.toLowerCase().includes("wesley") && m.d === "Terça") {
                             filteredDates = "Quinzenal";
                         } else if (dateCount > 1) {
@@ -1177,4 +1183,4 @@ if ('serviceWorker' in navigator) {
 </script>
 
 </body>
-</html>
+    </html>
