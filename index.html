@@ -54,11 +54,9 @@
             --dot-color: #00e676; 
 
             /* POPUP */
-            --popup-bg: rgba(255, 255, 255, 0.95);
-            --popup-border: #bbdefb;
-            --popup-shadow: 0 10px 40px rgba(0, 51, 102, 0.15);
-            --popup-text: #003366;
-            --popup-accent: #2979ff;
+            --popup-bg: #ffffff;
+            --popup-shadow: 0 15px 40px rgba(0, 51, 102, 0.2);
+            --popup-text: #102a43;
 
             /* BADGES */
             --badge-today-bg: #2e7d32;
@@ -93,8 +91,8 @@
 
             --bg-time: #3e2723; --text-time: #ff8a80; --border-time: #5d4037;
             
-            --popup-bg: rgba(30, 33, 41, 0.95); --popup-border: #37474f; --popup-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
-            --popup-text: #eceff1; --popup-accent: #448aff;
+            --popup-bg: #1e2129; --popup-shadow: 0 15px 40px rgba(0, 0, 0, 0.6);
+            --popup-text: #eceff1;
 
             --badge-today-bg: #00e676; --badge-tmrw-bg: #448aff; --badge-soon-bg: #546e7a;
 
@@ -243,22 +241,40 @@
             display: none !important;
         }
 
-        .next-class-popup { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%) translateY(100px); background: var(--popup-bg); border: 1px solid var(--popup-border); border-left: 5px solid var(--popup-accent); padding: 15px 20px; border-radius: 12px; box-shadow: var(--popup-shadow); display: flex; align-items: center; justify-content: space-between; gap: 15px; min-width: 320px; max-width: 90%; backdrop-filter: blur(10px); z-index: 1000; opacity: 0; overflow: hidden; }
+        /* --- NOVO DESIGN DO POPUP --- */
+        .next-class-popup { 
+            position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%) translateY(150%); 
+            background: var(--popup-bg); border-radius: 16px; box-shadow: var(--popup-shadow); 
+            display: flex; flex-direction: column; width: 90%; max-width: 360px; 
+            z-index: 1000; opacity: 0; overflow: hidden;
+            border-left: 6px solid var(--popup-accent); /* Cor dinâmica baseada no local */
+            transition: transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.5s ease;
+        }
         .next-class-popup.visible { transform: translateX(-50%) translateY(0); opacity: 1; }
-        .popup-info { display: flex; flex-direction: column; z-index: 2; width: 100%; }
-        .popup-header-row { display: flex; align-items: center; margin-bottom: 8px; }
-        .popup-badge { font-size: 0.6rem; font-weight: 800; color: #ffffff; padding: 2px 6px; border-radius: 4px; margin-right: 6px; letter-spacing: 0.5px; }
-        .badge-today { background: var(--badge-today-bg); }
-        .badge-tomorrow { background: var(--badge-tmrw-bg); }
-        .badge-soon { background: var(--badge-soon-bg); }
-        .popup-label { font-size: 0.65rem; text-transform: uppercase; letter-spacing: 1px; color: var(--text-meta); font-weight: 700; }
-        .popup-title { font-size: 1.1rem; color: var(--popup-text); font-weight: 800; margin-bottom: 8px; line-height: 1; letter-spacing: -0.3px; }
-        .popup-row { display: flex; align-items: center; font-size: 0.8rem; color: var(--popup-text); margin-bottom: 4px; }
-        .popup-row b { font-weight: 700; color: var(--popup-text); margin: 0 4px; }
-        .popup-icon { margin-right: 6px; font-size: 0.9rem; opacity: 0.8; }
-        .popup-close { background: none; border: none; font-size: 1.6rem; cursor: pointer; color: var(--text-meta); padding: 0 0 0 10px; z-index: 2; align-self: flex-start; line-height: 1; }
+        
+        .popup-content { padding: 16px 20px; display: flex; flex-direction: column; gap: 12px; }
+        
+        .popup-header { display: flex; justify-content: space-between; align-items: flex-start; }
+        .popup-badges { display: flex; align-items: center; gap: 6px; }
+        .popup-badge { font-size: 0.6rem; font-weight: 800; color: #ffffff; padding: 3px 8px; border-radius: 6px; letter-spacing: 0.5px; }
+        .popup-group { font-size: 0.65rem; font-weight: 800; color: var(--text-meta); letter-spacing: 0.5px; }
+        .popup-close { background: none; border: none; font-size: 1.6rem; line-height: 0.8; cursor: pointer; color: var(--text-meta); padding: 0; margin: 0; margin-top: -4px;}
         .popup-close:hover { color: var(--popup-text); }
-        .popup-timer { position: absolute; bottom: 0; left: 0; height: 3px; background: var(--popup-accent); width: 100%; opacity: 0.7; z-index: 1; }
+        
+        .popup-hero { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 12px; }
+        body.dark-theme .popup-hero { border-bottom-color: rgba(255,255,255,0.05); }
+        .popup-title { font-size: 1.4rem; font-weight: 800; color: var(--text-title); margin: 0; letter-spacing: -0.5px; line-height: 1.1; max-width: 70%; word-wrap: break-word;}
+        body.dark-theme .popup-title { color: #fff; }
+        .popup-loc-pill { font-size: 0.8rem; font-weight: 800; color: #fff; padding: 6px 12px; border-radius: 8px; text-transform: uppercase; letter-spacing: 0.5px; text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        
+        .popup-details { display: flex; flex-direction: column; gap: 8px; padding-top: 4px; }
+        .popup-row { display: flex; align-items: center; font-size: 0.9rem; color: var(--text-meta); }
+        body.dark-theme .popup-row { color: #cfd8dc; }
+        .popup-row b { color: var(--text-title); font-weight: 700; }
+        body.dark-theme .popup-row b { color: #fff; }
+        .popup-icon { font-size: 1.2rem; margin-right: 12px; opacity: 0.9;}
+        
+        .popup-timer { height: 4px; width: 100%; opacity: 0.7; }
         .visible .popup-timer { animation: countdown 8s linear forwards; }
         @keyframes countdown { from { width: 100%; } to { width: 0%; } }
 
@@ -371,22 +387,29 @@
 <div id="calendar-area" class="calendar-container"></div>
 
 <div id="nextClassPopup" class="next-class-popup">
-    <div class="popup-info">
-        <div class="popup-header-row" id="popup-header-row">
-            <span class="popup-badge" id="popup-badge">HOJE</span>
-            <span class="popup-label" id="popup-group-label">GR D</span>
+    <div class="popup-content">
+        <div class="popup-header">
+            <div class="popup-badges" id="popup-badges">
+                </div>
+            <button class="popup-close" onclick="closePopupManual()">×</button>
         </div>
-        <div class="popup-title" id="popup-title">HP-8</div>
-        <div class="popup-row">
-            <span class="popup-icon">📅</span> <span id="popup-time">...</span>
-            <span style="margin: 0 6px; opacity: 0.3">|</span>
-            <span class="popup-icon">📍</span> <span id="popup-loc">...</span>
+        
+        <div class="popup-hero">
+            <h2 class="popup-title" id="popup-title">HP-8</h2>
+            <div class="popup-loc-pill" id="popup-loc">HMS</div>
         </div>
-        <div class="popup-row">
-            <span class="popup-icon">👤</span> <span id="popup-prof">...</span>
+
+        <div class="popup-details">
+            <div class="popup-row">
+                <span class="popup-icon">⏰</span>
+                <span id="popup-time">...</span>
+            </div>
+            <div class="popup-row">
+                <span class="popup-icon">👨‍⚕️</span>
+                <span id="popup-prof">...</span>
+            </div>
         </div>
     </div>
-    <button class="popup-close" onclick="closePopupManual()">×</button>
     <div id="popupTimer" class="popup-timer"></div>
 </div>
 
@@ -456,7 +479,7 @@ function processarDados(csvText) {
             const row = rows[i];
             if (!row[idx.act] || row[idx.act].trim() === "") continue; 
 
-            // Criando uma função rápida para gerar ID diferente para CADA grupo
+            // Gerador de ID isolado para CADA grupo, corrige o bug do "só abre Grupo A"
             const genId = () => 'evt_' + Math.random().toString(36).substr(2, 9);
 
             const base = {
@@ -483,7 +506,6 @@ function processarDados(csvText) {
                 const dtC = cleanDate(row[idx.gC]);
                 const dtD = cleanDate(row[idx.gD]);
 
-                // Agora o ID muda a cada push. Fim do erro que mostrava só Grupo A!
                 if (dtA !== "-") novoLego.push({ ...base, id: genId(), g: "A", dates: dtA });
                 if (dtB !== "-") novoLego.push({ ...base, id: genId(), g: "B", dates: dtB });
                 if (dtC !== "-") novoLego.push({ ...base, id: genId(), g: "C", dates: dtC });
@@ -492,7 +514,7 @@ function processarDados(csvText) {
         }
         
         DATA_LEGO = novoLego;
-        updateView(true); // Alterado para disparar o popup na inicialização
+        updateView(true); // Popup sobe na carga inicial
         return true;
     } catch (e) {
         console.error("Erro ao processar CSV", e);
@@ -574,7 +596,7 @@ function toggleViewMode() {
         btn.title = 'Ver Calendário'; 
         document.body.classList.remove('calendar-mode');
     }
-    updateView(true); // Popup sobe ao alterar visão também!
+    updateView(true); // Popup sobe ao alternar visualização
 }
 
 function abrev(name) {
@@ -737,7 +759,7 @@ function renderCalendar() {
     document.getElementById('calendar-area').innerHTML = html;
 }
 
-// Essa função agora recebe o ID e o Texto da Data já filtrado
+// NOVA FUNÇÃO DO POPUP ADAPTADA AO DESIGN MODERNO
 function showCalPopup(eventId, dateDisplay) {
     const item = DATA_LEGO.find(i => i.id === eventId);
     if (!item) return;
@@ -745,20 +767,34 @@ function showCalPopup(eventId, dateDisplay) {
     const popup = document.getElementById('nextClassPopup');
     clearTimeout(popupTimeout);
     
-    const headerHtml = `<span class="popup-badge badge-tomorrow">DETALHES</span> GRUPO ${document.getElementById('groupSelect').value}`;
-    document.getElementById('popup-header-row').innerHTML = `<span class="popup-label">${headerHtml}</span>`;
-    document.getElementById('popup-title').innerText = item.act;
+    // Header
+    const group = document.getElementById('groupSelect').value;
+    const headerHtml = `<span class="popup-badge badge-tomorrow">DETALHES</span> <span class="popup-group">GRUPO ${group}</span>`;
+    document.getElementById('popup-badges').innerHTML = headerHtml;
     
+    // Título e Local
+    document.getElementById('popup-title').innerText = item.act;
     const locName = item.l.split('/')[0];
     const locColor = getLocColorVar(locName); 
-    const dayName = item.d;
     
+    const locEl = document.getElementById('popup-loc');
+    locEl.innerText = locName;
+    locEl.style.backgroundColor = locColor;
+    
+    // Cor da Borda e da Barra
+    popup.style.borderLeftColor = locColor;
+    document.getElementById('popupTimer').style.backgroundColor = locColor;
+    
+    // Horário e Data (Se vier Semanal, coloca Semanal, se não, põe a data exata do clique)
     const timeStr = item.h ? item.h.split(' - ')[0] : item.t; 
+    let finalDate = dateDisplay && dateDisplay !== "Semanal" ? dateDisplay : "Semanal";
     
-    document.getElementById('popup-time').innerHTML = `${dayName} ${dateDisplay && dateDisplay !== "Semanal" ? '('+dateDisplay+')' : ''} às <b>${timeStr}</b>`;
-    document.getElementById('popup-loc').innerHTML = `<b style="color:${locColor}">${locName}</b>`;
-    document.getElementById('popup-prof').innerText = abrev(item.p);
+    document.getElementById('popup-time').innerHTML = `<b>${timeStr}</b> <span style="opacity:0.4; margin:0 6px">•</span> ${item.d} ${finalDate !== "Semanal" ? '('+finalDate+')' : ''}`;
+    
+    // Professor
+    document.getElementById('popup-prof').innerHTML = `<b>${abrev(item.p)}</b>`;
 
+    // Dispara animação
     const timerBar = document.getElementById('popupTimer');
     timerBar.style.animation = 'none'; timerBar.offsetHeight; timerBar.style.animation = 'countdown 8s linear forwards';
     popup.classList.add('visible');
@@ -849,7 +885,7 @@ function updateView(shouldShowPopup = false) {
                     if (m.dates === "Semanal") { dateDisplay = `<div class="status-dot"></div> <span style="opacity:0.8">Semanal</span>`; } 
                     else { dateDisplay = filteredDates; }
 
-                    // Aqui passamos a string inteira de filteredDates para garantir a exibição correta!
+                    // Passando a data filtrada exata para o popup abrir com ela!
                     cellContent += `<div class="subject-block ${colorClass}" onclick="showCalPopup('${m.id}', '${filteredDates}')">
                         <div class="card-header"><span class="card-title">${displayTitle}</span><div class="pill-wrapper">${pills}</div></div>
                         <div class="date-line">${dateDisplay}</div>${hourBadge}
@@ -882,11 +918,12 @@ function setFilter(val, skipUpdate = false) {
         }
     });
     activeFilter = val;
-    if(!skipUpdate) updateView(false); // Usuário escolhendo filtro não abre popup
+    if(!skipUpdate) updateView(false); 
 }
 
 function changeGroup(val) { updateView(true); }
 
+// Popup automático (Próxima Aula)
 function updatePopup() {
     clearTimeout(popupTimeout);
     const popup = document.getElementById('nextClassPopup');
@@ -955,22 +992,28 @@ function updatePopup() {
             const dayName = nextClass.realDate.toLocaleDateString('pt-BR', { weekday: 'long' });
             const dateStr = nextClass.realDate.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' });
             const timeStr = nextClass.h ? nextClass.h.split(' - ')[0] : nextClass.t; 
-            
-            let when = `${dayName.charAt(0).toUpperCase() + dayName.slice(1)} (${dateStr}) às <b>${timeStr}</b>`;
 
-            const headerHtml = `<span class="popup-badge ${badgeClass}">${relativeTag}</span> GRUPO ${group}`;
-            document.getElementById('popup-header-row').innerHTML = `<span class="popup-label">${headerHtml}</span>`;
+            // Header Automático
+            const headerHtml = `<span class="popup-badge ${badgeClass}">${relativeTag}</span> <span class="popup-group">GRUPO ${group}</span>`;
+            document.getElementById('popup-badges').innerHTML = headerHtml;
+            
             document.getElementById('popup-title').innerText = nextClass.act;
             
             const locName = nextClass.l.split('/')[0];
             const locColor = getLocColorVar(locName); 
             
-            document.getElementById('popup-time').innerHTML = when;
-            document.getElementById('popup-loc').innerHTML = `<b style="color:${locColor}">${locName}</b>`;
-            document.getElementById('popup-prof').innerText = abrev(nextClass.p);
+            const locEl = document.getElementById('popup-loc');
+            locEl.innerText = locName;
+            locEl.style.backgroundColor = locColor;
+            
+            popup.style.borderLeftColor = locColor;
+            document.getElementById('popupTimer').style.backgroundColor = locColor;
+            
+            document.getElementById('popup-time').innerHTML = `<b>${timeStr}</b> <span style="opacity:0.4; margin:0 6px">•</span> ${dayName.charAt(0).toUpperCase() + dayName.slice(1)} (${dateStr})`;
+            document.getElementById('popup-prof').innerHTML = `<b>${abrev(nextClass.p)}</b>`;
 
             const timerBar = document.getElementById('popupTimer');
-            timerBar.style.animation = 'none'; timerBar.offsetHeight; timerBar.style.animation = 'countdown 8s linear forwards';
+            timerBar.style.animation = 'none'; timerBar.offsetHeight; timerBar.style.animation = 'countdown 10s linear forwards';
             popup.classList.add('visible');
             popupTimeout = setTimeout(() => { popup.classList.remove('visible'); }, 10000);
         }
@@ -1014,7 +1057,7 @@ function closePopupManual() {
         setFilter('currWeek', true);
     }
     
-    sincronizarDados(); // Isso chamará updateView(true) internamente
+    sincronizarDados(); // Isso chamará updateView(true) que sobe o popup inicial
 })();
 
 if ('serviceWorker' in navigator) {
