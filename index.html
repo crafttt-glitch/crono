@@ -935,7 +935,7 @@ function updateView(shouldShowPopup = false) {
                         filteredDates = "Semanal";
                     } else {
                         const dateCount = m.dates.split(',').length;
-                        if (m.p.toLowerCase().includes("wesley")) {
+                        if (m.p.toLowerCase().includes("wesley") && m.d === "Terça") {
                             filteredDates = "Quinzenal";
                         } else if (dateCount > 1) {
                             filteredDates = "Rodízio";
