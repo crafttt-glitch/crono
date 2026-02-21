@@ -66,10 +66,6 @@
 
             --neon-color: #00bcd4;
             --w-seg: 115px; --w-ter: 115px; --w-qua: 115px; --w-qui: 155px; --w-sex: 115px; --w-sab: 100px;
-
-            /* Configuração de Colunas do Calendário */
-            --cal-col-active: minmax(130px, 1fr);
-            --cal-col-compressed: 35px;
         }
 
         /* --- MODO ESCURO --- */
@@ -159,11 +155,11 @@
         /* MODO TABELA (MATRIZ) */
         .schedule-container { display: inline-block; background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); overflow-x: auto; padding: 2px; max-width: 100%; -webkit-overflow-scrolling: touch; }
         table { width: max-content; border-collapse: separate; border-spacing: 0; table-layout: fixed; }
-        th { background-color: var(--header-bg-green); color: white; text-transform: uppercase; font-size: 0.65rem; padding: 10px 8px; border-right: 1px solid rgba(255,255,255,0.1); letter-spacing: 0.5px; position: sticky; top: 0; z-index: 10; font-weight: 700; transition: all 0.3s; }
+        th { background-color: var(--header-bg-green); color: white; text-transform: uppercase; font-size: 0.65rem; padding: 10px 8px; border-right: 1px solid rgba(255,255,255,0.1); letter-spacing: 0.5px; position: sticky; top: 0; z-index: 10; font-weight: 700; }
         th:first-child { border-radius: 8px 0 0 0; z-index: 30; left: 0; }
         th:last-child { border-right: none; border-radius: 0 8px 0 0; }
         #cornerGroup { font-size: 1.1rem; font-weight: 800; background-color: var(--header-bg-green); color: rgba(255,255,255,0.9); text-align: center; vertical-align: middle; }
-        td { border-bottom: 1px solid var(--border-color); border-right: 1px solid var(--border-color); vertical-align: top; padding: 6px; font-size: 0.72rem; position: relative; transition: all 0.3s; }
+        td { border-bottom: 1px solid var(--border-color); border-right: 1px solid var(--border-color); vertical-align: top; padding: 6px; font-size: 0.72rem; position: relative; }
         tr:last-child td { border-bottom: none; }
         
         .time-col { background-color: var(--header-bg-blue); color: white; width: 40px; text-align: center; font-weight: 800; vertical-align: middle; border-bottom: 1px solid rgba(255,255,255,0.1); position: sticky; left: 0; z-index: 20; }
@@ -174,22 +170,16 @@
 
         .col-seg { width: var(--w-seg); } .col-ter { width: var(--w-ter); } .col-qua { width: var(--w-qua); } .col-qui { width: var(--w-qui); } .col-sex { width: var(--w-sex); } .col-sab { width: var(--w-sab); }
 
-        /* COMPRESSÃO DE COLUNAS VAZIAS NA MATRIZ */
-        table .compressed-col { width: 35px !important; min-width: 35px !important; opacity: 0.5; text-align: center; padding: 4px 0; }
-        th.compressed-col { font-size: 0 !important; letter-spacing: 0; padding: 10px 0; }
-        th.compressed-col::before { content: attr(data-short); font-size: 0.65rem; }
-        td.compressed-col { color: var(--text-meta); vertical-align: middle; }
-
         /* MODO CALENDÁRIO */
         .calendar-container { display: none; width: 100%; max-width: 1250px; background: var(--card-bg); padding: 12px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border: 1px solid var(--border-color); overflow-x: auto; -webkit-overflow-scrolling: touch; }
         .calendar-header-title { text-align: center; font-weight: 800; color: var(--header-bg-blue); margin-bottom: 12px; font-size: 1.1rem; text-transform: uppercase; letter-spacing: 1px; position: sticky; left: 0; }
         body.dark-theme .calendar-header-title { color: var(--primary-blue); }
         
-        .calendar-grid { display: grid; gap: 6px; transition: all 0.3s; }
+        .calendar-grid { display: grid; grid-template-columns: repeat(7, minmax(130px, 1fr)); gap: 6px; min-width: 800px; }
         
-        .cal-header { text-align: center; font-size: 0.7rem; font-weight: 800; color: var(--text-title); text-transform: uppercase; padding: 4px 0; border-bottom: 2px solid var(--header-bg-green); margin-bottom: 4px; transition: all 0.3s; }
+        .cal-header { text-align: center; font-size: 0.7rem; font-weight: 800; color: var(--text-title); text-transform: uppercase; padding: 4px 0; border-bottom: 2px solid var(--header-bg-green); margin-bottom: 4px; }
         
-        .cal-day { background: var(--bg-header-btn); min-height: 110px; border-radius: 8px; padding: 4px; display: flex; flex-direction: column; border: 1px solid var(--border-color); transition: all 0.3s; }
+        .cal-day { background: var(--bg-header-btn); min-height: 110px; border-radius: 8px; padding: 4px; display: flex; flex-direction: column; border: 1px solid var(--border-color); }
         .cal-day.empty { background: transparent; border-color: transparent; }
         .cal-date { font-size: 0.8rem; font-weight: bold; color: var(--text-meta); text-align: right; margin-bottom: 4px; padding-right: 4px;}
         .cal-day.is-today { border: 2px solid var(--neon-color); box-shadow: inset 0 0 8px rgba(0, 188, 212, 0.2); }
@@ -203,15 +193,6 @@
         .cal-day > .cal-zone:nth-child(2)::before { content: 'M'; }
         .cal-day > .cal-zone:nth-child(3)::before { content: 'T'; }
         .cal-day > .cal-zone:nth-child(4)::before { content: 'N'; }
-
-        /* COMPRESSÃO DE COLUNAS VAZIAS NO CALENDÁRIO */
-        .cal-header.compressed { font-size: 0; opacity: 0.4; }
-        .cal-header.compressed::before { content: attr(data-short); font-size: 0.7rem; }
-        
-        .cal-day.compressed { min-height: 40px; background: rgba(0,0,0,0.02); align-items: center; justify-content: flex-start; }
-        body.dark-theme .cal-day.compressed { background: rgba(255,255,255,0.02); }
-        .cal-day.compressed .cal-date { font-size: 0.75rem; opacity: 0.4; width: 100%; text-align: center; padding: 0; margin: 0; }
-        .cal-day.compressed .cal-zone { display: none; }
 
         .micro-card { font-size: 0.6rem; font-weight: 700; padding: 4px 6px; border-radius: 4px; background-color: var(--micro-color); color: #fff; cursor: pointer; text-align: left; box-shadow: 0 2px 4px rgba(0,0,0,0.1); line-height: 1.1; transition: transform 0.2s, filter 0.2s; border-left: 3px solid rgba(255,255,255,0.4); overflow: hidden; white-space: nowrap; text-overflow: ellipsis; flex-shrink: 0; }
         .micro-card:hover { transform: scale(1.02) translateX(2px); filter: brightness(1.1); }
@@ -316,10 +297,6 @@
         body.panoramic-mode td { padding: 2px; font-size: 0.4rem; line-height: 1; }
         body.panoramic-mode th { padding: 4px 1px; font-size: 0.4rem; }
         
-        /* Ajuste Matriz Panorâmica Compressão */
-        body.panoramic-mode table .compressed-col { width: 15px !important; min-width: 15px !important; }
-        body.panoramic-mode th.compressed-col::before { font-size: 0.4rem; }
-
         body.panoramic-mode .subject-block { padding: 3px 3px 3px 6px; border-radius: 4px; margin-bottom: 2px; }
         body.panoramic-mode .subject-block::before { width: 2px; }
         body.panoramic-mode .card-header { flex-direction: column; align-items: flex-start; gap: 2px; margin-bottom: 2px; }
@@ -330,15 +307,10 @@
         body.panoramic-mode .badge-time { font-size: 0.35rem; padding: 1px 2px; }
         body.panoramic-mode .time-col { width: 20px !important; font-size: 0.45rem; }
         
-        /* Ajuste do Calendário no Panorâmico */
-        body.panoramic-mode { --cal-col-active: minmax(0, 1fr); --cal-col-compressed: 15px; }
-        body.panoramic-mode .calendar-grid { gap: 2px; }
+        body.panoramic-mode .calendar-grid { min-width: 0; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 2px; }
         body.panoramic-mode .cal-header { font-size: 0.4rem; padding: 2px 0; }
-        body.panoramic-mode .cal-header.compressed::before { font-size: 0.4rem; }
         body.panoramic-mode .cal-day { min-height: 50px; padding: 1px; border-radius: 4px; }
-        body.panoramic-mode .cal-day.compressed { min-height: 20px; padding: 1px; }
         body.panoramic-mode .cal-date { font-size: 0.45rem; margin-bottom: 2px; padding-right: 2px; }
-        body.panoramic-mode .cal-day.compressed .cal-date { font-size: 0.4rem; }
         body.panoramic-mode .cal-zone { padding: 1px 1px 1px 6px; min-height: 12px; gap: 1px; margin-bottom: 1px; }
         body.panoramic-mode .cal-zone::before { font-size: 0.4rem; left: 1px; top: 2px; }
         body.panoramic-mode .micro-card { font-size: 0.35rem; padding: 1px 2px; white-space: normal; line-height: 1.1; border-radius: 2px; border-left-width: 2px; }
@@ -405,12 +377,12 @@
         <thead>
             <tr id="header-row">
                 <th style="width: 40px;" id="cornerGroup">-</th>
-                <th class="col-seg" data-day="1" data-short="S">Segunda</th>
-                <th class="col-ter" data-day="2" data-short="T">Terça</th>
-                <th class="col-qua" data-day="3" data-short="Q">Quarta</th>
-                <th class="col-qui" data-day="4" data-short="Q">Quinta</th>
-                <th class="col-sex" data-day="5" data-short="S">Sexta</th>
-                <th class="col-sab" data-day="6" data-short="S">Sábado</th>
+                <th class="col-seg" data-day="1">Segunda</th>
+                <th class="col-ter" data-day="2">Terça</th>
+                <th class="col-qua" data-day="3">Quarta</th>
+                <th class="col-qui" data-day="4">Quinta</th>
+                <th class="col-sex" data-day="5">Sexta</th>
+                <th class="col-sab" data-day="6">Sábado</th>
             </tr>
         </thead>
         <tbody id="scheduleBody"></tbody>
@@ -717,111 +689,77 @@ function renderCalendar() {
     const firstDay = (firstDayRaw + 6) % 7; 
     const daysInMonth = new Date(targetYear, targetMonth + 1, 0).getDate();
 
-    let colHasEvents = [false, false, false, false, false, false, false];
-    const daysMap = {"Segunda":0, "Terça":1, "Quarta":2, "Quinta":3, "Sexta":4, "Sábado":5, "Domingo":6};
-    
-    for (let day = 1; day <= daysInMonth; day++) {
-        const currentDate = new Date(targetYear, targetMonth, day);
-        const colIdx = (currentDate.getDay() + 6) % 7; 
-        if (colHasEvents[colIdx]) continue; 
-        for (const item of DATA_LEGO) {
-            if (colHasEvents[colIdx]) break;
-            if (item.g !== "Todos" && !item.g.includes(group)) continue;
-            const eventDayOfWeek = daysMap[item.d]; 
-            if (item.dates === "Semanal") {
-                if (colIdx === eventDayOfWeek && currentDate >= START_DATE) colHasEvents[colIdx] = true;
-            } else {
-                const specificDates = item.dates.split(',').map(d => d.trim());
-                const currentStr = `${String(day).padStart(2, '0')}/${String(targetMonth + 1).padStart(2, '0')}`;
-                if (specificDates.includes(currentStr) && colIdx === eventDayOfWeek) colHasEvents[colIdx] = true;
-            }
-        }
-    }
-
-    let gridCols = colHasEvents.map(has => has ? 'var(--cal-col-active)' : 'var(--cal-col-compressed)').join(' ');
-    
     let html = `<div class="calendar-header-title">🗓️ ${monthNames[targetMonth]} DE ${targetYear}</div>`;
-    html += `<div class="calendar-grid" style="grid-template-columns: ${gridCols}">`;
+    html += '<div class="calendar-grid">';
     
-    const weekDays = [
-        {f:'Seg', s:'S'}, {f:'Ter', s:'T'}, {f:'Qua', s:'Q'}, 
-        {f:'Qui', s:'Q'}, {f:'Sex', s:'S'}, {f:'Sáb', s:'S'}, {f:'Dom', s:'D'}
-    ];
-    weekDays.forEach((d, i) => {
-        const compClass = colHasEvents[i] ? '' : ' compressed';
-        html += `<div class="cal-header${compClass}" data-short="${d.s}">${d.f}</div>`;
-    });
+    const weekDays = ['Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb', 'Dom'];
+    weekDays.forEach(d => html += `<div class="cal-header">${d}</div>`);
 
     for (let i = 0; i < firstDay; i++) {
-        const compClass = colHasEvents[i] ? '' : ' compressed';
-        html += `<div class="cal-day empty${compClass}"></div>`;
+        html += `<div class="cal-day empty"></div>`;
     }
 
+    const daysMap = {"Segunda":1, "Terça":2, "Quarta":3, "Quinta":4, "Sexta":5, "Sábado":6};
+    
     for (let day = 1; day <= daysInMonth; day++) {
         const currentDate = new Date(targetYear, targetMonth, day);
         const isToday = currentDate.toDateString() === new Date().toDateString();
-        const colIdx = (currentDate.getDay() + 6) % 7;
-        const compClass = colHasEvents[colIdx] ? '' : ' compressed';
-        const dayClass = isToday ? `cal-day is-today${compClass}` : `cal-day${compClass}`;
+        const dayClass = isToday ? 'cal-day is-today' : 'cal-day';
         
         let dayHtml = `<div class="${dayClass}"><div class="cal-date">${day}</div>`;
         
         let cardsM = ''; let cardsT = ''; let cardsN = '';
         
-        if (colHasEvents[colIdx]) {
-            DATA_LEGO.forEach(item => {
-                if (item.g !== "Todos" && !item.g.includes(group)) return;
-                let hasEventToday = false;
-                const eventDayOfWeek = daysMap[item.d];
+        DATA_LEGO.forEach(item => {
+            if (item.g !== "Todos" && !item.g.includes(group)) return;
+            let hasEventToday = false;
+            const eventDayOfWeek = daysMap[item.d];
 
-                if (item.dates === "Semanal") {
-                    if (currentDate.getDay() === (eventDayOfWeek === 6 ? 0 : eventDayOfWeek + 1) && currentDate >= START_DATE) {
-                        hasEventToday = true;
-                    }
-                } else {
-                    const specificDates = item.dates.split(',').map(d => d.trim());
-                    const currentStr = `${String(day).padStart(2, '0')}/${String(targetMonth + 1).padStart(2, '0')}`;
-                    if (specificDates.includes(currentStr)) {
-                        hasEventToday = true;
-                    }
+            if (item.dates === "Semanal") {
+                if (currentDate.getDay() === eventDayOfWeek && currentDate >= START_DATE) {
+                    hasEventToday = true;
+                }
+            } else {
+                const specificDates = item.dates.split(',').map(d => d.trim());
+                const currentStr = `${String(day).padStart(2, '0')}/${String(targetMonth + 1).padStart(2, '0')}`;
+                if (specificDates.includes(currentStr)) {
+                    hasEventToday = true;
+                }
+            }
+
+            if (hasEventToday) {
+                const actL = item.act.toLowerCase();
+                let colorVar = "var(--bar-hp8)";
+                if(actL.includes("giesc")) colorVar = "var(--bar-giesc)";
+                else if(actL.includes("tutorial")) colorVar = "var(--bar-tutorial)";
+                else if(actL.includes("morfo")) colorVar = "var(--bar-morfo)";
+                else if(actL.includes("hp-8") || actL.includes("hp-8 (uro)")) {
+                    colorVar = getLocColorVar(item.l.split('/')[0]);
                 }
 
-                if (hasEventToday) {
-                    const actL = item.act.toLowerCase();
-                    let colorVar = "var(--bar-hp8)";
-                    if(actL.includes("giesc")) colorVar = "var(--bar-giesc)";
-                    else if(actL.includes("tutorial")) colorVar = "var(--bar-tutorial)";
-                    else if(actL.includes("morfo")) colorVar = "var(--bar-morfo)";
-                    else if(actL.includes("hp-8") || actL.includes("hp-8 (uro)")) colorVar = getLocColorVar(item.l.split('/')[0]);
+                let displayTitle = item.act.replace('-8', '');
+                
+                if (actL.includes("hp-8") || actL.includes("hp-8 (uro)")) displayTitle = abrev(item.p);
+                else if (actL.includes("giesc")) displayTitle = "Giesc";
+                else if (actL.includes("morfo")) displayTitle = "Morfo";
+                else if (actL.includes("tutorial")) displayTitle = "Tutorial";
+                
+                const dateStrParam = `${String(day).padStart(2,'0')}/${String(targetMonth + 1).padStart(2,'0')}`;
+                const cardHtml = `<div class="micro-card" style="--micro-color: ${colorVar}" onclick="showCalPopup('${item.id}', '${dateStrParam}')">${displayTitle}</div>`;
+                
+                if (item.t === "Manhã") cardsM += cardHtml;
+                else if (item.t === "Tarde") cardsT += cardHtml;
+                else if (item.t === "Noite") cardsN += cardHtml;
+            }
+        });
 
-                    let displayTitle = item.act.replace('-8', '');
-                    if (actL.includes("hp-8") || actL.includes("hp-8 (uro)")) displayTitle = abrev(item.p);
-                    else if (actL.includes("giesc")) displayTitle = "Giesc";
-                    else if (actL.includes("morfo")) displayTitle = "Morfo";
-                    else if (actL.includes("tutorial")) displayTitle = "Tutorial";
-                    
-                    const dateStrParam = `${String(day).padStart(2,'0')}/${String(targetMonth + 1).padStart(2,'0')}`;
-                    const cardHtml = `<div class="micro-card" style="--micro-color: ${colorVar}" onclick="showCalPopup('${item.id}', '${dateStrParam}')">${displayTitle}</div>`;
-                    
-                    if (item.t === "Manhã") cardsM += cardHtml;
-                    else if (item.t === "Tarde") cardsT += cardHtml;
-                    else if (item.t === "Noite") cardsN += cardHtml;
-                }
-            });
-
-            dayHtml += `<div class="cal-zone">${cardsM}</div><div class="cal-zone">${cardsT}</div><div class="cal-zone">${cardsN}</div>`;
-        }
-        dayHtml += `</div>`;
+        dayHtml += `<div class="cal-zone">${cardsM}</div><div class="cal-zone">${cardsT}</div><div class="cal-zone">${cardsN}</div></div>`;
         html += dayHtml;
     }
 
     const totalCells = firstDay + daysInMonth;
     const remainingCells = (7 - (totalCells % 7)) % 7;
-    for (let i = 0; i < remainingCells; i++) { 
-        const colIdx = (totalCells + i) % 7;
-        const compClass = colHasEvents[colIdx] ? '' : ' compressed';
-        html += `<div class="cal-day empty${compClass}"></div>`; 
-    }
+    for (let i = 0; i < remainingCells; i++) { html += `<div class="cal-day empty"></div>`; }
     html += '</div>';
     document.getElementById('calendar-area').innerHTML = html;
 }
@@ -930,29 +868,6 @@ function updateView(shouldShowPopup = false) {
     
     let html = "";
     let visibleCount = 0;
-    
-    let dayHasEvents = [false, false, false, false, false, false];
-    
-    days.forEach((day, index) => {
-        const matches = DATA_LEGO.filter(item => {
-            const groupMatch = item.g === "Todos" || item.g.includes(group);
-            return item.d === day && groupMatch;
-        });
-        
-        matches.forEach(m => {
-            let show = false;
-            if (activeFilter === 'all') show = true;
-            else if (m.dates === "Semanal") show = true;
-            else if (activeFilter.includes('/')) {
-                if (m.dates.split(',').some(d => d.includes(activeFilter))) show = true;
-            } else if (activeFilter === 'currWeek') {
-                if (getDatesForWeek(m.dates, 0).length > 0) show = true;
-            } else if (activeFilter === 'nextWeek') {
-                if (getDatesForWeek(m.dates, 1).length > 0) show = true;
-            }
-            if (show) dayHasEvents[index] = true;
-        });
-    });
 
     turns.forEach(turn => {
         html += `<tr><td class="time-col">${turn[0]}</td>`;
@@ -962,8 +877,6 @@ function updateView(shouldShowPopup = false) {
                 return item.d === day && item.t === turn && groupMatch;
             });
             const highlightClass = (isCurrentWeekMode && (index + 1) === todayIndex) ? 'today-column' : '';
-            const compressClass = dayHasEvents[index] ? '' : 'compressed-col';
-            
             let cellContent = "";
             matches.forEach(m => {
                 let show = false;
@@ -1016,7 +929,7 @@ function updateView(shouldShowPopup = false) {
                     </div>`;
                 }
             });
-            html += `<td class="${highlightClass} ${compressClass}">${cellContent || "—"}</td>`;
+            html += `<td class="${highlightClass}">${cellContent || "—"}</td>`;
         });
         html += "</tr>";
     });
@@ -1028,12 +941,7 @@ function updateView(shouldShowPopup = false) {
     }
 
     document.querySelectorAll('#header-row th').forEach((th, i) => {
-        if(i > 0) {
-            const dayIndex = i - 1;
-            if (!dayHasEvents[dayIndex]) th.classList.add('compressed-col');
-            else th.classList.remove('compressed-col');
-            th.classList.toggle('today-column', (isCurrentWeekMode && (dayIndex + 1) === todayIndex));
-        }
+        if(i > 0) th.classList.toggle('today-column', (isCurrentWeekMode && i === todayIndex));
     });
     
     if(shouldShowPopup) updatePopup();
