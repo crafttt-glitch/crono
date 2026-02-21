@@ -61,8 +61,8 @@
             /* BADGES */
             --badge-today-bg: #2e7d32;
             --badge-tmrw-bg: #2979ff;
-            --badge-soon-bg: #e2e8f0; /* Fundo Cinza Claro */
-            --badge-soon-text: #1e293b; /* Texto Escuro para contraste */
+            --badge-soon-bg: #e2e8f0; 
+            --badge-soon-text: #1e293b; 
 
             --neon-color: #00bcd4;
             --w-seg: 115px; --w-ter: 115px; --w-qua: 115px; --w-qui: 155px; --w-sex: 115px; --w-sab: 100px;
@@ -96,8 +96,8 @@
             --popup-text: #eceff1;
 
             --badge-today-bg: #00e676; --badge-tmrw-bg: #448aff; 
-            --badge-soon-bg: #334155; /* Fundo Cinza Escuro */
-            --badge-soon-text: #f8fafc; /* Texto Branco para contraste */
+            --badge-soon-bg: #334155; 
+            --badge-soon-text: #f8fafc; 
 
             --neon-color: #00f2ff;
         }
@@ -260,7 +260,6 @@
         .popup-header { display: flex; justify-content: space-between; align-items: flex-start; }
         .popup-badges { display: flex; align-items: center; gap: 6px; }
         .popup-badge { font-size: 0.6rem; font-weight: 800; padding: 3px 8px; border-radius: 6px; letter-spacing: 0.5px; }
-        /* Cores dinâmicas para as Badges do Popup */
         .badge-today { background: var(--badge-today-bg); color: #ffffff; }
         .badge-tomorrow { background: var(--badge-tmrw-bg); color: #ffffff; }
         .badge-soon { background: var(--badge-soon-bg); color: var(--badge-soon-text); }
@@ -686,13 +685,14 @@ function renderCalendar() {
     }
 
     const monthNames = ["JANEIRO", "FEVEREIRO", "MARÇO", "ABRIL", "MAIO", "JUNHO", "JULHO", "AGOSTO", "SETEMBRO", "OUTUBRO", "NOVEMBRO", "DEZEMBRO"];
-    const firstDay = new Date(targetYear, targetMonth, 1).getDay();
+    const firstDayRaw = new Date(targetYear, targetMonth, 1).getDay();
+    const firstDay = (firstDayRaw + 6) % 7; 
     const daysInMonth = new Date(targetYear, targetMonth + 1, 0).getDate();
 
     let html = `<div class="calendar-header-title">🗓️ ${monthNames[targetMonth]} DE ${targetYear}</div>`;
     html += '<div class="calendar-grid">';
     
-    const weekDays = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
+    const weekDays = ['Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb', 'Dom'];
     weekDays.forEach(d => html += `<div class="cal-header">${d}</div>`);
 
     for (let i = 0; i < firstDay; i++) {
